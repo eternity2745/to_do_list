@@ -1,0 +1,5 @@
+{
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "cmake.ignoreCMakeListsMissing": true,
+    "dart.flutterSdkPath": "~/Downloads/flutter_windows_3.19.3-stable/flutter"
+}
