@@ -54,7 +54,7 @@ class DatabaseService {
               $t2_columnName1 INT NOT NULL,
               $t2_columnName2 DATE NOT NULL,
               $t2_columnName3 TIME NOT NULL,
-              FOREIGN KEY (id) REFERENCES Upcoming(id)
+              FOREIGN KEY ($t2_columnName1) REFERENCES Upcoming($t1_columnName1)
               )
       ''');
 
@@ -91,6 +91,16 @@ class DatabaseService {
     final db = await _instance.database;
     final List<Map<String, Object?>> result = await db!.query(
       tableName1
+      );
+    return result;
+  }
+
+  Future getUpcomingTask() async {
+    final db = await _instance.database;
+    final List<Map<String, Object?>> result = await db!.query(
+      tableName1,
+      orderBy: "$t1_columnName4, $t1_columnName5",
+      limit: 1
       );
     return result;
   }

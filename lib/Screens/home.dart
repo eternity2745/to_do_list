@@ -25,6 +25,10 @@ class _HomeScreenState extends State<HomeScreen> {
   String dateText = '';
   String timeText = '';
 
+  String? upcTaskName = '';
+  String? upcEndDate = '';
+  String? upcEndTime = '';
+
   String hourOfDay = "AM";
   TimeOfDay? time;
   String datePicked = "DD/MM/YY";
@@ -36,6 +40,18 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> addTask(String taskName, String date, String time) async {
     db.createTask(taskName, date, time);
     getTask("3443");
+  }
+
+  Future getUpcomingTask() async {
+    List<Map<String, Object?>> result = await db.getUpcomingTask();
+    log("$result");
+    upcTaskName = result[0]['Task_Name'] as String;
+    upcEndDate = result[0]['End_Date'] as String;
+    upcEndTime = result[0]['End_Time'] as String;
+    upcEndTime = upcEndTime!.substring(0, upcEndTime!.length - 3);
+    setState(() {
+      
+    });
   }
 
   Future getTask(String id) async {
@@ -74,12 +90,11 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  // @override
-  // void initState() {
-  //   getTask("1730486415035407");
-  //   super.initState();
-
-  // }
+  @override
+  void initState() {
+    getUpcomingTask();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -325,7 +340,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     children: [
                                       Expanded(
                                         child: Text(
-                                        "Maths HW sjfa9j9",
+                                        upcTaskName!,
                                         style: TextStyle(
                                           fontSize: height*0.025
                                         ),
@@ -335,10 +350,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                       Row(
                                         children: [
                                           const Icon(Icons.calendar_month_outlined),
-                                          const Text("Sun, 23rd May"),
+                                          SizedBox(width: width*0.01,),
+                                          Text(upcEndDate!),
                                           SizedBox(width: width*0.03,),
                                           const Icon(Icons.access_time_rounded),
-                                          const Text("12:00 pm")
+                                          SizedBox(width: width*0.01,),
+                                          Text(upcEndTime!)
                                         ],
                                       )
                                     ],
