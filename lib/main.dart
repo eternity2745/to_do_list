@@ -8,13 +8,13 @@ import 'package:sqflite/sqflite.dart';
 import 'package:to_do_list/Screens/home.dart';
 
 void main() {
-  // WidgetsFlutterBinding.ensureInitialized();
-  // SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-  // SystemChrome.setSystemUIOverlayStyle(
-  //   SystemUiOverlayStyle(
-  //     systemNavigationBarColor: Colors.black.withOpacity(0.002)
-  //   ),
-  // );
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  SystemChrome.setSystemUIOverlayStyle(
+    SystemUiOverlayStyle(
+      systemNavigationBarColor: Colors.black.withOpacity(0.002)
+    ),
+  );
   // if (Platform.isWindows || Platform.isLinux) {
   //   // Initialize FFI
   //  sqfliteFfiInit();
