@@ -73,7 +73,7 @@ class DatabaseService {
     final db = await _instance.database;
     final id = DateTime.now().microsecondsSinceEpoch.toString();
     log(id);
-    final created = "${DateTime.now().year}/${DateTime.now().month}/${DateTime.now().day}";
+    final created = "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}";
     await db!.insert(
       tableName1,
       {
