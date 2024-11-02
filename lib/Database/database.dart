@@ -13,6 +13,7 @@ class DatabaseService {
   static const t1_columnName3 = "Created";
   static const t1_columnName4 = "End_Date";
   static const t1_columnName5 = "End_Time";
+  static const t1_columnName6 = "Period_Of_Hour";
 
   static const tableName2 = "Completed";
   static const t2_columnName1 = "id";
@@ -45,7 +46,8 @@ class DatabaseService {
               $t1_columnName2 VARCHAR(255) NOT NULL,
               $t1_columnName3 DATE NOT NULL,
               $t1_columnName4 DATE NOT NULL,
-              $t1_columnName5 TIME NOT NULL
+              $t1_columnName5 TIME NOT NULL,
+              $t1_columnName6 CHAR(2) NOT NULL
               )
       ''');
 
@@ -68,7 +70,7 @@ class DatabaseService {
     );
   }
 
-  Future<void> createTask(String taskName, String date, String time) async {
+  Future<void> createTask(String taskName, String date, String time, String periodOfHour) async {
 
     final db = await _instance.database;
     final id = DateTime.now().microsecondsSinceEpoch.toString();
@@ -80,8 +82,9 @@ class DatabaseService {
         t1_columnName1: id,
         t1_columnName2: taskName,
         t1_columnName3: created,
-        t1_columnName4: date,
-        t1_columnName5: "$time:00"
+        t1_columnName4: date,//"${date.length == 10? '${date.substring(6)}/${date.substring(3,5)}/${date.substring(0,2)}' : '${date.substring(5)}/${date.substring(2,4)}/${date.substring(0,1)}'}",
+        t1_columnName5: "$time:00",
+        t1_columnName6: periodOfHour
       },
       conflictAlgorithm: ConflictAlgorithm.replace
     );
@@ -99,7 +102,7 @@ class DatabaseService {
     final db = await _instance.database;
     final List<Map<String, Object?>> result = await db!.query(
       tableName1,
-      orderBy: "$t1_columnName4, $t1_columnName5",
+      orderBy: "$t1_columnName5 DESC, $t1_columnName4 DESC",
       limit: 1
       );
     return result;

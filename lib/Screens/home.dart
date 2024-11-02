@@ -28,6 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String? upcTaskName = '';
   String? upcEndDate = '';
   String? upcEndTime = '';
+  String? upcperiodOfHour = '';
 
   String hourOfDay = "AM";
   TimeOfDay? time;
@@ -37,8 +38,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final db = DatabaseService();
 
-  Future<void> addTask(String taskName, String date, String time) async {
-    db.createTask(taskName, date, time);
+  Future<void> addTask(String taskName, String date, String time, String periodOfHour) async {
+    log(time);
+    db.createTask(taskName, date, time, periodOfHour);
     getTask("3443");
   }
 
@@ -48,7 +50,10 @@ class _HomeScreenState extends State<HomeScreen> {
     upcTaskName = result[0]['Task_Name'] as String;
     upcEndDate = result[0]['End_Date'] as String;
     upcEndTime = result[0]['End_Time'] as String;
+    upcperiodOfHour = result[0]['Period_Of_Hour'] as String;
     upcEndTime = upcEndTime!.substring(0, upcEndTime!.length - 3);
+    int timeHour24 = int.parse(upcEndTime!.substring(0, upcEndTime!.length-3));
+    upcEndTime = "${timeHour24 == 0 ? 12 : timeHour24 > 12 ? (timeHour24-12) < 10 ? '0${timeHour24-12}' : timeHour24-12 : timeHour24 < 10 ? '0$timeHour24' : timeHour24}:${upcEndTime!.length == 5?upcEndTime!.substring(3) : upcEndTime!.substring(2)} $upcperiodOfHour";
     setState(() {
       
     });
@@ -98,10 +103,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    log("HELP 2");
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
-    log("HELP3");
     return Scaffold(
       appBar: AppBar(
         forceMaterialTransparency: true,
@@ -255,7 +258,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           children: [
                             TextButton(
                               onPressed: () {
-                                addTask(_taskNameTextController.text, _dateTimeTextController.text, _timeTextController.text);
+                                addTask(_taskNameTextController.text, _dateTimeTextController.text, "${time!.hour < 10 && time!.hour > 0 ? '0${time!.hour}' : time!.hour}:${time!.minute == 0 ? '00' : time!.minute < 10 ? '0${time!.minute}' : time!.minute}", hourOfDay);
                                 _dateTimeTextController.text = "";
                                 _timeTextController.text = "";
                                 Navigator.pop(context);
