@@ -62,9 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Future getTask(String id) async {
     log("GEtting task");
     List<Map<String, Object?>> details = await db.getTaskDetails();
-    log('${details.length}');
-    log('${details}');
-    log('${details.last}');
+    log('$details');
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -506,6 +504,5 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
-    log("ENDED");
   }
 }

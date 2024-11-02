@@ -1,10 +1,5 @@
-import 'dart:developer';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:sqflite/sqflite.dart';
-//import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:to_do_list/Screens/home.dart';
 
 void main() {
@@ -15,13 +10,6 @@ void main() {
       systemNavigationBarColor: Colors.black.withOpacity(0.002)
     ),
   );
-  // if (Platform.isWindows || Platform.isLinux) {
-  //   // Initialize FFI
-  //  sqfliteFfiInit();
-  // }
-
-  // databaseFactory = databaseFactoryFfi;
-  log("HELP");
   runApp(const MyApp());
 }
 
