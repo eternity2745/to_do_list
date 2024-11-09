@@ -103,8 +103,7 @@ class DatabaseService {
     final db = await _instance.database;
     final List<Map<String, Object?>> result = await db!.query(
       tableName1,
-      orderBy: "$t1_columnName5 DESC, $t1_columnName4 DESC",
-      limit: 1
+      orderBy: "$t1_columnName4, $t1_columnName5",
       );
     return result;
   }
