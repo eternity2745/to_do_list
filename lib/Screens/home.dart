@@ -12,13 +12,10 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int selectedIndex = 0;
-
-  final PageController _pageController = PageController();
   
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
     return Scaffold(
       
       bottomNavigationBar: MoltenBottomNavigationBar(
@@ -32,15 +29,14 @@ class _HomeScreenState extends State<HomeScreen> {
         barColor: Colors.green.shade900, 
         barHeight: height*0.08,
         onTabChange: (clickedIndex) {
-          selectedIndex = clickedIndex;
-          _pageController.jumpToPage(clickedIndex,);// curve: Curves.linear, duration: Duration(milliseconds: 100));
+          selectedIndex = clickedIndex;// curve: Curves.linear, duration: Duration(milliseconds: 100));
           setState(() {
             
           });
         }
         ),
-      body: PageView(
-        controller: _pageController,
+      body: IndexedStack(
+        index: selectedIndex,
         children: [
           LandingPage(),
           UpcomingTasks()
