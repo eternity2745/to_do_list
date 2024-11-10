@@ -1,10 +1,5 @@
-import 'dart:developer';
-
-import 'package:cool_dropdown/cool_dropdown.dart';
-import 'package:cool_dropdown/models/cool_dropdown_item.dart';
 import 'package:flutter/material.dart';
 import 'package:molten_navigationbar_flutter/molten_navigationbar_flutter.dart';
-import 'package:to_do_list/Database/database.dart';
 import 'package:to_do_list/Screens/landingPage.dart';
 import 'package:to_do_list/Screens/upcomingTasks.dart';
 
