@@ -3,14 +3,17 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:to_do_list/Database/database.dart';
 
+// ignore: must_be_immutable
 class UpcomingTasks extends StatefulWidget {
-  const UpcomingTasks({super.key});
+  UpcomingTasks({super.key, required this.isPersistState});
+
+  bool isPersistState;
 
   @override
   State<UpcomingTasks> createState() => _UpcomingTasksState();
 }
 
-class _UpcomingTasksState extends State<UpcomingTasks> {
+class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveClientMixin{
 
   DateTime? dateTime;
 
@@ -18,6 +21,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> {
   String? upcEndDate = '';
   String? upcEndTime = '';
   String? upcperiodOfHour = '';
+
 
   String hourOfDay = "AM";
   TimeOfDay? time;
@@ -56,9 +60,16 @@ class _UpcomingTasksState extends State<UpcomingTasks> {
     super.initState();
   }
 
+  @override
+  bool get wantKeepAlive => widget.isPersistState;
+
 
   @override
   Widget build(BuildContext context) {
+    if (wantKeepAlive) {
+      super.build(context);
+    }
+    log("${widget.isPersistState}");
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     return Scaffold(

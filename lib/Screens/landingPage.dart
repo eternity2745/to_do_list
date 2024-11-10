@@ -6,14 +6,17 @@ import 'package:cool_dropdown/models/cool_dropdown_item.dart';
 import 'package:to_do_list/Database/database.dart';
 import 'package:to_do_list/Screens/upcomingTasks.dart';
 
+// ignore: must_be_immutable
 class LandingPage extends StatefulWidget {
-  const LandingPage({super.key});
+  LandingPage({super.key, required this.isPersistState});
+
+  bool isPersistState;
 
   @override
   State<LandingPage> createState() => _LandingPage();
 }
 
-class _LandingPage extends State<LandingPage> {
+class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin{
 
   DateTime? dateTime;
   final TextEditingController _dateTimeTextController = TextEditingController();
@@ -34,9 +37,10 @@ class _LandingPage extends State<LandingPage> {
   TimeOfDay? time;
   String datePicked = "DD/MM/YY";
 
-  
-
   final db = DatabaseService();
+
+  @override
+  bool get wantKeepAlive => widget.isPersistState;
 
   Future<void> addTask(String taskName, String date, String time, String periodOfHour) async {
     log(time);
@@ -101,6 +105,9 @@ class _LandingPage extends State<LandingPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (wantKeepAlive) {
+     super.build(context);
+   }
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -260,7 +267,7 @@ class _LandingPage extends State<LandingPage> {
                                 _taskNameTextController.text = "";
                                 _dateTimeTextController.text = "";
                                 _timeTextController.text = "";
-                                UpcomingTasks(key: GlobalKey(),);
+                                
                                 Navigator.pop(context);
                               }, 
                               child: Text("Done")

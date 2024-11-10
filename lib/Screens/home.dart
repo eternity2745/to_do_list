@@ -13,6 +13,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int selectedIndex = 0;
+  final PageController _pageController = PageController();
   
   @override
   Widget build(BuildContext context) {
@@ -30,18 +31,19 @@ class _HomeScreenState extends State<HomeScreen> {
         barColor: Colors.green.shade900,
         barHeight: height*0.08,
         onTabChange: (clickedIndex) {
-          selectedIndex = clickedIndex;// curve: Curves.linear, duration: Duration(milliseconds: 100));
+          selectedIndex = clickedIndex;
+          _pageController.jumpToPage(selectedIndex);// curve: Curves.linear, duration: Duration(milliseconds: 100));
           setState(() {
             
           });
         }
         ),
-      body: IndexedStack(
-        index: selectedIndex,
+      body: PageView(
+        controller: _pageController,
         children: [
-          LandingPage(key: GlobalKey(),),
-          UpcomingTasks(key:GlobalKey()),
-          CompletedTasks(key: GlobalKey(),)
+          LandingPage(isPersistState: true,),
+          UpcomingTasks(isPersistState: true,),
+          CompletedTasks()
         ],
       )
     );
