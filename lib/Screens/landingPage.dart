@@ -357,7 +357,7 @@ class _LandingPage extends State<LandingPage> {
                 height: height*0.16,
                 width: width*0.9,
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade900,
+                  color: Colors.green.shade900,
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: Padding(

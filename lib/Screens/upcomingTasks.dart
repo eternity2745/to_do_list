@@ -89,7 +89,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> {
                 height: height*0.1,
                 width: width*0.9,
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade900,
+                  color: Colors.red.shade900,
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: Padding(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:molten_navigationbar_flutter/molten_navigationbar_flutter.dart';
+import 'package:to_do_list/Screens/completedTasks.dart';
 import 'package:to_do_list/Screens/landingPage.dart';
 import 'package:to_do_list/Screens/upcomingTasks.dart';
 
@@ -22,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
         tabs: [
           MoltenTab(icon: Icon(Icons.home_outlined, size: height*0.035,)),
           MoltenTab(icon: Icon(Icons.timelapse_outlined, size: height*0.035)),
-          MoltenTab(icon: Icon(Icons.person_outline, size: height*0.035))
+          MoltenTab(icon: Icon(Icons.done_outline_rounded, size: height*0.035))
         ]
         , 
         selectedIndex: selectedIndex,
@@ -39,7 +40,8 @@ class _HomeScreenState extends State<HomeScreen> {
         index: selectedIndex,
         children: [
           LandingPage(),
-          UpcomingTasks()
+          UpcomingTasks(),
+          CompletedTasks()
         ],
       )
     );
