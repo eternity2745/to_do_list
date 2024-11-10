@@ -99,13 +99,23 @@ class DatabaseService {
     return result;
   }
 
-  Future getUpcomingTask() async {
+  Future getUpcomingTask({int? limit}) async {
     final db = await _instance.database;
+
+    if (limit != null) {
     final List<Map<String, Object?>> result = await db!.query(
+      tableName1,
+      orderBy: "$t1_columnName4, $t1_columnName5",
+      limit: limit
+      );
+    return result;
+    }else{
+      final List<Map<String, Object?>> result = await db!.query(
       tableName1,
       orderBy: "$t1_columnName4, $t1_columnName5",
       );
     return result;
+    }
   }
 
 }

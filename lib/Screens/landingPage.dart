@@ -14,7 +14,7 @@ class LandingPage extends StatefulWidget {
 
 class _LandingPage extends State<LandingPage> {
 
-DateTime? dateTime;
+  DateTime? dateTime;
   final TextEditingController _dateTimeTextController = TextEditingController();
   final TextEditingController _timeTextController = TextEditingController();
   final DropdownController _dropdownController = DropdownController(); 
@@ -44,7 +44,7 @@ DateTime? dateTime;
   }
 
   Future getUpcomingTask() async {
-    List<Map<String, Object?>> result = await db.getUpcomingTask();
+    List<Map<String, Object?>> result = await db.getUpcomingTask(limit: 1);
     log("$result");
     upcTaskName = result[0]['Task_Name'] as String;
     upcEndDate = result[0]['End_Date'] as String;

@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:to_do_list/Database/database.dart';
 
 class UpcomingTasks extends StatefulWidget {
   const UpcomingTasks({super.key});
@@ -8,6 +11,35 @@ class UpcomingTasks extends StatefulWidget {
 }
 
 class _UpcomingTasksState extends State<UpcomingTasks> {
+
+  DateTime? dateTime;
+
+  String? upcTaskName = '';
+  String? upcEndDate = '';
+  String? upcEndTime = '';
+  String? upcperiodOfHour = '';
+
+  String hourOfDay = "AM";
+  TimeOfDay? time;
+  String datePicked = "DD/MM/YY";
+
+  List<Map<String, Object?>> result = [];
+
+  final db = DatabaseService();
+
+  Future getUpcomingTasks() async {
+    result = await db.getUpcomingTask();
+    log("$result");
+    setState(() {
+      
+    });
+  }
+
+  @override
+  void initState() {
+    getUpcomingTasks();
+    super.initState();
+  }
 
 
   @override
@@ -104,7 +136,11 @@ class _UpcomingTasksState extends State<UpcomingTasks> {
                   fontWeight: FontWeight.w500
                 ),
                 ),
-              SizedBox(height: height*0.008,),
+            SizedBox(height: height*0.008,),
+            if (result.isEmpty)...{
+              Text("Nothing Here"),
+            }else...{
+              for (var i in result)...{        
               Container(
                 height: height*0.1,
                 width: width*0.9,
@@ -134,7 +170,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> {
                                     children: [
                                       Expanded(
                                         child: Text(
-                                        "Task Name",
+                                        i['Task_Name'] as String,
                                         style: TextStyle(
                                           fontSize: height*0.025
                                         ),
@@ -145,11 +181,11 @@ class _UpcomingTasksState extends State<UpcomingTasks> {
                                         children: [
                                           const Icon(Icons.calendar_month_outlined),
                                           SizedBox(width: width*0.01,),
-                                          Text("End Date"),
+                                          Text(i['End_Date'] as String),
                                           SizedBox(width: width*0.03,),
                                           const Icon(Icons.access_time_rounded),
                                           SizedBox(width: width*0.01,),
-                                          Text("End Time")
+                                          Text(i['End_Time'] as String)
                                         ],
                                       )
                                     ],
@@ -163,6 +199,9 @@ class _UpcomingTasksState extends State<UpcomingTasks> {
                   ),
                 ),
               ),
+              SizedBox(height: height*0.01,)
+              }
+            }
             ]
       ),
     )
