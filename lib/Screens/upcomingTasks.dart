@@ -23,13 +23,28 @@ class _UpcomingTasksState extends State<UpcomingTasks> {
   TimeOfDay? time;
   String datePicked = "DD/MM/YY";
 
-  List<Map<String, Object?>> result = [];
+  List<Map<String, Object?>> upcomingTasks = [];
 
   final db = DatabaseService();
 
   Future getUpcomingTasks() async {
-    result = await db.getUpcomingTask();
-    log("$result");
+    List<Map<String, Object?>> results = await db.getUpcomingTask();
+    for (var i in results) {
+    upcEndTime = i['End_Time'] as String;
+    upcEndTime = upcEndTime!.substring(0, upcEndTime!.length - 3);
+    int timeHour24 = int.parse(upcEndTime!.substring(0, upcEndTime!.length-3));
+    upcEndTime = "${timeHour24 == 0 ? 12 : timeHour24 > 12 ? (timeHour24-12) < 10 ? '0${timeHour24-12}' : timeHour24-12 : timeHour24 < 10 ? '0$timeHour24' : timeHour24}:${upcEndTime!.length == 5?upcEndTime!.substring(3) : upcEndTime!.substring(2)}";
+    upcomingTasks.add({
+      "id":i["id"], 
+      "Task_Name":i["Task_Name"], 
+      "Created":i["Created"], 
+      "End_Date":i["End_Date"], 
+      "End_Time":upcEndTime, 
+      "Period_Of_Hour":i["Period_Of_Hour"]
+      }
+      );
+    }
+    log("$upcomingTasks");
     setState(() {
       
     });
@@ -137,10 +152,10 @@ class _UpcomingTasksState extends State<UpcomingTasks> {
                 ),
                 ),
             SizedBox(height: height*0.008,),
-            if (result.isEmpty)...{
+            if (upcomingTasks.isEmpty)...{
               Text("Nothing Here"),
             }else...{
-              for (var i in result)...{        
+              for (var i in upcomingTasks)...{                     
               Container(
                 height: height*0.1,
                 width: width*0.9,
@@ -185,7 +200,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> {
                                           SizedBox(width: width*0.03,),
                                           const Icon(Icons.access_time_rounded),
                                           SizedBox(width: width*0.01,),
-                                          Text(i['End_Time'] as String)
+                                          Text("${i['End_Time'] as String} ${i['Period_Of_Hour'] as String}")
                                         ],
                                       )
                                     ],
