@@ -1,7 +1,9 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:to_do_list/Database/database.dart';
+import 'package:to_do_list/Providers/navProvider.dart';
 
 // ignore: must_be_immutable
 class UpcomingTasks extends StatefulWidget {
@@ -22,12 +24,13 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
   String? upcEndTime = '';
   String? upcperiodOfHour = '';
 
-
   String hourOfDay = "AM";
   TimeOfDay? time;
   String datePicked = "DD/MM/YY";
 
   List<Map<String, Object?>> upcomingTasks = [];
+
+  bool persistState = true;
 
   final db = DatabaseService();
 
@@ -60,16 +63,24 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
     super.initState();
   }
 
+
   @override
-  bool get wantKeepAlive => widget.isPersistState;
+  bool get wantKeepAlive => persistState;
+
+  @override
+  void updateKeepAlive() {
+
+    super.updateKeepAlive();
+  }
 
 
   @override
   Widget build(BuildContext context) {
+    persistState = Provider.of<NavigationProvider>(context).persistState;
     if (wantKeepAlive) {
       super.build(context);
     }
-    log("${widget.isPersistState}");
+    log("$wantKeepAlive");
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     return Scaffold(

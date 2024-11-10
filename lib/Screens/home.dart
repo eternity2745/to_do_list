@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:molten_navigationbar_flutter/molten_navigationbar_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:to_do_list/Providers/navProvider.dart';
 import 'package:to_do_list/Screens/completedTasks.dart';
 import 'package:to_do_list/Screens/landingPage.dart';
 import 'package:to_do_list/Screens/upcomingTasks.dart';

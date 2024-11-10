@@ -3,7 +3,9 @@ import 'dart:developer';
 
 import 'package:cool_dropdown/cool_dropdown.dart';
 import 'package:cool_dropdown/models/cool_dropdown_item.dart';
+import 'package:provider/provider.dart';
 import 'package:to_do_list/Database/database.dart';
+import 'package:to_do_list/Providers/navProvider.dart';
 import 'package:to_do_list/Screens/upcomingTasks.dart';
 
 // ignore: must_be_immutable
@@ -267,7 +269,7 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
                                 _taskNameTextController.text = "";
                                 _dateTimeTextController.text = "";
                                 _timeTextController.text = "";
-                                
+                                Provider.of<NavigationProvider>(context, listen: false).changePersistState(false);
                                 Navigator.pop(context);
                               }, 
                               child: Text("Done")
