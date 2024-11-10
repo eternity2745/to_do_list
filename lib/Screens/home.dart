@@ -27,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ]
         , 
         selectedIndex: selectedIndex,
-        barColor: Colors.green.shade900, 
+        barColor: Colors.green.shade900,
         barHeight: height*0.08,
         onTabChange: (clickedIndex) {
           selectedIndex = clickedIndex;// curve: Curves.linear, duration: Duration(milliseconds: 100));
@@ -39,9 +39,9 @@ class _HomeScreenState extends State<HomeScreen> {
       body: IndexedStack(
         index: selectedIndex,
         children: [
-          LandingPage(),
-          UpcomingTasks(),
-          CompletedTasks()
+          LandingPage(key: GlobalKey(),),
+          UpcomingTasks(key:GlobalKey()),
+          CompletedTasks(key: GlobalKey(),)
         ],
       )
     );

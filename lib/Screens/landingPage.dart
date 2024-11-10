@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:cool_dropdown/cool_dropdown.dart';
 import 'package:cool_dropdown/models/cool_dropdown_item.dart';
 import 'package:to_do_list/Database/database.dart';
+import 'package:to_do_list/Screens/upcomingTasks.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({super.key});
@@ -256,14 +257,17 @@ class _LandingPage extends State<LandingPage> {
                             TextButton(
                               onPressed: () {
                                 addTask(_taskNameTextController.text, _dateTimeTextController.text, "${time!.hour < 10 && time!.hour > 0 ? '0${time!.hour}' : time!.hour == 0 ? '00' : time!.hour}:${time!.minute == 0 ? '00' : time!.minute < 10 ? '0${time!.minute}' : time!.minute}", hourOfDay);
+                                _taskNameTextController.text = "";
                                 _dateTimeTextController.text = "";
                                 _timeTextController.text = "";
+                                UpcomingTasks(key: GlobalKey(),);
                                 Navigator.pop(context);
                               }, 
                               child: Text("Done")
                               ),
                               TextButton(
                               onPressed: () {
+                                _taskNameTextController.text = "";
                                 _dateTimeTextController.text = "";
                                 _timeTextController.text = "";
                                 Navigator.pop(context);
