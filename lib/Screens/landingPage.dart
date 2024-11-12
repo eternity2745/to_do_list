@@ -6,8 +6,6 @@ import 'package:cool_dropdown/models/cool_dropdown_item.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do_list/Database/database.dart';
 import 'package:to_do_list/Providers/navProvider.dart';
-import 'package:to_do_list/Screens/upcomingTasks.dart';
-
 // ignore: must_be_immutable
 class LandingPage extends StatefulWidget {
   LandingPage({super.key, required this.isPersistState});

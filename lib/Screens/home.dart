@@ -34,6 +34,9 @@ class _HomeScreenState extends State<HomeScreen> {
         barHeight: height*0.08,
         onTabChange: (clickedIndex) {
           selectedIndex = clickedIndex;
+          if (selectedIndex == 0 && Provider.of<NavigationProvider>(context, listen: false).persistState == false) {
+            Provider.of<NavigationProvider>(context, listen: false).changePersistState(true);
+          }
           _pageController.jumpToPage(selectedIndex);// curve: Curves.linear, duration: Duration(milliseconds: 100));
           setState(() {
             
@@ -41,6 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
         }
         ),
       body: PageView(
+        physics: NeverScrollableScrollPhysics(),
         controller: _pageController,
         children: [
           LandingPage(isPersistState: true,),

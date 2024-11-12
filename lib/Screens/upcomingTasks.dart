@@ -28,7 +28,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
   TimeOfDay? time;
   String datePicked = "DD/MM/YY";
 
-  List<Map<String, Object?>> upcomingTasks = [];
+  List<Map<String, Object?>> upcomingTasks = [];   
 
   bool persistState = true;
 
@@ -63,20 +63,19 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
     super.initState();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
 
   @override
   bool get wantKeepAlive => persistState;
 
   @override
-  void updateKeepAlive() {
-
-    super.updateKeepAlive();
-  }
-
-
-  @override
   Widget build(BuildContext context) {
     persistState = Provider.of<NavigationProvider>(context).persistState;
+    updateKeepAlive();
     if (wantKeepAlive) {
       super.build(context);
     }
