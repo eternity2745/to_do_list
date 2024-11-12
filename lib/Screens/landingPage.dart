@@ -24,6 +24,11 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
   final DropdownController _dropdownController = DropdownController(); 
   final TextEditingController _taskNameTextController = TextEditingController();
 
+  final _taskNameKey = GlobalKey<FormState>();
+  final _dateTimeKey = GlobalKey<FormState>();
+  final _timeKey = GlobalKey<FormState>();
+
+
   String taskNameText = '';
   String dateText = '';
   String timeText = '';
@@ -36,6 +41,8 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
   String hourOfDay = "AM";
   TimeOfDay? time;
   String datePicked = "DD/MM/YY";
+
+
 
   final db = DatabaseService();
 
@@ -138,6 +145,7 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
                 if (didPop) {
                   _timeTextController.text = "";
                   _dateTimeTextController.text = "";
+                  _taskNameTextController.text = "";
                 }
               },
               child: Dialog(
@@ -158,15 +166,24 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
                       ),
                         SizedBox(height: height*0.03,),
                         // ignore: prefer_const_constructors
-                        TextField(
+                        TextFormField(
+                          key: _taskNameKey,
                           controller: _taskNameTextController,
-                          decoration: const InputDecoration( 
+                          decoration: InputDecoration( 
                             labelText: "Task Name",
-                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12)))
+                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
                           ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Empty';
+                              }else{
+                                return null;
+                              }
+                            },
                         ),
                         SizedBox(height: height*0.02,),
-                        TextField(
+                        TextFormField(
+                          key: _dateTimeKey,
                           controller: _dateTimeTextController,
                           decoration: InputDecoration(
                             suffixIcon: IconButton(
@@ -176,15 +193,23 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
                               }
                             ),
                             labelText: "DD/MM/YY",
-                            border: const OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12)))
+                            border: const OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
                           ),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Empty';
+                            }else{
+                              return null;
+                            }
+                          },
                         ),
                         SizedBox(height: height*0.02,),
                         Row(
                           children: [
                             SizedBox(
                               width: width*0.48,
-                              child: TextField(
+                              child: TextFormField(
+                                key: _timeKey,
                                 controller: _timeTextController,
                                 decoration: InputDecoration(
                                   suffixIcon: IconButton(
@@ -194,8 +219,15 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
                                     },
                                   ),
                                   labelText: "HH:MM",
-                                  border: const OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12)))
-                                ),                             
+                                  border: const OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
+                                ),
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return 'Empty';
+                                    }else{
+                                      return null;
+                                    }
+                            },
                               ),
                             ),
                             SizedBox(width: width*0.02,),
@@ -263,12 +295,18 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
                           children: [
                             TextButton(
                               onPressed: () {
+                                if (_taskNameTextController.text != '' && _dateTimeTextController.text != '' && _timeTextController.text != '') {
                                 addTask(_taskNameTextController.text, _dateTimeTextController.text, "${time!.hour < 10 && time!.hour > 0 ? '0${time!.hour}' : time!.hour == 0 ? '00' : time!.hour}:${time!.minute == 0 ? '00' : time!.minute < 10 ? '0${time!.minute}' : time!.minute}", hourOfDay);
                                 _taskNameTextController.text = "";
                                 _dateTimeTextController.text = "";
                                 _timeTextController.text = "";
                                 Provider.of<NavigationProvider>(context, listen: false).changePersistState(false);
                                 Navigator.pop(context);
+                                }else{
+                                  _taskNameKey.currentState!.validate();
+                                  _dateTimeKey.currentState!.validate();
+                                  _timeKey.currentState!.validate();
+                                }
                               }, 
                               child: Text("Done")
                               ),
