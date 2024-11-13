@@ -60,6 +60,11 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
     getTask("3443");
   }
 
+  Future updateOverDueTasks() async {
+    var overdueTasks = await db.updateOverDueTasks();
+    //log("$overdueTasks");
+  }
+
   Future getUpcomingTask() async {
     List<Map<String, Object?>> result = await db.getUpcomingTask(limit: 1);
     log("$result");
@@ -125,6 +130,7 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
     log("OKKK");
     getUpcomingTask();
     getStatistics();
+    updateOverDueTasks();
     super.initState();
   }
 

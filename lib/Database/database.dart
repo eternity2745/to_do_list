@@ -158,4 +158,34 @@ class DatabaseService {
     return result;
   }
 
+  Future updateOverDueTasks() async {
+
+    final db = await _instance.database;
+    
+    DateTime dateTime = DateTime.now();
+    String formattedDate = "${dateTime.day}/${dateTime.month}/${dateTime.year}";
+    String formattedTime = "${dateTime.hour}:${dateTime.minute}:${dateTime.second}";
+
+    var upcomingTasks = await db!.query(
+      tableName1,
+      where: "$t1_columnName4 <= ? AND $t1_columnName5 <= ?",
+      whereArgs: [formattedDate, formattedTime],
+      orderBy: "$t1_columnName4, $t1_columnName5"
+    );
+    log("$upcomingTasks");
+
+    if (upcomingTasks.isEmpty) {
+      return false;
+    }else{
+      Map<String, Object?> values = {};
+      for (var i in upcomingTasks) {
+        values.addEntries(i.entries);
+      }
+      await db.insert(
+        tableName3,
+        values
+        );
+    }
+  }
+
 }
