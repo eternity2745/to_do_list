@@ -61,8 +61,7 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
   }
 
   Future updateOverDueTasks() async {
-    var overdueTasks = await db.updateOverDueTasks();
-    //log("$overdueTasks");
+    await db.updateOverDueTasks();
   }
 
   Future getUpcomingTask() async {

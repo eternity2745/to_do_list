@@ -1,3 +1,3 @@
-Overdue check
+Overdue check ( Issue when calling app for first time)
 Adding AI to summarise user performance
 Try to find a solution for 'package:flutter/src/widgets/framework.dart': Failed assertion: line 6036 pos 12: 'newWidget.debugCanApplyOutOfTurn()': is not true Error
