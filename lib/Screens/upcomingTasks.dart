@@ -59,6 +59,10 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
     });
   }
 
+  Future getOverdueTasks() async {
+    
+  }
+
   Future deleteTask(int id) async {
     await db.deleteTask(id);
     log("DELETED");

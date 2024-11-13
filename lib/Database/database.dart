@@ -147,4 +147,15 @@ class DatabaseService {
 
   }
 
+  Future getOverdueTasks() async {
+    final db = await _instance.database;
+
+    List<Map<String, Object?>> result = await db!.query(
+      tableName3,
+      orderBy: "$t1_columnName4, $t1_columnName5"
+    );
+
+    return result;
+  }
+
 }
