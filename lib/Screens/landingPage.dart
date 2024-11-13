@@ -24,9 +24,9 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
   final DropdownController _dropdownController = DropdownController(); 
   final TextEditingController _taskNameTextController = TextEditingController();
 
-  final _taskNameKey = GlobalKey<FormState>();
-  final _dateTimeKey = GlobalKey<FormState>();
-  final _timeKey = GlobalKey<FormState>();
+  bool _validateTask= false;
+  bool _validateDateTime= false;
+  bool _validateTime = false;
 
 
   String taskNameText = '';
@@ -106,6 +106,7 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
 
   @override
   void initState() {
+    log("OKKK");
     getUpcomingTask();
     super.initState();
   }
@@ -139,6 +140,8 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
           barrierDismissible: false,
           barrierColor: Colors.black87,
           builder: (BuildContext context) {
+            return StatefulBuilder(
+              builder:(context, setState) {             
             return PopScope(
               canPop: true,
               onPopInvokedWithResult: (didPop, popped) {
@@ -152,7 +155,7 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
                 elevation: height*0.1,
                 // ignore: sized_box_for_whitespace
                 child: Container(
-                  height: height*0.42,
+                  height: height*0.44,
                   width: width*0.8,
                   child: Padding(
                     padding: EdgeInsets.symmetric(vertical: height*0.02, horizontal: width*0.05),
@@ -166,50 +169,62 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
                       ),
                         SizedBox(height: height*0.03,),
                         // ignore: prefer_const_constructors
-                        TextFormField(
-                          key: _taskNameKey,
-                          controller: _taskNameTextController,
-                          decoration: InputDecoration( 
-                            labelText: "Task Name",
-                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
+                        SizedBox(
+                          height: height*0.07,
+                          child: TextField(
+                            // key: _taskNameKey,
+                            controller: _taskNameTextController,
+                            decoration: InputDecoration( 
+                              labelText: "Task Name",
+                              border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
+                              errorText : _validateTask ? '' : null,
+                            ),
+                              // validator: (value) {
+                              //   if (value!.isEmpty) {
+                              //     return 'Empty';
+                              //   }else{
+                              //     return null;
+                              //   }
+                              // },
                           ),
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Empty';
-                              }else{
-                                return null;
-                              }
-                            },
                         ),
                         SizedBox(height: height*0.02,),
-                        TextFormField(
-                          key: _dateTimeKey,
-                          controller: _dateTimeTextController,
-                          decoration: InputDecoration(
-                            suffixIcon: IconButton(
-                              icon: Icon(Icons.calendar_month_outlined),
-                              onPressed: () {
-                                _selectDate(context);
-                              }
+                        SizedBox(
+                          height: height*0.07,
+                          child: TextField(
+                            //key: _dateTimeKey,
+                            controller: _dateTimeTextController,
+                            decoration: InputDecoration(
+                              suffixIcon: IconButton(
+                                icon: Icon(Icons.calendar_month_outlined),
+                                onPressed: () {
+                                  _selectDate(context);
+                                }
+                              ),
+                              labelText: "DD/MM/YY",
+                              border: const OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
+                              errorText : _validateDateTime ? '' : null,
+                              // errorStyle: _validateDateTime? TextStyle(
+                              //   color: Colors.red
+                              // ) : null
                             ),
-                            labelText: "DD/MM/YY",
-                            border: const OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
+                            // validator: (value) {
+                            //   if (value!.isEmpty) {
+                            //     return 'Empty';
+                            //   }else{
+                            //     return null;
+                            //   }
+                            // },
                           ),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Empty';
-                            }else{
-                              return null;
-                            }
-                          },
                         ),
                         SizedBox(height: height*0.02,),
                         Row(
                           children: [
                             SizedBox(
                               width: width*0.48,
-                              child: TextFormField(
-                                key: _timeKey,
+                              height: height*0.07,
+                              child: TextField(
+                                // key: _timeKey,
                                 controller: _timeTextController,
                                 decoration: InputDecoration(
                                   suffixIcon: IconButton(
@@ -220,19 +235,22 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
                                   ),
                                   labelText: "HH:MM",
                                   border: const OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
+                                  errorText : _validateTime ? '' : null,
+                                  //errorStyle: TextStyle(height: 0)
                                 ),
-                                  validator: (value) {
-                                    if (value!.isEmpty) {
-                                      return 'Empty';
-                                    }else{
-                                      return null;
-                                    }
-                            },
+                            //       validator: (value) {
+                            //         if (value!.isEmpty) {
+                            //           return 'Empty';
+                            //         }else{
+                            //           return null;
+                            //         }
+                            // },
                               ),
                             ),
                             SizedBox(width: width*0.02,),
                             SizedBox(
                               width: width*0.2,
+                              height: height*0.05,
                               child: CoolDropdown(
                                 defaultItem : CoolDropdownItem(label: hourOfDay, value: hourOfDay),
                                 resultOptions: ResultOptions(
@@ -297,15 +315,22 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
                               onPressed: () {
                                 if (_taskNameTextController.text != '' && _dateTimeTextController.text != '' && _timeTextController.text != '') {
                                 addTask(_taskNameTextController.text, _dateTimeTextController.text, "${time!.hour < 10 && time!.hour > 0 ? '0${time!.hour}' : time!.hour == 0 ? '00' : time!.hour}:${time!.minute == 0 ? '00' : time!.minute < 10 ? '0${time!.minute}' : time!.minute}", hourOfDay);
-                                _taskNameTextController.text = "";
-                                _dateTimeTextController.text = "";
-                                _timeTextController.text = "";
                                 Provider.of<NavigationProvider>(context, listen: false).changePersistState(false);
+                                setState(() 
+                                {
+                                  _taskNameTextController.text = "";
+                                  _dateTimeTextController.text = "";
+                                  _timeTextController.text = "";
+                                });
                                 Navigator.pop(context);
                                 }else{
-                                  _taskNameKey.currentState!.validate();
-                                  _dateTimeKey.currentState!.validate();
-                                  _timeKey.currentState!.validate();
+                                  log("HEHE");
+                                  setState(() 
+                                {
+                                  _validateTask = true;
+                                  _validateDateTime = true;
+                                  _validateTime = true;
+                                });
                                 }
                               }, 
                               child: Text("Done")
@@ -326,6 +351,8 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
                   ),
                 ),
               ),
+            );
+              }
             );
           }
           );

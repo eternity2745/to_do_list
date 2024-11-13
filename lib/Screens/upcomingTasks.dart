@@ -28,6 +28,8 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
   TimeOfDay? time;
   String datePicked = "DD/MM/YY";
 
+  String overdueTaskName = "Task Name";
+
   List<Map<String, Object?>> upcomingTasks = [];   
 
   bool persistState = true;
@@ -55,6 +57,11 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
     setState(() {
       
     });
+  }
+
+  Future deleteTask(int id) async {
+    await db.deleteTask(id);
+    log("DELETED");
   }
 
   @override
@@ -135,7 +142,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                                     children: [
                                       Expanded(
                                         child: Text(
-                                        "Task Name",
+                                        overdueTaskName,
                                         style: TextStyle(
                                           fontSize: height*0.025
                                         ),
@@ -176,68 +183,85 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
             if (upcomingTasks.isEmpty)...{
               Text("Nothing Here"),
             }else...{
-              for (var i in upcomingTasks)...{                     
-              Container(
-                height: height*0.1,
-                width: width*0.9,
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade900,
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: height*0.008, horizontal: width*0.04),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            IconButton(
-                              onPressed: () {}, 
-                              icon: const Icon(Icons.check_box_outline_blank_rounded)
-                              ),
-                              SizedBox(width: width*0.01),
-                              Expanded(
-                                child: Padding(
-                                  padding: EdgeInsets.only(top: height*0.008, bottom: height*0.01),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                        i['Task_Name'] as String,
-                                        style: TextStyle(
-                                          fontSize: height*0.025
-                                        ),
-                                        overflow: TextOverflow.ellipsis,                         
-                                        ),
-                                      ),
-                                      Row(
-                                        children: [
-                                          const Icon(Icons.calendar_month_outlined),
-                                          SizedBox(width: width*0.01,),
-                                          Text(i['End_Date'] as String),
-                                          SizedBox(width: width*0.03,),
-                                          const Icon(Icons.access_time_rounded),
-                                          SizedBox(width: width*0.01,),
-                                          Text("${i['End_Time'] as String} ${i['Period_Of_Hour'] as String}")
-                                        ],
-                                      )
-                                    ],
+              StatefulBuilder(builder: (BuildContext context , setState) {
+              return ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: upcomingTasks.length,
+              itemBuilder: (BuildContext context, int index) {                              
+              return Column(
+                children: [
+                  Container(
+                    height: height*0.1,
+                    width: width*0.9,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade900,
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: height*0.008, horizontal: width*0.04),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      deleteTask(upcomingTasks[index]['id'] as int);
+                                      upcomingTasks.removeAt(index);
+                                    });
+                                  }, 
+                                  icon: const Icon(Icons.check_box_outline_blank_rounded)
                                   ),
-                                ),
-                              )
-                          ],
-                        ),
-                      )
-                    ],
+                                  SizedBox(width: width*0.01),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: EdgeInsets.only(top: height*0.008, bottom: height*0.01),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                            upcomingTasks[index]['Task_Name'] as String,
+                                            style: TextStyle(
+                                              fontSize: height*0.025
+                                            ),
+                                            overflow: TextOverflow.ellipsis,                         
+                                            ),
+                                          ),
+                                          Row(
+                                            children: [
+                                              const Icon(Icons.calendar_month_outlined),
+                                              SizedBox(width: width*0.01,),
+                                              Text(upcomingTasks[index]['End_Date'] as String),
+                                              SizedBox(width: width*0.03,),
+                                              const Icon(Icons.access_time_rounded),
+                                              SizedBox(width: width*0.01,),
+                                              Text("${upcomingTasks[index]['End_Time'] as String} ${upcomingTasks[index]['Period_Of_Hour'] as String}")
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              SizedBox(height: height*0.01,)
+                  SizedBox(height: height*0.01,)
+                ],
+              );
               }
-            }
+              );
+              }
+              )
+          }
             ]
       ),
     )

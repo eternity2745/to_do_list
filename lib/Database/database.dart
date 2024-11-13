@@ -118,4 +118,15 @@ class DatabaseService {
     }
   }
 
+  Future deleteTask(int id) async {
+    final db = await _instance.database;
+
+    await db!.delete(
+      tableName1,
+      where: "id = ?",
+      whereArgs: [id]
+    );
+
+  }
+
 }
