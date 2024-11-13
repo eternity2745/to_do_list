@@ -33,6 +33,11 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
   String dateText = '';
   String timeText = '';
 
+  int noCompletedTasks = 0;
+  int noUpcomingTasks = 0;
+  int noOverdueTasks = 0;
+
+
   String? upcTaskName = '';
   String? upcEndDate = '';
   String? upcEndTime = '';
@@ -76,6 +81,17 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
     log('$details');
   }
 
+  Future getStatistics() async {
+    List statistics = await db.getStatistics();
+    noUpcomingTasks = statistics[0];
+    noCompletedTasks = statistics[1];
+    noOverdueTasks = statistics[2];
+    
+    setState(() {
+      
+    });
+  }
+
   Future<void> _selectDate(BuildContext context) async {
     dateTime = await showDatePicker(
                           context: context, 
@@ -108,6 +124,7 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
   void initState() {
     log("OKKK");
     getUpcomingTask();
+    getStatistics();
     super.initState();
   }
 
@@ -316,6 +333,8 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
                                 if (_taskNameTextController.text != '' && _dateTimeTextController.text != '' && _timeTextController.text != '') {
                                 addTask(_taskNameTextController.text, _dateTimeTextController.text, "${time!.hour < 10 && time!.hour > 0 ? '0${time!.hour}' : time!.hour == 0 ? '00' : time!.hour}:${time!.minute == 0 ? '00' : time!.minute < 10 ? '0${time!.minute}' : time!.minute}", hourOfDay);
                                 Provider.of<NavigationProvider>(context, listen: false).changePersistState(false);
+                                getUpcomingTask();
+                                getStatistics();
                                 setState(() 
                                 {
                                   _taskNameTextController.text = "";
@@ -515,7 +534,7 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
                         ),
                         ),
                         SizedBox(height: height*0.018,),
-                        Text("100",
+                        Text("$noCompletedTasks",
                         style: TextStyle(
                           fontSize: height*0.05,
                           fontWeight: FontWeight.bold
@@ -545,7 +564,7 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
                         ),
                         ),
                         SizedBox(height: height*0.018,),
-                        Text("100",
+                        Text("$noUpcomingTasks",
                         style: TextStyle(
                           fontSize: height*0.05,
                           fontWeight: FontWeight.bold

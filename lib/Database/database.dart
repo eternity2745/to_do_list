@@ -129,4 +129,22 @@ class DatabaseService {
 
   }
 
+  Future getStatistics() async {
+    final db = await _instance.database;
+
+    List<Map<String, Object?>> upcomingTasks = await db!.rawQuery(
+      "SELECT count(*) FROM $tableName1"
+    );
+
+    List<Map<String, Object?>> completedTasks = await db.rawQuery(
+      "SELECT count(*) FROM $tableName2"
+    );
+
+    List<Map<String, Object?>> overdueTasks = await db.rawQuery(
+      "SELECT count(*) FROM $tableName3"
+    );
+    return [upcomingTasks[0]['count(*)'], completedTasks[0]['count(*)'], overdueTasks[0]['count(*)']];
+
+  }
+
 }
