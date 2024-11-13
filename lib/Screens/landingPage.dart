@@ -128,9 +128,9 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
   @override
   void initState() {
     log("OKKK");
+    updateOverDueTasks();
     getUpcomingTask();
     getStatistics();
-    updateOverDueTasks();
     super.initState();
   }
 

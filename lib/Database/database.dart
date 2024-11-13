@@ -72,13 +72,12 @@ class DatabaseService {
 
       db.execute(''' 
               CREATE TABLE $tableName3 (
-              $t3_columnName1 INT NOT NULL,
+              $t3_columnName1 INT PRIMARY KEY,
               $t3_columnName2 VARCHAR(255) NOT NULL,
               $t3_columnName3 DATE NOT NULL,
               $t3_columnName4 DATE NOT NULL,
               $t3_columnName5 TIME NOT NULL,
               $t3_columnName6 CHAR(2) NOT NULL
-              FOREIGN KEY ($t3_columnName1) REFERENCES $tableName1($t1_columnName1)
                )
       ''');
     }
@@ -117,11 +116,13 @@ class DatabaseService {
     final db = await _instance.database;
 
     if (limit != null) {
+    log("1 Upc");
     final List<Map<String, Object?>> result = await db!.query(
       tableName1,
       orderBy: "$t1_columnName4, $t1_columnName5",
       limit: limit
       );
+    log("2 Upc");
     return result;
     }else{
       final List<Map<String, Object?>> result = await db!.query(
@@ -192,13 +193,32 @@ class DatabaseService {
       return false;
     }else{
       Map<String, Object?> values = {};
+      List ids = [];
       for (var i in upcomingTasks) {
         values.addEntries(i.entries);
+        ids.add(i['id']);
       }
       await db.insert(
         tableName3,
-        values
+        values,
+        conflictAlgorithm: ConflictAlgorithm.replace
         );
+      
+      log("1 Over");
+
+      await db.transaction((txn) async {
+        final batch = txn.batch();
+        for (var i in ids) {
+          batch.delete(
+            tableName1,
+            where: "id = ?",
+            whereArgs: [i]
+          );
+        await batch.commit();
+        }
+      }
+      );
+      log("2 Over");
     }
   }
 

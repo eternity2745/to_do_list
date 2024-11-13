@@ -56,7 +56,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
       }
       );
     }
-    log("$upcomingTasks");
+    //log("$upcomingTasks");
 
   }
 
@@ -77,7 +77,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
       }
       );
     }
-    log("$upcomingTasks");
+    log("HEHEHEHEHEH\n$overdueTasks");
     setState(() {
       
     });
@@ -138,14 +138,14 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                 ),
                 ),
               SizedBox(height: height*0.008,),
-              if (upcomingTasks.isEmpty)...{
+              if (overdueTasks.isEmpty)...{
               Text("Nothing Here"),
             }else...{
               StatefulBuilder(builder: (BuildContext context , setState) {
               return ListView.builder(
               physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,
-              itemCount: upcomingTasks.length,
+              itemCount: overdueTasks.length,
               itemBuilder: (BuildContext context, int index) {                              
               return Column(
                 children: [
@@ -168,8 +168,8 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                                 IconButton(
                                   onPressed: () {
                                     setState(() {
-                                      deleteTask(upcomingTasks[index]['id'] as int);
-                                      upcomingTasks.removeAt(index);
+                                      deleteTask(overdueTasks[index]['id'] as int);
+                                      overdueTasks.removeAt(index);
                                     });
                                   }, 
                                   icon: const Icon(Icons.check_box_outline_blank_rounded)
@@ -183,7 +183,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                                         children: [
                                           Expanded(
                                             child: Text(
-                                            upcomingTasks[index]['Task_Name'] as String,
+                                            overdueTasks[index]['Task_Name'] as String,
                                             style: TextStyle(
                                               fontSize: height*0.025
                                             ),
@@ -194,11 +194,11 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                                             children: [
                                               const Icon(Icons.calendar_month_outlined),
                                               SizedBox(width: width*0.01,),
-                                              Text(upcomingTasks[index]['End_Date'] as String),
+                                              Text(overdueTasks[index]['End_Date'] as String),
                                               SizedBox(width: width*0.03,),
                                               const Icon(Icons.access_time_rounded),
                                               SizedBox(width: width*0.01,),
-                                              Text("${upcomingTasks[index]['End_Time'] as String} ${upcomingTasks[index]['Period_Of_Hour'] as String}")
+                                              Text("${overdueTasks[index]['End_Time'] as String} ${overdueTasks[index]['Period_Of_Hour'] as String}")
                                             ],
                                           )
                                         ],
