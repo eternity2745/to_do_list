@@ -24,13 +24,16 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
   String? upcEndTime = '';
   String? upcperiodOfHour = '';
 
+  String? overEndTime = '';
+
   String hourOfDay = "AM";
   TimeOfDay? time;
   String datePicked = "DD/MM/YY";
 
   String overdueTaskName = "Task Name";
 
-  List<Map<String, Object?>> upcomingTasks = [];   
+  List<Map<String, Object?>> upcomingTasks = [];
+  List<Map<String, Object?>> overdueTasks = [];
 
   bool persistState = true;
 
@@ -54,13 +57,30 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
       );
     }
     log("$upcomingTasks");
-    setState(() {
-      
-    });
+
   }
 
   Future getOverdueTasks() async {
-    
+    List<Map<String, Object?>> results = await db.getOverdueTasks();
+    for (var i in results) {
+    overEndTime = i['End_Time'] as String;
+    overEndTime = overEndTime!.substring(0, overEndTime!.length - 3);
+    int timeHour24 = int.parse(overEndTime!.substring(0, overEndTime!.length-3));
+    overEndTime = "${timeHour24 == 0 ? 12 : timeHour24 > 12 ? (timeHour24-12) < 10 ? '0${timeHour24-12}' : timeHour24-12 : timeHour24 < 10 ? '0$timeHour24' : timeHour24}:${overEndTime!.length == 5?overEndTime!.substring(3) : overEndTime!.substring(2)}";
+    overdueTasks.add({
+      "id":i["id"], 
+      "Task_Name":i["Task_Name"], 
+      "Created":i["Created"], 
+      "End_Date":i["End_Date"], 
+      "End_Time":overEndTime, 
+      "Period_Of_Hour":i["Period_Of_Hour"]
+      }
+      );
+    }
+    log("$upcomingTasks");
+    setState(() {
+      
+    });
   }
 
   Future deleteTask(int id) async {
@@ -71,6 +91,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
   @override
   void initState() {
     getUpcomingTasks();
+    getOverdueTasks();
     super.initState();
   }
 
@@ -117,65 +138,88 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                 ),
                 ),
               SizedBox(height: height*0.008,),
-              Container(
-                height: height*0.1,
-                width: width*0.9,
-                decoration: BoxDecoration(
-                  color: Colors.red.shade900,
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: height*0.008, horizontal: width*0.04),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            IconButton(
-                              onPressed: () {}, 
-                              icon: const Icon(Icons.check_box_outline_blank_rounded)
-                              ),
-                              SizedBox(width: width*0.01),
-                              Expanded(
-                                child: Padding(
-                                  padding: EdgeInsets.only(top: height*0.008, bottom: height*0.01),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                        overdueTaskName,
-                                        style: TextStyle(
-                                          fontSize: height*0.025
-                                        ),
-                                        overflow: TextOverflow.ellipsis,                         
-                                        ),
-                                      ),
-                                      Row(
-                                        children: [
-                                          const Icon(Icons.calendar_month_outlined),
-                                          SizedBox(width: width*0.01,),
-                                          Text("End Date"),
-                                          SizedBox(width: width*0.03,),
-                                          const Icon(Icons.access_time_rounded),
-                                          SizedBox(width: width*0.01,),
-                                          Text("End Time")
-                                        ],
-                                      )
-                                    ],
+              if (upcomingTasks.isEmpty)...{
+              Text("Nothing Here"),
+            }else...{
+              StatefulBuilder(builder: (BuildContext context , setState) {
+              return ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: upcomingTasks.length,
+              itemBuilder: (BuildContext context, int index) {                              
+              return Column(
+                children: [
+                  Container(
+                    height: height*0.1,
+                    width: width*0.9,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade900,
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: height*0.008, horizontal: width*0.04),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      deleteTask(upcomingTasks[index]['id'] as int);
+                                      upcomingTasks.removeAt(index);
+                                    });
+                                  }, 
+                                  icon: const Icon(Icons.check_box_outline_blank_rounded)
                                   ),
-                                ),
-                              )
-                          ],
-                        ),
-                      )
-                    ],
+                                  SizedBox(width: width*0.01),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: EdgeInsets.only(top: height*0.008, bottom: height*0.01),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                            upcomingTasks[index]['Task_Name'] as String,
+                                            style: TextStyle(
+                                              fontSize: height*0.025
+                                            ),
+                                            overflow: TextOverflow.ellipsis,                         
+                                            ),
+                                          ),
+                                          Row(
+                                            children: [
+                                              const Icon(Icons.calendar_month_outlined),
+                                              SizedBox(width: width*0.01,),
+                                              Text(upcomingTasks[index]['End_Date'] as String),
+                                              SizedBox(width: width*0.03,),
+                                              const Icon(Icons.access_time_rounded),
+                                              SizedBox(width: width*0.01,),
+                                              Text("${upcomingTasks[index]['End_Time'] as String} ${upcomingTasks[index]['Period_Of_Hour'] as String}")
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            SizedBox(height: height*0.03,),
+                  SizedBox(height: height*0.01,)
+                ],
+              );
+              }
+              );
+              }
+              )
+          },
             Text(
                 "Pending",
                 style: TextStyle(

@@ -18,11 +18,18 @@ class DatabaseService {
 
   static const tableName2 = "Completed";
   static const t2_columnName1 = "id";
-  static const t2_columnName2 = "Completed_Date";
-  static const t2_columnName3 = "Completed_Time";
+  static const t2_columnName2 = "Task_Name";
+  static const t2_columnName3 = "Completed_Date";
+  static const t2_columnName4 = "Completed_Time";
+  static const t2_columnName5 = "Period_Of_Hour";
 
   static const tableName3 = "Overdue";
   static const t3_columnName1 = "id"; 
+  static const t3_columnName2 = "Task_Name";
+  static const t3_columnName3 = "Created";
+  static const t3_columnName4 = "End_Date";
+  static const t3_columnName5 = "End_Time";
+  static const t3_columnName6 = "Period_Of_Hour";
   
   //singleton class
   static final DatabaseService _instance = DatabaseService._internal();
@@ -55,8 +62,10 @@ class DatabaseService {
       db.execute('''
               CREATE TABLE $tableName2 (
               $t2_columnName1 INT NOT NULL,
-              $t2_columnName2 DATE NOT NULL,
-              $t2_columnName3 TIME NOT NULL,
+              $t2_columnName2 VARCHAR(255) NOT NULL,
+              $t2_columnName3 DATE NOT NULL,
+              $t2_columnName4 TIME NOT NULL,
+              $t2_columnName5 CHAR(2) NOT NULL,
               FOREIGN KEY ($t2_columnName1) REFERENCES Upcoming($t1_columnName1)
               )
       ''');
@@ -64,6 +73,11 @@ class DatabaseService {
       db.execute(''' 
               CREATE TABLE $tableName3 (
               $t3_columnName1 INT NOT NULL,
+              $t3_columnName2 VARCHAR(255) NOT NULL,
+              $t3_columnName3 DATE NOT NULL,
+              $t3_columnName4 DATE NOT NULL,
+              $t3_columnName5 TIME NOT NULL,
+              $t3_columnName6 CHAR(2) NOT NULL
               FOREIGN KEY ($t3_columnName1) REFERENCES $tableName1($t1_columnName1)
                )
       ''');
