@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do_list/Database/database.dart';
 import 'package:to_do_list/Providers/navProvider.dart';
+import 'package:to_do_list/Screens/completedTasks.dart';
 
 // ignore: must_be_immutable
 class UpcomingTasks extends StatefulWidget {
@@ -88,6 +89,21 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
     log("DELETED");
   }
 
+  Future completeTasks(Map<String, Object?> details, int tableNumber) async {
+    log("DETAILS: $details");
+    DateTime dateTime = DateTime.now();
+    String periodOfHour = dateTime.hour < 12 ? "AM" : "PM";
+    String time = "${dateTime.hour < 10 && dateTime.hour > 0 ? '0${dateTime.hour}' : dateTime.hour == 0 ? '00' : dateTime.hour}:${dateTime.minute == 0 ? '00' : dateTime.minute < 10 ? '0${dateTime.minute}' : dateTime.minute}:00";
+    String date = "${dateTime.day}/${dateTime.month}/${dateTime.year}";
+    details['Completed_Time'] = time;
+    details['Completed_Date'] = date;
+    details['Completed_Period_Of_Hour'] = periodOfHour;
+
+    db.completeTask(details, tableNumber);
+
+    log("Completed");
+  }
+
   @override
   void initState() {
     getUpcomingTasks();
@@ -168,7 +184,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                                 IconButton(
                                   onPressed: () {
                                     setState(() {
-                                      deleteTask(overdueTasks[index]['id'] as int, 3);
+                                      completeTasks(overdueTasks[index], 3);
                                       overdueTasks.removeAt(index);
                                     });
                                   },
@@ -226,7 +242,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                   fontSize: height*0.04,
                   fontWeight: FontWeight.w500
                 ),
-                ),
+              ),
             SizedBox(height: height*0.008,),
             if (upcomingTasks.isEmpty)...{
               Text("Nothing Here"),
@@ -258,7 +274,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                                 IconButton(
                                   onPressed: () {
                                     setState(() {
-                                      deleteTask(upcomingTasks[index]['id'] as int, 1);
+                                      completeTasks(upcomingTasks[index], 1);
                                       upcomingTasks.removeAt(index);
                                     });
                                   }, 

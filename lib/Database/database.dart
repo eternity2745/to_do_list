@@ -21,7 +21,12 @@ class DatabaseService {
   static const t2_columnName2 = "Task_Name";
   static const t2_columnName3 = "Completed_Date";
   static const t2_columnName4 = "Completed_Time";
-  static const t2_columnName5 = "Period_Of_Hour";
+  static const t2_columnName5 = "Completed_Period_Of_Hour";
+  static const t2_columnName6 = "Created";
+  static const t2_columnName7 = "End_Date";
+  static const t2_columnName8 = "End_Time";
+  static const t2_columnName9 = "Period_Of_Hour";
+
 
   static const tableName3 = "Overdue";
   static const t3_columnName1 = "id"; 
@@ -61,12 +66,15 @@ class DatabaseService {
 
       db.execute('''
               CREATE TABLE $tableName2 (
-              $t2_columnName1 INT NOT NULL,
+              $t2_columnName1 INT PRIMARY KEY,
               $t2_columnName2 VARCHAR(255) NOT NULL,
               $t2_columnName3 DATE NOT NULL,
               $t2_columnName4 TIME NOT NULL,
               $t2_columnName5 CHAR(2) NOT NULL,
-              FOREIGN KEY ($t2_columnName1) REFERENCES Upcoming($t1_columnName1)
+              $t2_columnName6 DATE NOT NULL,
+              $t2_columnName7 DATE NOT NULL,
+              $t2_columnName8 TIME NOT NULL,
+              $t2_columnName9 CHAR(2) NOT NULL
               )
       ''');
 
@@ -142,6 +150,32 @@ class DatabaseService {
       whereArgs: [id]
     );
 
+  }
+
+  Future completeTask(Map<String, Object?> taskDetail, int tableNumber) async {
+    final db = await _instance.database;
+    log("TASKDETAIL\n$taskDetail");
+    await db!.insert(
+      tableName2, 
+      taskDetail,
+      conflictAlgorithm: ConflictAlgorithm.replace
+      );
+
+    await db.delete(
+      tableNumber == 1? tableName1 : tableName3,
+      where: "id = ?",
+      whereArgs: [taskDetail['id']]
+    );
+  }
+
+  Future getCompletedTasks() async {
+    final db = await _instance.database;
+
+    List<Map<String, Object?>> result = await db!.query(
+      tableName2,
+      orderBy: "$t2_columnName3, $t2_columnName4"
+    );
+    return result;
   }
 
   Future getStatistics() async {
