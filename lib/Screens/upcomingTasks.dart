@@ -153,7 +153,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                     height: height*0.1,
                     width: width*0.9,
                     decoration: BoxDecoration(
-                      color: Colors.grey.shade900,
+                      color: Colors.red.shade800,
                       borderRadius: BorderRadius.circular(14),
                     ),
                     child: Padding(
@@ -171,7 +171,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                                       deleteTask(overdueTasks[index]['id'] as int, 3);
                                       overdueTasks.removeAt(index);
                                     });
-                                  }, 
+                                  },
                                   icon: const Icon(Icons.check_box_outline_blank_rounded)
                                   ),
                                   SizedBox(width: width*0.01),

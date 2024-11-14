@@ -62,6 +62,8 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
 
   Future updateOverDueTasks() async {
     await db.updateOverDueTasks();
+    getUpcomingTask();
+    getStatistics();
   }
 
   Future getUpcomingTask() async {
@@ -128,8 +130,6 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
   void initState() {
     log("OKKK");
     updateOverDueTasks();
-    getUpcomingTask();
-    getStatistics();
     super.initState();
   }
 
