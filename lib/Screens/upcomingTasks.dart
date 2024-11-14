@@ -72,7 +72,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
       "Task_Name":i["Task_Name"], 
       "Created":i["Created"], 
       "End_Date":i["End_Date"], 
-      "End_Time":overEndTime, 
+      "End_Time":overEndTime,
       "Period_Of_Hour":i["Period_Of_Hour"]
       }
       );
@@ -83,8 +83,8 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
     });
   }
 
-  Future deleteTask(int id) async {
-    await db.deleteTask(id);
+  Future deleteTask(int id, int tableNumber) async {
+    await db.deleteTask(id, tableNumber);
     log("DELETED");
   }
 
@@ -168,7 +168,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                                 IconButton(
                                   onPressed: () {
                                     setState(() {
-                                      deleteTask(overdueTasks[index]['id'] as int);
+                                      deleteTask(overdueTasks[index]['id'] as int, 3);
                                       overdueTasks.removeAt(index);
                                     });
                                   }, 
@@ -258,7 +258,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                                 IconButton(
                                   onPressed: () {
                                     setState(() {
-                                      deleteTask(upcomingTasks[index]['id'] as int);
+                                      deleteTask(upcomingTasks[index]['id'] as int, 1);
                                       upcomingTasks.removeAt(index);
                                     });
                                   }, 

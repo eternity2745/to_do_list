@@ -133,11 +133,11 @@ class DatabaseService {
     }
   }
 
-  Future deleteTask(int id) async {
+  Future deleteTask(int id, int tableNumber) async {
     final db = await _instance.database;
 
     await db!.delete(
-      tableName1,
+      tableNumber == 1? tableName1 : tableNumber == 2? tableName2 : tableName3,
       where: "id = ?",
       whereArgs: [id]
     );
