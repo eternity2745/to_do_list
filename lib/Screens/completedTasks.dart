@@ -1,7 +1,9 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:to_do_list/Database/database.dart';
+import 'package:to_do_list/Providers/navProvider.dart';
 
 class CompletedTasks extends StatefulWidget {
   const CompletedTasks({super.key});
@@ -12,7 +14,7 @@ class CompletedTasks extends StatefulWidget {
 
 class _CompletedTasksState extends State<CompletedTasks> with AutomaticKeepAliveClientMixin {
 
-  bool persistState = false;
+  bool persistState = true;
 
   final db = DatabaseService();
 
@@ -57,7 +59,8 @@ class _CompletedTasksState extends State<CompletedTasks> with AutomaticKeepAlive
 
   @override
   Widget build(BuildContext context) {
-
+    persistState = Provider.of<NavigationProvider>(context).persistStateCompleted;
+    updateKeepAlive();
     if (wantKeepAlive) {
       super.build(context);
     }

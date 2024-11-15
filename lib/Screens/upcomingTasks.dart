@@ -185,6 +185,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                                     setState(() {
                                       completeTasks(overdueTasks[index], 3);
                                       overdueTasks.removeAt(index);
+                                      Provider.of<NavigationProvider>(context, listen: false).changePersistStateCompleted(false);
                                     });
                                   },
                                   icon: const Icon(Icons.check_box_outline_blank_rounded)
@@ -275,6 +276,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                                     setState(() {
                                       completeTasks(upcomingTasks[index], 1);
                                       upcomingTasks.removeAt(index);
+                                      Provider.of<NavigationProvider>(context, listen: false).changePersistStateCompleted(false);
                                     });
                                   }, 
                                   icon: const Icon(Icons.check_box_outline_blank_rounded)
