@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 class NavigationProvider with ChangeNotifier {
-  bool persistState = true;
+  bool persistStateUpcoming = true;
 
-  void changePersistState(bool state) {
-    persistState = state;
+  void changePersistStateUpcoming(bool state) {
+    persistStateUpcoming = state;
     notifyListeners();
   }
 

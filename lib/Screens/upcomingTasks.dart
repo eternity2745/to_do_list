@@ -121,7 +121,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
 
   @override
   Widget build(BuildContext context) {
-    persistState = Provider.of<NavigationProvider>(context).persistState;
+    persistState = Provider.of<NavigationProvider>(context).persistStateUpcoming;
     updateKeepAlive();
     if (wantKeepAlive) {
       super.build(context);

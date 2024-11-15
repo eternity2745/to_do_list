@@ -34,8 +34,8 @@ class _HomeScreenState extends State<HomeScreen> {
         barHeight: height*0.08,
         onTabChange: (clickedIndex) {
           selectedIndex = clickedIndex;
-          if (selectedIndex == 0 && Provider.of<NavigationProvider>(context, listen: false).persistState == false) {
-            Provider.of<NavigationProvider>(context, listen: false).changePersistState(true);
+          if (selectedIndex == 0 && Provider.of<NavigationProvider>(context, listen: false).persistStateUpcoming == false) {
+            Provider.of<NavigationProvider>(context, listen: false).changePersistStateUpcoming(true);
           }
           _pageController.jumpToPage(selectedIndex);// curve: Curves.linear, duration: Duration(milliseconds: 100));
           setState(() {

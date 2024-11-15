@@ -337,7 +337,7 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
                               onPressed: () {
                                 if (_taskNameTextController.text != '' && _dateTimeTextController.text != '' && _timeTextController.text != '') {
                                 addTask(_taskNameTextController.text, _dateTimeTextController.text, "${time!.hour < 10 && time!.hour > 0 ? '0${time!.hour}' : time!.hour == 0 ? '00' : time!.hour}:${time!.minute == 0 ? '00' : time!.minute < 10 ? '0${time!.minute}' : time!.minute}", hourOfDay);
-                                Provider.of<NavigationProvider>(context, listen: false).changePersistState(false);
+                                Provider.of<NavigationProvider>(context, listen: false).changePersistStateUpcoming(false);
                                 getUpcomingTask();
                                 getStatistics();
                                 setState(() 
