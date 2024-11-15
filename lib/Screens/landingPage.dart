@@ -37,7 +37,6 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
   int noUpcomingTasks = 0;
   int noOverdueTasks = 0;
 
-
   String? upcTaskName = '';
   String? upcEndDate = '';
   String? upcEndTime = '';
@@ -62,13 +61,14 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
 
   Future updateOverDueTasks() async {
     await db.updateOverDueTasks();
-    getUpcomingTask();
     getStatistics();
+    getUpcomingTask();
   }
 
   Future getUpcomingTask() async {
     List<Map<String, Object?>> result = await db.getUpcomingTask(limit: 1);
     log("$result");
+    if (result.isNotEmpty) {
     upcTaskName = result[0]['Task_Name'] as String;
     upcEndDate = result[0]['End_Date'] as String;
     upcEndTime = result[0]['End_Time'] as String;
@@ -79,6 +79,7 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
     setState(() {
       
     });
+    }
   }
 
   Future getTask(String id) async {
@@ -406,6 +407,19 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
                       ),
                       ),
                       SizedBox(height: height*0.02,),
+                      if (noUpcomingTasks == 0)...{
+                        Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          "   There Are No\nUpcoming Tasks",
+                          style: TextStyle(
+                            fontSize: height*0.025,
+                            fontWeight: FontWeight.w500
+                          ),
+                        //overflow: TextOverflow.ellipsis,
+                        )
+                        )
+                      }else...{                     
                       Expanded(
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -448,6 +462,7 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
                           ],
                         ),
                       )
+                      }
                     ],
                   ),
                 ),
@@ -515,14 +530,14 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
                   ),
                 ),
               ),
-            SizedBox(height: height*0.05,),
+            SizedBox(height: height*0.04,),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  height: height*0.17,
-                  width: width*0.5,
+                  height: height*0.224,
+                  width: width*0.47,
                   decoration: BoxDecoration(
                   color: Colors.grey.shade900,
                   borderRadius: BorderRadius.circular(14),
@@ -532,53 +547,89 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text("Completed", 
+                        Text("Overdue", 
                         style: TextStyle(
                           fontSize: height*0.03,
-                          fontWeight: FontWeight.bold
+                          fontWeight: FontWeight.w500
                         ),
                         ),
                         SizedBox(height: height*0.018,),
-                        Text("$noCompletedTasks",
+                        Text("$noOverdueTasks",
                         style: TextStyle(
-                          fontSize: height*0.05,
-                          fontWeight: FontWeight.bold
+                          fontSize: height*0.07,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.red.shade500
                         ),
                         )
                       ],
                     ),
                   ),
                 ),
-              SizedBox(width: width*0.01,),
-              Container(
-                  height: height*0.17,
-                  width: width*0.33,
-                  decoration: BoxDecoration(
-                  color: Colors.grey.shade900,
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: height*0.01, horizontal: width*0.01),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text("Pending", 
-                        style: TextStyle(
-                          fontSize: height*0.03,
-                          fontWeight: FontWeight.bold
-                        ),
-                        ),
-                        SizedBox(height: height*0.018,),
-                        Text("$noUpcomingTasks",
-                        style: TextStyle(
-                          fontSize: height*0.05,
-                          fontWeight: FontWeight.bold
-                        ),
-                        )
-                      ],
+              SizedBox(width: width*0.015,),
+              Column(
+                children: [
+                  Container(
+                      height: height*0.11,
+                      width: width*0.33,
+                      decoration: BoxDecoration(
+                      color: Colors.grey.shade900,
+                      borderRadius: BorderRadius.circular(14),
                     ),
-                  ),
-                )
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: height*0.01, horizontal: width*0.01),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text("Pending", 
+                            style: TextStyle(
+                              fontSize: height*0.02,
+                              fontWeight: FontWeight.w500
+                            ),
+                            ),
+                            SizedBox(height: height*0.001,),
+                            Text("$noUpcomingTasks",
+                            style: TextStyle(
+                              fontSize: height*0.04,
+                              fontWeight: FontWeight.bold
+                            ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  SizedBox(height: height*0.003,),
+                  Container(
+                      height: height*0.11,
+                      width: width*0.33,
+                      decoration: BoxDecoration(
+                      color: Colors.grey.shade900,
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: height*0.01, horizontal: width*0.01),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text("Completed", 
+                            style: TextStyle(
+                              fontSize: height*0.02,
+                              fontWeight: FontWeight.w500
+                            ),
+                            ),
+                            SizedBox(height: height*0.001,),
+                            Text("$noCompletedTasks",
+                            style: TextStyle(
+                              fontSize: height*0.04,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.green.shade500
+                            ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                ],
+              )
               ],
             ) 
             ],         
