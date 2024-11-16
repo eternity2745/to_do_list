@@ -114,9 +114,9 @@ LandingPage> with AutomaticKeepAliveClientMixin{
 
   Future getStatistics() async {
     List statistics = await db.getStatistics();
-    noUpcomingTasks = statistics[0];
-    noCompletedTasks = statistics[1];
-    noOverdueTasks = statistics[2];
+    Provider.of<NavigationProvider>(context, listen: false).changenoUpcomingTasks(statistics[0]);
+    Provider.of<NavigationProvider>(context, listen: false).changenoCompletedTasks(statistics[1]);
+    Provider.of<NavigationProvider>(context, listen: false).changenoOverdueTasks(statistics[2]);
     
     setState(() {
       
@@ -363,8 +363,7 @@ LandingPage> with AutomaticKeepAliveClientMixin{
                                 if (_taskNameTextController.text != '' && _dateTimeTextController.text != '' && _timeTextController.text != '') {
                                 addTask(_taskNameTextController.text, _dateTimeTextController.text, "${time!.hour < 10 && time!.hour > 0 ? '0${time!.hour}' : time!.hour == 0 ? '00' : time!.hour}:${time!.minute == 0 ? '00' : time!.minute < 10 ? '0${time!.minute}' : time!.minute}", hourOfDay);
                                 Provider.of<NavigationProvider>(context, listen: false).changePersistStateUpcoming(false);
-                                getUpcomingTask();
-                                getStatistics();
+                                updateOverDueTasks();
                                 setState(() 
                                 {
                                   _taskNameTextController.text = "";
@@ -431,7 +430,7 @@ LandingPage> with AutomaticKeepAliveClientMixin{
                       ),
                       ),
                       SizedBox(height: height*0.02,),
-                      if (noUpcomingTasks == 0)...{
+                      if (Provider.of<NavigationProvider>(context).noUpcomingTasks == 0)...{
                         Align(
                         alignment: Alignment.center,
                         child: Text(
@@ -511,7 +510,7 @@ LandingPage> with AutomaticKeepAliveClientMixin{
                       ),
                       ),
                       SizedBox(height: height*0.02,),
-                      if (noCompletedTasks == 0)...{
+                      if (Provider.of<NavigationProvider>(context).noCompletedTasks == 0)...{
                         Align(
                         alignment: Alignment.center,
                         child: Text(
@@ -594,12 +593,16 @@ LandingPage> with AutomaticKeepAliveClientMixin{
                         ),
                         ),
                         SizedBox(height: height*0.018,),
-                        Text("$noOverdueTasks",
-                        style: TextStyle(
-                          fontSize: height*0.07,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.red.shade500
-                        ),
+                        Consumer<NavigationProvider>(
+                          builder: (context, value, child) {
+                            return Text("${value.noOverdueTasks}",
+                            style: TextStyle(
+                            fontSize: height*0.07,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.red.shade500
+                          ),
+                          );
+                          },
                         )
                       ],
                     ),
@@ -627,11 +630,16 @@ LandingPage> with AutomaticKeepAliveClientMixin{
                             ),
                             ),
                             SizedBox(height: height*0.001,),
-                            Text("$noUpcomingTasks",
-                            style: TextStyle(
-                              fontSize: height*0.04,
-                              fontWeight: FontWeight.bold
-                            ),
+                            Consumer<NavigationProvider>(
+                              builder: (context, value, child) {
+                                return Text("${value.noUpcomingTasks}",
+                                style: TextStyle(
+                                fontSize: height*0.04,
+                                fontWeight: FontWeight.bold
+                              ),
+                              );
+                              },
+                              
                             )
                           ],
                         ),
@@ -657,12 +665,16 @@ LandingPage> with AutomaticKeepAliveClientMixin{
                             ),
                             ),
                             SizedBox(height: height*0.001,),
-                            Text("$noCompletedTasks",
-                            style: TextStyle(
-                              fontSize: height*0.04,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.green.shade500
-                            ),
+                            Consumer<NavigationProvider>(
+                              builder: (context, value, child) {
+                                return Text("${value.noCompletedTasks}",
+                                style: TextStyle(
+                                fontSize: height*0.04,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.green.shade500
+                              ),
+                              );
+                              },
                             )
                           ],
                         ),

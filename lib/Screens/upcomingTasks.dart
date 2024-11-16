@@ -193,7 +193,13 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                                     setState(() {
                                       completeTasks(overdueTasks[index], 3);
                                       overdueTasks.removeAt(index);
+                                      int noCompletedTasks = Provider.of<NavigationProvider>(context, listen: false).noCompletedTasks;
+                                      int noOverdueTasks = Provider.of<NavigationProvider>(context, listen: false).noOverdueTasks;
+                                      log("COMPLETED $noCompletedTasks");
+                                      log("OVERDUE $noOverdueTasks");
                                       Provider.of<NavigationProvider>(context, listen: false).changePersistStateCompleted(false);
+                                      Provider.of<NavigationProvider>(context, listen: false).changenoCompletedTasks(noCompletedTasks+1);
+                                      Provider.of<NavigationProvider>(context, listen: false).changenoOverdueTasks(noOverdueTasks-1);
                                     });
                                   },
                                   icon: const Icon(Icons.check_box_outline_blank_rounded)
@@ -285,7 +291,11 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                                     setState(() {
                                       completeTasks(upcomingTasks[index], 1);
                                       upcomingTasks.removeAt(index);
+                                      int noCompletedTasks = Provider.of<NavigationProvider>(context, listen: false).noCompletedTasks;
+                                      int noUpcomingTasks = Provider.of<NavigationProvider>(context, listen: false).noUpcomingTasks;
                                       Provider.of<NavigationProvider>(context, listen: false).changePersistStateCompleted(false);
+                                      Provider.of<NavigationProvider>(context, listen: false).changenoCompletedTasks(noCompletedTasks+1);
+                                      Provider.of<NavigationProvider>(context, listen: false).changenoUpcomingTasks(noUpcomingTasks-1);
                                     });
                                   }, 
                                   icon: const Icon(Icons.check_box_outline_blank_rounded)
