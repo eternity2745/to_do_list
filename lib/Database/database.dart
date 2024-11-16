@@ -262,7 +262,7 @@ class DatabaseService {
       }
       );
       log("2 Over");
+      return true;
     }
   }
-
 }

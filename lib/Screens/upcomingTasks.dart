@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do_list/Database/database.dart';
@@ -84,8 +83,10 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
   }
 
   Future updateOverDueTasks() async {
-    await db.updateOverDueTasks();
+    bool update = await db.updateOverDueTasks();
+    if (update) {
     getOverdueTasks();
+    }
   }
 
   Future deleteTask(int id, int tableNumber) async {
@@ -128,6 +129,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
   Widget build(BuildContext context) {
     persistState = Provider.of<NavigationProvider>(context).persistStateUpcoming;
     updateKeepAlive();
+    updateOverDueTasks();
     if (wantKeepAlive) {
       super.build(context);
     }
