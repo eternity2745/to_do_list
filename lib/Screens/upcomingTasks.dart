@@ -83,6 +83,11 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
     });
   }
 
+  Future updateOverDueTasks() async {
+    await db.updateOverDueTasks();
+    getOverdueTasks();
+  }
+
   Future deleteTask(int id, int tableNumber) async {
     await db.deleteTask(id, tableNumber);
     log("DELETED");
@@ -157,6 +162,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
               Text("Nothing Here"),
             }else...{
               StatefulBuilder(builder: (BuildContext context , setState) {
+              log("REBUILD OVERDUE BUILDER");
               return ListView.builder(
               physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,
@@ -246,8 +252,9 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
             SizedBox(height: height*0.008,),
             if (upcomingTasks.isEmpty)...{
               Text("Nothing Here"),
-            }else...{
+            }else...{          
               StatefulBuilder(builder: (BuildContext context , setState) {
+              log("REBUILD UPCOMING BUILDER");
               return ListView.builder(
               physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,

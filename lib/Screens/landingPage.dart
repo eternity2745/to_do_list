@@ -16,7 +16,8 @@ class LandingPage extends StatefulWidget {
   State<LandingPage> createState() => _LandingPage();
 }
 
-class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin{
+class _LandingPage extends State<
+LandingPage> with AutomaticKeepAliveClientMixin{
 
   DateTime? dateTime;
   final TextEditingController _dateTimeTextController = TextEditingController();
@@ -42,6 +43,12 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
   String? upcEndTime = '';
   String? upcperiodOfHour = '';
 
+  String? comTaskName = '';
+  String? comCompletedDate = '';
+  String? comCompletedTime = '';
+  String? comCompletedperiodOfHour = '';
+
+
   String hourOfDay = "AM";
   TimeOfDay? time;
   String datePicked = "DD/MM/YY";
@@ -63,6 +70,7 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
     await db.updateOverDueTasks();
     getStatistics();
     getUpcomingTask();
+    getLastCompleted();
   }
 
   Future getUpcomingTask() async {
@@ -81,6 +89,22 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
     });
     }
   }
+
+  Future getLastCompleted() async {
+    List<Map<String, Object?>> result = await db.getCompletedTasks(limit: 1);
+    if(result.isNotEmpty) {
+      comTaskName = result[0]['Task_Name'] as String;
+      comCompletedDate = result[0]['Completed_Date'] as String;
+      comCompletedTime = result[0]['Completed_Time'] as String;
+      comCompletedperiodOfHour = result[0]['Completed_Period_Of_Hour'] as String;
+      comCompletedTime = comCompletedTime!.substring(0, comCompletedTime!.length - 3);
+      int timeHour24 = int.parse(comCompletedTime!.substring(0, comCompletedTime!.length-3));
+      comCompletedTime = "${timeHour24 == 0 ? 12 : timeHour24 > 12 ? (timeHour24-12) < 10 ? '0${timeHour24-12}' : timeHour24-12 : timeHour24 < 10 ? '0$timeHour24' : timeHour24}:${comCompletedTime!.length == 5?comCompletedTime!.substring(3) : comCompletedTime!.substring(2)} $comCompletedperiodOfHour";
+      setState(() {
+        
+      });
+    }
+    }
 
   Future getTask(String id) async {
     log("GEtting task");
@@ -487,6 +511,19 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
                       ),
                       ),
                       SizedBox(height: height*0.02,),
+                      if (noCompletedTasks == 0)...{
+                        Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          "   There Are No\nCompleted Tasks",
+                          style: TextStyle(
+                            fontSize: height*0.025,
+                            fontWeight: FontWeight.w500
+                          ),
+                        //overflow: TextOverflow.ellipsis,
+                        )
+                        )
+                      }else...{
                       Expanded(
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -503,7 +540,7 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Expanded(
-                                        child: Text("Maths HW afwefeawf wawfawaf",
+                                        child: Text(comTaskName!,
                                         style: TextStyle(
                                           fontSize: height*0.025
                                         ),
@@ -513,10 +550,12 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
                                       Row(
                                         children: [
                                           const Icon(Icons.calendar_month_outlined),
-                                          const Text("Sun, 23rd May"),
+                                          SizedBox(width: width*0.01,),
+                                          Text(comCompletedDate!),
                                           SizedBox(width: width*0.03,),
                                           const Icon(Icons.access_time_rounded),
-                                          const Text("12:00 pm")
+                                          SizedBox(width: width*0.01,),
+                                          Text(comCompletedTime!)
                                         ],
                                       )
                                     ],
@@ -526,6 +565,7 @@ class _LandingPage extends State<LandingPage> with AutomaticKeepAliveClientMixin
                           ],
                         ),
                       )
+                      }
                     ],
                   ),
                 ),
