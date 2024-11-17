@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'package:animate_icons/animate_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do_list/Database/database.dart';
@@ -19,6 +20,8 @@ class UpcomingTasks extends StatefulWidget {
 class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveClientMixin{
 
   DateTime? dateTime;
+
+  AnimateIconController animateIconController = AnimateIconController(); 
 
   String? upcTaskName = '';
   String? upcEndDate = '';
@@ -53,7 +56,8 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
       "Created":i["Created"], 
       "End_Date":i["End_Date"], 
       "End_Time":upcEndTime, 
-      "Period_Of_Hour":i["Period_Of_Hour"]
+      "Period_Of_Hour":i["Period_Of_Hour"],
+      "Deleted" : false
       }
       );
     }
@@ -74,7 +78,8 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
       "Created":i["Created"], 
       "End_Date":i["End_Date"], 
       "End_Time":overEndTime,
-      "Period_Of_Hour":i["Period_Of_Hour"]
+      "Period_Of_Hour":i["Period_Of_Hour"],
+      "Deleted" : false
       }
       );
     }
@@ -288,7 +293,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                       height: height*0.1,
                       width: width*0.9,
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade900,
+                        color: upcomingTasks[index]["Deleted"] as bool? Colors.grey.shade900 : Colors.blueGrey.shade900,
                         borderRadius: BorderRadius.circular(14),
                       ),
                       child: Padding(
@@ -300,19 +305,27 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  IconButton(
-                                    onPressed: () {
-                                      
-                                        completeTasks(upcomingTasks[index], 1);
-                                        upcomingTasks.removeAt(index);
+                                  AnimateIcons(
+                                    controller: animateIconController,
+                                    startIcon: Icons.check_box_outline_blank_rounded,
+                                    endIcon: Icons.check_circle_outline,
+                                    startIconColor: Colors.white,
+                                    endIconColor: Colors.green,
+                                    duration: Duration(milliseconds: 500),
+                                    onStartIconPress: () {
+                                        //completeTasks(upcomingTasks[index], 1);
+                                        upcomingTasks[index]["Deleted"] = true;
                                         int noCompletedTasks = Provider.of<NavigationProvider>(context, listen: false).noCompletedTasks;
                                         int noUpcomingTasks = Provider.of<NavigationProvider>(context, listen: false).noUpcomingTasks;
                                         Provider.of<NavigationProvider>(context, listen: false).changePersistStateCompleted(false);
                                         Provider.of<NavigationProvider>(context, listen: false).changenoCompletedTasks(noCompletedTasks+1);
                                         Provider.of<NavigationProvider>(context, listen: false).changenoUpcomingTasks(noUpcomingTasks-1);
-                                      
+                                        Timer(Duration(seconds: 1), () {upcomingTasks.removeAt(index);});
+                                        return true;
                                     }, 
-                                    icon: const Icon(Icons.check_box_outline_blank_rounded)
+                                    onEndIconPress: () {
+                                      return false;
+                                    },
                                     ),
                                     SizedBox(width: width*0.01),
                                     Expanded(
@@ -322,10 +335,11 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Expanded(
-                                              child: Text(
+                                              child: Text(                       
                                               upcomingTasks[index]['Task_Name'] as String,
                                               style: TextStyle(
-                                                fontSize: height*0.025
+                                                fontSize: height*0.025,
+                                                decoration: upcomingTasks[index]["Deleted"] as bool ? TextDecoration.lineThrough : TextDecoration.none
                                               ),
                                               overflow: TextOverflow.ellipsis,                         
                                               ),
@@ -334,11 +348,17 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                                               children: [
                                                 const Icon(Icons.calendar_month_outlined),
                                                 SizedBox(width: width*0.01,),
-                                                Text(upcomingTasks[index]['End_Date'] as String),
+                                                Text(upcomingTasks[index]['End_Date'] as String, 
+                                                    style: TextStyle(
+                                                      decoration: upcomingTasks[index]["Deleted"] as bool ? TextDecoration.lineThrough : TextDecoration.none),
+                                                      ),
                                                 SizedBox(width: width*0.03,),
                                                 const Icon(Icons.access_time_rounded),
                                                 SizedBox(width: width*0.01,),
-                                                Text("${upcomingTasks[index]['End_Time'] as String} ${upcomingTasks[index]['Period_Of_Hour'] as String}")
+                                                Text("${upcomingTasks[index]['End_Time'] as String} ${upcomingTasks[index]['Period_Of_Hour'] as String}",
+                                                    style: TextStyle(
+                                                      decoration: upcomingTasks[index]["Deleted"] as bool ? TextDecoration.lineThrough : TextDecoration.none),
+                                                      ),
                                               ],
                                             )
                                           ],
