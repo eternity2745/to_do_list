@@ -50,12 +50,13 @@ LandingPage> with AutomaticKeepAliveClientMixin{
   String? comCompletedTime = '';
   String? comCompletedperiodOfHour = '';
 
+  late double height;
+  late double width;
+
 
   String hourOfDay = "AM";
   TimeOfDay? time;
   String datePicked = "DD/MM/YY";
-
-
 
   final db = DatabaseService();
 
@@ -157,6 +158,8 @@ LandingPage> with AutomaticKeepAliveClientMixin{
   void initState() {
     log("OKKK");
     updateOverDueTasks();
+    height = MediaQuery.of(context).size.height;
+    width = MediaQuery.of(context).size.width;
     super.initState();
   }
 
@@ -165,8 +168,6 @@ LandingPage> with AutomaticKeepAliveClientMixin{
     if (wantKeepAlive) {
      super.build(context);
    }
-    double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         forceMaterialTransparency: true,
