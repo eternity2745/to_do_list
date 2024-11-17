@@ -290,8 +290,9 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                                 IconButton(
                                   onPressed: () {
                                     
-                                      //completeTasks(upcomingTasks[index], 1);
-                                      upcomingTasks.elementAt(index)['Task_Name'] = "HEHE";
+                                      completeTasks(upcomingTasks[index], 1);
+                                      upcomingTasks.removeAt(index);
+                                      //upcomingTasks.elementAt(index)['Task_Name'] = "HEHE";
                                       int noCompletedTasks = Provider.of<NavigationProvider>(context, listen: false).noCompletedTasks;
                                       int noUpcomingTasks = Provider.of<NavigationProvider>(context, listen: false).noUpcomingTasks;
                                       Provider.of<NavigationProvider>(context, listen: false).changePersistStateCompleted(false);
