@@ -177,7 +177,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                 children: [
                   GestureDetector(
                     onTap: () {
-                      Provider.of<NavigationProvider>(context, listen: false).updateTaskDetails(upcomingTasks[index]['Task_Name'] as String, upcomingTasks[index]['Created'] as String, upcomingTasks[index]['End_Date'] as String, "${upcomingTasks[index]['End_Time']} ${upcomingTasks[index]['Period_Of_Hour']}", "No", "Yes");
+                      Provider.of<NavigationProvider>(context, listen: false).updateTaskDetails(overdueTasks[index]['Task_Name'] as String, overdueTasks[index]['Created'] as String, overdueTasks[index]['End_Date'] as String, "${overdueTasks[index]['End_Time']} ${overdueTasks[index]['Period_Of_Hour']}", "No", "Yes");
                       Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetails()));
                     },
                     child: Container(
