@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -288,15 +289,15 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                               children: [
                                 IconButton(
                                   onPressed: () {
-                                    setState(() {
-                                      completeTasks(upcomingTasks[index], 1);
-                                      upcomingTasks.removeAt(index);
+                                    
+                                      //completeTasks(upcomingTasks[index], 1);
+                                      upcomingTasks.elementAt(index)['Task_Name'] = "HEHE";
                                       int noCompletedTasks = Provider.of<NavigationProvider>(context, listen: false).noCompletedTasks;
                                       int noUpcomingTasks = Provider.of<NavigationProvider>(context, listen: false).noUpcomingTasks;
                                       Provider.of<NavigationProvider>(context, listen: false).changePersistStateCompleted(false);
                                       Provider.of<NavigationProvider>(context, listen: false).changenoCompletedTasks(noCompletedTasks+1);
                                       Provider.of<NavigationProvider>(context, listen: false).changenoUpcomingTasks(noUpcomingTasks-1);
-                                    });
+                                    
                                   }, 
                                   icon: const Icon(Icons.check_box_outline_blank_rounded)
                                   ),
