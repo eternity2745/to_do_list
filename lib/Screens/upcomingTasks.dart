@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:math' as mathematics;
 import 'package:animate_icons/animate_icons.dart';
+import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do_list/Database/database.dart';
@@ -22,6 +24,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
   DateTime? dateTime;
 
   AnimateIconController animateIconController = AnimateIconController(); 
+  final ConfettiController _controllerBottomCenter = ConfettiController(duration: Duration(milliseconds: 350));
 
   String? upcTaskName = '';
   String? upcEndDate = '';
@@ -125,6 +128,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
 
   @override
   void dispose() {
+
     super.dispose();
   }
 
@@ -305,28 +309,67 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  AnimateIcons(
-                                    controller: animateIconController,
-                                    startIcon: Icons.check_box_outline_blank_rounded,
-                                    endIcon: Icons.check_circle_outline,
-                                    startIconColor: Colors.white,
-                                    endIconColor: Colors.green,
-                                    duration: Duration(milliseconds: 500),
-                                    onStartIconPress: () {
-                                        //completeTasks(upcomingTasks[index], 1);
-                                        upcomingTasks[index]["Deleted"] = true;
+                                  IconButton(
+                                    icon: AnimatedSwitcher(
+                                        duration: const Duration(milliseconds: 350),
+                                        transitionBuilder: (child, anim) => RotationTransition(
+                                              turns: child.key == ValueKey('icon1')
+                                                  ? Tween<double>(begin: 1, end: 0).animate(anim)
+                                                  : Tween<double>(begin: 1, end: 1).animate(anim),
+                                              child: SizeTransition(sizeFactor: anim, child: child),
+                                            ),
+                                        child: upcomingTasks[index]["Deleted"] as bool
+                                            ? Icon(Icons.check_circle_outline_rounded, key: const ValueKey('icon1'))
+                                            : Icon(
+                                                Icons.check_box_outline_blank_rounded,
+                                                key: const ValueKey('icon2'),
+                                                
+                                              )),
+                                        onPressed: () {
+                                          upcomingTasks[index]["Deleted"] = true;
+                                        log("${_controllerBottomCenter.state}");
+                                        _controllerBottomCenter.play();
                                         int noCompletedTasks = Provider.of<NavigationProvider>(context, listen: false).noCompletedTasks;
                                         int noUpcomingTasks = Provider.of<NavigationProvider>(context, listen: false).noUpcomingTasks;
                                         Provider.of<NavigationProvider>(context, listen: false).changePersistStateCompleted(false);
                                         Provider.of<NavigationProvider>(context, listen: false).changenoCompletedTasks(noCompletedTasks+1);
                                         Provider.of<NavigationProvider>(context, listen: false).changenoUpcomingTasks(noUpcomingTasks-1);
-                                        Timer(Duration(seconds: 1), () {upcomingTasks.removeAt(index);});
-                                        return true;
-                                    }, 
-                                    onEndIconPress: () {
-                                      return false;
-                                    },
-                                    ),
+                                        Timer(Duration(milliseconds: 250), () {  
+                                            upcomingTasks.removeAt(index);
+                                            
+                                        });
+                                        Timer(Duration(milliseconds: 1000), () {
+                                          setState(() {
+                                            
+                                          });
+                                        });
+                                        
+                                        }
+                                  ),
+                                  // AnimateIcons(
+                                  //   controller: animateIconController,
+                                  //   startIcon: Icons.check_box_outline_blank_rounded,
+                                  //   endIcon: upcomingTasks[index]["Deleted"] as bool ? Icons.check_circle_outline_rounded : Icons.check_box_outline_blank_rounded,
+                                  //   startIconColor: Colors.white,
+                                  //   endIconColor: Colors.green,
+                                  //   duration: Duration(milliseconds: 500),
+                                  //   onStartIconPress: () {
+                                  //       //completeTasks(upcomingTasks[index], 1);
+                                  //       animateIconController.animateToStart();
+                                  //       upcomingTasks[index]["Deleted"] = true;
+                                  //       _controllerBottomCenter.play();
+                                  //       int noCompletedTasks = Provider.of<NavigationProvider>(context, listen: false).noCompletedTasks;
+                                  //       int noUpcomingTasks = Provider.of<NavigationProvider>(context, listen: false).noUpcomingTasks;
+                                  //       Provider.of<NavigationProvider>(context, listen: false).changePersistStateCompleted(false);
+                                  //       Provider.of<NavigationProvider>(context, listen: false).changenoCompletedTasks(noCompletedTasks+1);
+                                  //       Provider.of<NavigationProvider>(context, listen: false).changenoUpcomingTasks(noUpcomingTasks-1);
+                                  //       Timer(Duration(seconds: 1), () {upcomingTasks.removeAt(index);});
+                                  //       return true;
+                                  //   }, 
+                                  //   onEndIconPress: () {
+                                  //     return false;
+                                  //   },
+                                  //   ),
                                     SizedBox(width: width*0.01),
                                     Expanded(
                                       child: Padding(
@@ -380,8 +423,20 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
               );
               }
               )
-          }
-            ]
+          },
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: ConfettiWidget(
+              confettiController: _controllerBottomCenter,
+              blastDirectionality: BlastDirectionality.explosive,
+              emissionFrequency: 0.01,
+              numberOfParticles: 50,
+              maxBlastForce: 100,
+              minBlastForce: 80,
+              gravity: 0.3,
+            )
+          )
+        ]
       ),
     )
       )
