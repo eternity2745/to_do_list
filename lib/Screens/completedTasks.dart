@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do_list/Database/database.dart';
 import 'package:to_do_list/Providers/navProvider.dart';
+import 'package:to_do_list/Screens/taskDetails.dart';
 
 class CompletedTasks extends StatefulWidget {
   const CompletedTasks({super.key});
@@ -105,68 +106,74 @@ class _CompletedTasksState extends State<CompletedTasks> with AutomaticKeepAlive
                 log("ENTERED BUILDER: ${completedTasks.length}");                              
               return Column(
                 children: [
-                  Container(
-                    height: height*0.1,
-                    width: width*0.9,
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade900,
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: height*0.008, horizontal: width*0.04),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                IconButton(
-                                  onPressed: () {
-                                    // setState(() {
-                                    //   deleteTask(completedTasks[index]['id'] as int, 3);
-                                    //   completedTasks.removeAt(index);
-                                    // });
-                                  },
-                                  icon: const Icon(Icons.check_box_outline_blank_rounded)
-                                  ),
-                                  SizedBox(width: width*0.01),
-                                  Expanded(
-                                    child: Padding(
-                                      padding: EdgeInsets.only(top: height*0.008, bottom: height*0.01),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Expanded(
-                                            child: Text(
-                                            completedTasks[index]['Task_Name'] as String,
-                                            style: TextStyle(
-                                              fontSize: height*0.025
-                                            ),
-                                            overflow: TextOverflow.ellipsis,                         
-                                            ),
-                                          ),
-                                          Row(
-                                            children: [
-                                              const Icon(Icons.calendar_month_outlined),
-                                              SizedBox(width: width*0.01,),
-                                              Text(completedTasks[index]['Completed_Date'] as String),
-                                              SizedBox(width: width*0.03,),
-                                              const Icon(Icons.access_time_rounded),
-                                              SizedBox(width: width*0.01,),
-                                              Text("${completedTasks[index]['Completed_Time'] as String} ${completedTasks[index]['Completed_Period_Of_Hour'] as String}")
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  )
-                              ],
-                            ),
-                          )
-                        ],
+                  GestureDetector(
+                    onTap: () {
+                      Provider.of<NavigationProvider>(context, listen: false).updateTaskDetails(completedTasks[index]['Task_Name'] as String, completedTasks[index]['Created'] as String, completedTasks[index]['End_Date'] as String, "${completedTasks[index]['End_Time']} ${completedTasks[index]['Period_Of_Hour']}", "Yes", "No");
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetails()));
+                    },
+                    child: Container(
+                      height: height*0.1,
+                      width: width*0.9,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade900,
+                        borderRadius: BorderRadius.circular(14),
                       ),
-                
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: height*0.008, horizontal: width*0.04),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  IconButton(
+                                    onPressed: () {
+                                      // setState(() {
+                                      //   deleteTask(completedTasks[index]['id'] as int, 3);
+                                      //   completedTasks.removeAt(index);
+                                      // });
+                                    },
+                                    icon: const Icon(Icons.check_box_outline_blank_rounded)
+                                    ),
+                                    SizedBox(width: width*0.01),
+                                    Expanded(
+                                      child: Padding(
+                                        padding: EdgeInsets.only(top: height*0.008, bottom: height*0.01),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Expanded(
+                                              child: Text(
+                                              completedTasks[index]['Task_Name'] as String,
+                                              style: TextStyle(
+                                                fontSize: height*0.025
+                                              ),
+                                              overflow: TextOverflow.ellipsis,                         
+                                              ),
+                                            ),
+                                            Row(
+                                              children: [
+                                                const Icon(Icons.calendar_month_outlined),
+                                                SizedBox(width: width*0.01,),
+                                                Text(completedTasks[index]['Completed_Date'] as String),
+                                                SizedBox(width: width*0.03,),
+                                                const Icon(Icons.access_time_rounded),
+                                                SizedBox(width: width*0.01,),
+                                                Text("${completedTasks[index]['Completed_Time'] as String} ${completedTasks[index]['Completed_Period_Of_Hour'] as String}")
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    )
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                                    
+                      ),
                     ),
                   ),
                   SizedBox(height: height*0.01,)

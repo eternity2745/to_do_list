@@ -63,6 +63,7 @@ class _TaskDetailsState extends State<TaskDetails>{
               ),
               ListView(
                 shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
                 children: [
                   ListTile(
                     leading: Text(
