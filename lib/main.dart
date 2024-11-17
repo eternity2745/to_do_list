@@ -12,6 +12,11 @@ void main() {
       systemNavigationBarColor: Colors.black.withOpacity(0.002)
     ),
   );
+  SystemChrome.setPreferredOrientations(
+    [
+      DeviceOrientation.portraitUp
+    ]
+  );
   runApp(const MyApp());
 }
 class MyApp extends StatelessWidget {
