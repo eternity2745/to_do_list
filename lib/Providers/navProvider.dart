@@ -9,6 +9,23 @@ class NavigationProvider with ChangeNotifier {
   int noCompletedTasks = 0;
   int noUpcomingTasks = 0;
 
+  String taskName = "";
+  String createdDate = "";
+  String dueDate = "";
+  String dueTime = "";
+  String overdue = "";
+  String completed = "";
+
+  void updateTaskDetails(String taskName, String createdDate, String dueDate, String dueTime, String completed, String overdue) {
+    this.taskName = taskName;
+    this.createdDate = createdDate;
+    this.dueDate = dueDate;
+    this.dueTime = dueTime;
+    this.completed = completed;
+    this.overdue = overdue;
+    notifyListeners();
+  }
+
   void changenoOverdueTasks(int number) {
     noOverdueTasks = number;
     notifyListeners();

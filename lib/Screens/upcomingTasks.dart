@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do_list/Database/database.dart';
 import 'package:to_do_list/Providers/navProvider.dart';
+import 'package:to_do_list/Screens/taskDetails.dart';
 
 // ignore: must_be_immutable
 class UpcomingTasks extends StatefulWidget {
@@ -174,73 +175,79 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
               itemBuilder: (BuildContext context, int index) {                              
               return Column(
                 children: [
-                  Container(
-                    height: height*0.1,
-                    width: width*0.9,
-                    decoration: BoxDecoration(
-                      color: Colors.red.shade800,
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: height*0.008, horizontal: width*0.04),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      completeTasks(overdueTasks[index], 3);
-                                      overdueTasks.removeAt(index);
-                                      int noCompletedTasks = Provider.of<NavigationProvider>(context, listen: false).noCompletedTasks;
-                                      int noOverdueTasks = Provider.of<NavigationProvider>(context, listen: false).noOverdueTasks;
-                                      log("COMPLETED $noCompletedTasks");
-                                      log("OVERDUE $noOverdueTasks");
-                                      Provider.of<NavigationProvider>(context, listen: false).changePersistStateCompleted(false);
-                                      Provider.of<NavigationProvider>(context, listen: false).changenoCompletedTasks(noCompletedTasks+1);
-                                      Provider.of<NavigationProvider>(context, listen: false).changenoOverdueTasks(noOverdueTasks-1);
-                                    });
-                                  },
-                                  icon: const Icon(Icons.check_box_outline_blank_rounded)
-                                  ),
-                                  SizedBox(width: width*0.01),
-                                  Expanded(
-                                    child: Padding(
-                                      padding: EdgeInsets.only(top: height*0.008, bottom: height*0.01),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Expanded(
-                                            child: Text(
-                                            overdueTasks[index]['Task_Name'] as String,
-                                            style: TextStyle(
-                                              fontSize: height*0.025
-                                            ),
-                                            overflow: TextOverflow.ellipsis,                         
-                                            ),
-                                          ),
-                                          Row(
-                                            children: [
-                                              const Icon(Icons.calendar_month_outlined),
-                                              SizedBox(width: width*0.01,),
-                                              Text(overdueTasks[index]['End_Date'] as String),
-                                              SizedBox(width: width*0.03,),
-                                              const Icon(Icons.access_time_rounded),
-                                              SizedBox(width: width*0.01,),
-                                              Text("${overdueTasks[index]['End_Time'] as String} ${overdueTasks[index]['Period_Of_Hour'] as String}")
-                                            ],
-                                          )
-                                        ],
-                                      ),
+                  GestureDetector(
+                    onTap: () {
+                      Provider.of<NavigationProvider>(context, listen: false).updateTaskDetails(upcomingTasks[index]['Task_Name'] as String, upcomingTasks[index]['Created'] as String, upcomingTasks[index]['End_Date'] as String, "${upcomingTasks[index]['End_Time']} ${upcomingTasks[index]['Period_Of_Hour']}", "No", "Yes");
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetails()));
+                    },
+                    child: Container(
+                      height: height*0.1,
+                      width: width*0.9,
+                      decoration: BoxDecoration(
+                        color: Colors.red.shade800,
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: height*0.008, horizontal: width*0.04),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        completeTasks(overdueTasks[index], 3);
+                                        overdueTasks.removeAt(index);
+                                        int noCompletedTasks = Provider.of<NavigationProvider>(context, listen: false).noCompletedTasks;
+                                        int noOverdueTasks = Provider.of<NavigationProvider>(context, listen: false).noOverdueTasks;
+                                        log("COMPLETED $noCompletedTasks");
+                                        log("OVERDUE $noOverdueTasks");
+                                        Provider.of<NavigationProvider>(context, listen: false).changePersistStateCompleted(false);
+                                        Provider.of<NavigationProvider>(context, listen: false).changenoCompletedTasks(noCompletedTasks+1);
+                                        Provider.of<NavigationProvider>(context, listen: false).changenoOverdueTasks(noOverdueTasks-1);
+                                      });
+                                    },
+                                    icon: const Icon(Icons.check_box_outline_blank_rounded)
                                     ),
-                                  )
-                              ],
-                            ),
-                          )
-                        ],
+                                    SizedBox(width: width*0.01),
+                                    Expanded(
+                                      child: Padding(
+                                        padding: EdgeInsets.only(top: height*0.008, bottom: height*0.01),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Expanded(
+                                              child: Text(
+                                              overdueTasks[index]['Task_Name'] as String,
+                                              style: TextStyle(
+                                                fontSize: height*0.025
+                                              ),
+                                              overflow: TextOverflow.ellipsis,                         
+                                              ),
+                                            ),
+                                            Row(
+                                              children: [
+                                                const Icon(Icons.calendar_month_outlined),
+                                                SizedBox(width: width*0.01,),
+                                                Text(overdueTasks[index]['End_Date'] as String),
+                                                SizedBox(width: width*0.03,),
+                                                const Icon(Icons.access_time_rounded),
+                                                SizedBox(width: width*0.01,),
+                                                Text("${overdueTasks[index]['End_Time'] as String} ${overdueTasks[index]['Period_Of_Hour'] as String}")
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    )
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -272,71 +279,77 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
               itemBuilder: (BuildContext context, int index) {                              
               return Column(
                 children: [
-                  Container(
-                    height: height*0.1,
-                    width: width*0.9,
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade900,
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: height*0.008, horizontal: width*0.04),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                IconButton(
-                                  onPressed: () {
-                                    
-                                      completeTasks(upcomingTasks[index], 1);
-                                      upcomingTasks.removeAt(index);
-                                      int noCompletedTasks = Provider.of<NavigationProvider>(context, listen: false).noCompletedTasks;
-                                      int noUpcomingTasks = Provider.of<NavigationProvider>(context, listen: false).noUpcomingTasks;
-                                      Provider.of<NavigationProvider>(context, listen: false).changePersistStateCompleted(false);
-                                      Provider.of<NavigationProvider>(context, listen: false).changenoCompletedTasks(noCompletedTasks+1);
-                                      Provider.of<NavigationProvider>(context, listen: false).changenoUpcomingTasks(noUpcomingTasks-1);
-                                    
-                                  }, 
-                                  icon: const Icon(Icons.check_box_outline_blank_rounded)
-                                  ),
-                                  SizedBox(width: width*0.01),
-                                  Expanded(
-                                    child: Padding(
-                                      padding: EdgeInsets.only(top: height*0.008, bottom: height*0.01),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Expanded(
-                                            child: Text(
-                                            upcomingTasks[index]['Task_Name'] as String,
-                                            style: TextStyle(
-                                              fontSize: height*0.025
-                                            ),
-                                            overflow: TextOverflow.ellipsis,                         
-                                            ),
-                                          ),
-                                          Row(
-                                            children: [
-                                              const Icon(Icons.calendar_month_outlined),
-                                              SizedBox(width: width*0.01,),
-                                              Text(upcomingTasks[index]['End_Date'] as String),
-                                              SizedBox(width: width*0.03,),
-                                              const Icon(Icons.access_time_rounded),
-                                              SizedBox(width: width*0.01,),
-                                              Text("${upcomingTasks[index]['End_Time'] as String} ${upcomingTasks[index]['Period_Of_Hour'] as String}")
-                                            ],
-                                          )
-                                        ],
-                                      ),
+                  GestureDetector(
+                    onTap: () {
+                      Provider.of<NavigationProvider>(context, listen: false).updateTaskDetails(upcomingTasks[index]['Task_Name'] as String, upcomingTasks[index]['Created'] as String, upcomingTasks[index]['End_Date'] as String, "${upcomingTasks[index]['End_Time']} ${upcomingTasks[index]['Period_Of_Hour']}", "No", "No");
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetails()));
+                    },
+                    child: Container(
+                      height: height*0.1,
+                      width: width*0.9,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade900,
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: height*0.008, horizontal: width*0.04),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  IconButton(
+                                    onPressed: () {
+                                      
+                                        completeTasks(upcomingTasks[index], 1);
+                                        upcomingTasks.removeAt(index);
+                                        int noCompletedTasks = Provider.of<NavigationProvider>(context, listen: false).noCompletedTasks;
+                                        int noUpcomingTasks = Provider.of<NavigationProvider>(context, listen: false).noUpcomingTasks;
+                                        Provider.of<NavigationProvider>(context, listen: false).changePersistStateCompleted(false);
+                                        Provider.of<NavigationProvider>(context, listen: false).changenoCompletedTasks(noCompletedTasks+1);
+                                        Provider.of<NavigationProvider>(context, listen: false).changenoUpcomingTasks(noUpcomingTasks-1);
+                                      
+                                    }, 
+                                    icon: const Icon(Icons.check_box_outline_blank_rounded)
                                     ),
-                                  )
-                              ],
-                            ),
-                          )
-                        ],
+                                    SizedBox(width: width*0.01),
+                                    Expanded(
+                                      child: Padding(
+                                        padding: EdgeInsets.only(top: height*0.008, bottom: height*0.01),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Expanded(
+                                              child: Text(
+                                              upcomingTasks[index]['Task_Name'] as String,
+                                              style: TextStyle(
+                                                fontSize: height*0.025
+                                              ),
+                                              overflow: TextOverflow.ellipsis,                         
+                                              ),
+                                            ),
+                                            Row(
+                                              children: [
+                                                const Icon(Icons.calendar_month_outlined),
+                                                SizedBox(width: width*0.01,),
+                                                Text(upcomingTasks[index]['End_Date'] as String),
+                                                SizedBox(width: width*0.03,),
+                                                const Icon(Icons.access_time_rounded),
+                                                SizedBox(width: width*0.01,),
+                                                Text("${upcomingTasks[index]['End_Time'] as String} ${upcomingTasks[index]['Period_Of_Hour'] as String}")
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    )
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   ),
