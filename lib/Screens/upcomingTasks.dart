@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:developer';
-import 'dart:math' as mathematics;
 import 'package:animate_icons/animate_icons.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
@@ -114,9 +113,10 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
     details['Completed_Date'] = date;
     details['Completed_Period_Of_Hour'] = periodOfHour;
 
-    db.completeTask(details, tableNumber);
+    Map<String, Object?> detailsReplica = { for (var e in details.keys) e : details[e] };
 
-    log("Completed");
+    db.completeTask(detailsReplica, tableNumber);
+    Provider.of<NavigationProvider>(context, listen: false).updateCompletedTasks(details['id'] as int, details['Task_Name'] as String, details['Completed_Date'] as String, details['Completed_Time'] as String, details['Completed_Period_Of_Hour'] as String, details['Created'] as String, details['End_Date'] as String, details['End_Time'] as String, details['Period_Of_Hour'] as String);
   }
 
   @override
@@ -128,7 +128,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
 
   @override
   void dispose() {
-
+    _controllerBottomCenter.dispose();
     super.dispose();
   }
 
@@ -326,12 +326,13 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                                                 
                                               )),
                                         onPressed: () {
-                                          upcomingTasks[index]["Deleted"] = true;
+                                        upcomingTasks[index]["Deleted"] = true;
+                                        completeTasks(upcomingTasks[index], 1);
                                         log("${_controllerBottomCenter.state}");
                                         _controllerBottomCenter.play();
                                         int noCompletedTasks = Provider.of<NavigationProvider>(context, listen: false).noCompletedTasks;
                                         int noUpcomingTasks = Provider.of<NavigationProvider>(context, listen: false).noUpcomingTasks;
-                                        Provider.of<NavigationProvider>(context, listen: false).changePersistStateCompleted(false);
+                                        //Provider.of<NavigationProvider>(context, listen: false).changePersistStateCompleted(false);
                                         Provider.of<NavigationProvider>(context, listen: false).changenoCompletedTasks(noCompletedTasks+1);
                                         Provider.of<NavigationProvider>(context, listen: false).changenoUpcomingTasks(noUpcomingTasks-1);
                                         Timer(Duration(milliseconds: 250), () {  

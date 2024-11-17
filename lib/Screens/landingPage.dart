@@ -62,7 +62,6 @@ LandingPage> with AutomaticKeepAliveClientMixin{
   Future<void> addTask(String taskName, String date, String time, String periodOfHour) async {
     log(time);
     db.createTask(taskName, date, time, periodOfHour);
-    getTask("3443");
   }
 
   Future updateOverDueTasks() async {

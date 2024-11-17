@@ -16,6 +16,12 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int selectedIndex = 0;
   final PageController _pageController = PageController();
+
+  @override
+  void initState() {
+    Provider.of<NavigationProvider>(context, listen: false).getCompletedTasks();
+    super.initState();
+  }
   
   @override
   Widget build(BuildContext context) {

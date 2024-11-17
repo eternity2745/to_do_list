@@ -155,12 +155,12 @@ class DatabaseService {
   Future completeTask(Map<String, Object?> taskDetail, int tableNumber) async {
     final db = await _instance.database;
     log("TASKDETAIL\n$taskDetail");
+    taskDetail.remove("Deleted");
     await db!.insert(
       tableName2, 
       taskDetail,
       conflictAlgorithm: ConflictAlgorithm.replace
       );
-
     await db.delete(
       tableNumber == 1? tableName1 : tableName3,
       where: "id = ?",
