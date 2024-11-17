@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do_list/Providers/navProvider.dart';
 import 'package:to_do_list/Screens/home.dart';
+import 'package:to_do_list/Screens/taskDetails.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple, brightness: Brightness.dark),
           useMaterial3: true,
         ),
-        home: const HomeScreen(),
+        home: const TaskDetails(),
       ),
     );
   }

@@ -78,6 +78,7 @@ class _CompletedTasksState extends State<CompletedTasks> with AutomaticKeepAlive
             ),
         ),
       ),
+        extendBody: true,
         body: SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.symmetric(vertical: height*0.03, horizontal: width*0.08),
