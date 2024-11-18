@@ -20,6 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     Provider.of<NavigationProvider>(context, listen: false).getCompletedTasks();
+    Provider.of<NavigationProvider>(context, listen: false).getUpcomingTasks();
     super.initState();
   }
   

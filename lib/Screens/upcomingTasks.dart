@@ -121,7 +121,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
 
   @override
   void initState() {
-    getUpcomingTasks();
+    //getUpcomingTasks();
     getOverdueTasks();
     super.initState();
   }
@@ -276,151 +276,132 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                 ),
               ),
             SizedBox(height: height*0.008,),
-            if (upcomingTasks.isEmpty)...{
+            if (Provider.of<NavigationProvider>(context, listen: false).upcomingTasks.isEmpty)...{
               Text("Nothing Here"),
             }else...{          
               StatefulBuilder(builder: (BuildContext context , setState) {
               log("REBUILD UPCOMING BUILDER");
-              return ListView.builder(
-              physics: NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: upcomingTasks.length,
-              itemBuilder: (BuildContext context, int index) {                              
-              return Column(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Provider.of<NavigationProvider>(context, listen: false).updateTaskDetails(upcomingTasks[index]['Task_Name'] as String, upcomingTasks[index]['Created'] as String, upcomingTasks[index]['End_Date'] as String, "${upcomingTasks[index]['End_Time']} ${upcomingTasks[index]['Period_Of_Hour']}", "No", "No");
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetails()));
-                    },
-                    child: Container(
-                      height: height*0.1,
-                      width: width*0.9,
-                      decoration: BoxDecoration(
-                        color: upcomingTasks[index]["Deleted"] as bool? Colors.grey.shade900 : Colors.blueGrey.shade900,
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: height*0.008, horizontal: width*0.04),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  IconButton(
-                                    icon: AnimatedSwitcher(
-                                        duration: const Duration(milliseconds: 350),
-                                        transitionBuilder: (child, anim) => RotationTransition(
-                                              turns: child.key == ValueKey('icon1')
-                                                  ? Tween<double>(begin: 1, end: 0).animate(anim)
-                                                  : Tween<double>(begin: 1, end: 1).animate(anim),
-                                              child: SizeTransition(sizeFactor: anim, child: child),
-                                            ),
-                                        child: upcomingTasks[index]["Deleted"] as bool
-                                            ? Icon(Icons.check_circle_outline_rounded, key: const ValueKey('icon1'))
-                                            : Icon(
-                                                Icons.check_box_outline_blank_rounded,
-                                                key: const ValueKey('icon2'),
-                                                
-                                              )),
-                                        onPressed: () {
-                                        upcomingTasks[index]["Deleted"] = true;
-                                        completeTasks(upcomingTasks[index], 1);
-                                        log("${_controllerBottomCenter.state}");
-                                        _controllerBottomCenter.play();
-                                        int noCompletedTasks = Provider.of<NavigationProvider>(context, listen: false).noCompletedTasks;
-                                        int noUpcomingTasks = Provider.of<NavigationProvider>(context, listen: false).noUpcomingTasks;
-                                        //Provider.of<NavigationProvider>(context, listen: false).changePersistStateCompleted(false);
-                                        Provider.of<NavigationProvider>(context, listen: false).changenoCompletedTasks(noCompletedTasks+1);
-                                        Provider.of<NavigationProvider>(context, listen: false).changenoUpcomingTasks(noUpcomingTasks-1);
-                                        Timer(Duration(milliseconds: 250), () {  
-                                            upcomingTasks.removeAt(index);
-                                            
-                                        });
-                                        Timer(Duration(milliseconds: 1000), () {
-                                          setState(() {
-                                            
+              return Consumer<NavigationProvider>(
+                builder: (context, value, child) {
+                  log("${value.upcomingTasks.length}");
+                return ListView.builder(
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: value.upcomingTasks.length,
+                itemBuilder: (BuildContext context, int index) {                              
+                return Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Provider.of<NavigationProvider>(context, listen: false).updateTaskDetails(value.upcomingTasks[index]['Task_Name'] as String, value.upcomingTasks[index]['Created'] as String, value.upcomingTasks[index]['End_Date'] as String, "${value.upcomingTasks[index]['End_Time']} ${value.upcomingTasks[index]['Period_Of_Hour']}", "No", "No");
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetails()));
+                      },
+                      child: Container(
+                        height: height*0.1,
+                        width: width*0.9,
+                        decoration: BoxDecoration(
+                          color: value.upcomingTasks[index]["Deleted"] as bool? Colors.grey.shade900 : Colors.blueGrey.shade900,
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(vertical: height*0.008, horizontal: width*0.04),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    IconButton(
+                                      icon: AnimatedSwitcher(
+                                          duration: const Duration(milliseconds: 350),
+                                          transitionBuilder: (child, anim) => RotationTransition(
+                                                turns: child.key == ValueKey('icon1')
+                                                    ? Tween<double>(begin: 1, end: 0).animate(anim)
+                                                    : Tween<double>(begin: 1, end: 1).animate(anim),
+                                                child: SizeTransition(sizeFactor: anim, child: child),
+                                              ),
+                                          child: value.upcomingTasks[index]["Deleted"] as bool
+                                              ? Icon(Icons.check_circle_outline_rounded, key: const ValueKey('icon1'))
+                                              : Icon(
+                                                  Icons.check_box_outline_blank_rounded,
+                                                  key: const ValueKey('icon2'),
+                                                  
+                                                )),
+                                          onPressed: () {
+                                          value.upcomingTasks[index]["Deleted"] = true;
+                                          completeTasks(value.upcomingTasks[index], 1);
+                                          log("${_controllerBottomCenter.state}");
+                                          _controllerBottomCenter.play();
+                                          int noCompletedTasks = Provider.of<NavigationProvider>(context, listen: false).noCompletedTasks;
+                                          int noUpcomingTasks = Provider.of<NavigationProvider>(context, listen: false).noUpcomingTasks;
+                                          //Provider.of<NavigationProvider>(context, listen: false).changePersistStateCompleted(false);
+                                          Provider.of<NavigationProvider>(context, listen: false).changenoCompletedTasks(noCompletedTasks+1);
+                                          Provider.of<NavigationProvider>(context, listen: false).changenoUpcomingTasks(noUpcomingTasks-1);
+                                          Timer(Duration(milliseconds: 250), () {  
+                                              value.upcomingTasks.removeAt(index);
+                                              
                                           });
-                                        });
-                                        
-                                        }
-                                  ),
-                                  // AnimateIcons(
-                                  //   controller: animateIconController,
-                                  //   startIcon: Icons.check_box_outline_blank_rounded,
-                                  //   endIcon: upcomingTasks[index]["Deleted"] as bool ? Icons.check_circle_outline_rounded : Icons.check_box_outline_blank_rounded,
-                                  //   startIconColor: Colors.white,
-                                  //   endIconColor: Colors.green,
-                                  //   duration: Duration(milliseconds: 500),
-                                  //   onStartIconPress: () {
-                                  //       //completeTasks(upcomingTasks[index], 1);
-                                  //       animateIconController.animateToStart();
-                                  //       upcomingTasks[index]["Deleted"] = true;
-                                  //       _controllerBottomCenter.play();
-                                  //       int noCompletedTasks = Provider.of<NavigationProvider>(context, listen: false).noCompletedTasks;
-                                  //       int noUpcomingTasks = Provider.of<NavigationProvider>(context, listen: false).noUpcomingTasks;
-                                  //       Provider.of<NavigationProvider>(context, listen: false).changePersistStateCompleted(false);
-                                  //       Provider.of<NavigationProvider>(context, listen: false).changenoCompletedTasks(noCompletedTasks+1);
-                                  //       Provider.of<NavigationProvider>(context, listen: false).changenoUpcomingTasks(noUpcomingTasks-1);
-                                  //       Timer(Duration(seconds: 1), () {upcomingTasks.removeAt(index);});
-                                  //       return true;
-                                  //   }, 
-                                  //   onEndIconPress: () {
-                                  //     return false;
-                                  //   },
-                                  //   ),
-                                    SizedBox(width: width*0.01),
-                                    Expanded(
-                                      child: Padding(
-                                        padding: EdgeInsets.only(top: height*0.008, bottom: height*0.01),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Expanded(
-                                              child: Text(                       
-                                              upcomingTasks[index]['Task_Name'] as String,
-                                              style: TextStyle(
-                                                fontSize: height*0.025,
-                                                decoration: upcomingTasks[index]["Deleted"] as bool ? TextDecoration.lineThrough : TextDecoration.none
+                                          Timer(Duration(milliseconds: 1000), () {
+                                            setState(() {
+                                              
+                                            });
+                                          });
+                                          
+                                          }
+                                    ),
+                                      SizedBox(width: width*0.01),
+                                      Expanded(
+                                        child: Padding(
+                                          padding: EdgeInsets.only(top: height*0.008, bottom: height*0.01),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Expanded(
+                                                child: Text(                       
+                                                value.upcomingTasks[index]['Task_Name'] as String,
+                                                style: TextStyle(
+                                                  fontSize: height*0.025,
+                                                  decoration: value.upcomingTasks[index]["Deleted"] as bool ? TextDecoration.lineThrough : TextDecoration.none
+                                                ),
+                                                overflow: TextOverflow.ellipsis,                         
+                                                ),
                                               ),
-                                              overflow: TextOverflow.ellipsis,                         
-                                              ),
-                                            ),
-                                            Row(
-                                              children: [
-                                                const Icon(Icons.calendar_month_outlined),
-                                                SizedBox(width: width*0.01,),
-                                                Text(upcomingTasks[index]['End_Date'] as String, 
-                                                    style: TextStyle(
-                                                      decoration: upcomingTasks[index]["Deleted"] as bool ? TextDecoration.lineThrough : TextDecoration.none),
-                                                      ),
-                                                SizedBox(width: width*0.03,),
-                                                const Icon(Icons.access_time_rounded),
-                                                SizedBox(width: width*0.01,),
-                                                Text("${upcomingTasks[index]['End_Time'] as String} ${upcomingTasks[index]['Period_Of_Hour'] as String}",
-                                                    style: TextStyle(
-                                                      decoration: upcomingTasks[index]["Deleted"] as bool ? TextDecoration.lineThrough : TextDecoration.none),
-                                                      ),
-                                              ],
-                                            )
-                                          ],
+                                              Row(
+                                                children: [
+                                                  const Icon(Icons.calendar_month_outlined),
+                                                  SizedBox(width: width*0.01,),
+                                                  Text(value.upcomingTasks[index]['End_Date'] as String, 
+                                                      style: TextStyle(
+                                                        decoration: value.upcomingTasks[index]["Deleted"] as bool ? TextDecoration.lineThrough : TextDecoration.none),
+                                                        ),
+                                                  SizedBox(width: width*0.03,),
+                                                  const Icon(Icons.access_time_rounded),
+                                                  SizedBox(width: width*0.01,),
+                                                  Text("${value.upcomingTasks[index]['End_Time'] as String} ${value.upcomingTasks[index]['Period_Of_Hour'] as String}",
+                                                      style: TextStyle(
+                                                        decoration: value.upcomingTasks[index]["Deleted"] as bool ? TextDecoration.lineThrough : TextDecoration.none),
+                                                        ),
+                                                ],
+                                              )
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                    )
-                                ],
-                              ),
-                            )
-                          ],
+                                      )
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: height*0.01,)
-                ],
-              );
-              }
+                    SizedBox(height: height*0.01,)
+                  ],
+                );
+                }
+                );
+                }
               );
               }
               )

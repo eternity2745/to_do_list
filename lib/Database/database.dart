@@ -235,17 +235,33 @@ class DatabaseService {
     if (upcomingTasks.isEmpty) {
       return false;
     }else{
-      Map<String, Object?> values = {};
+      List<Map<String, Object?>> values = [];
       List ids = [];
-      for (var i in upcomingTasks) {
-        values.addEntries(i.entries);
-        ids.add(i['id']);
+      if (upcomingTasks.length == 1) {
+        for (var i in upcomingTasks) {
+          values.add(i);
+          ids.add(i['id']);
+          await db.insert(
+          tableName3,
+          i,
+          conflictAlgorithm: ConflictAlgorithm.replace
+          );
+        }
+      }else{
+        await db.transaction((txn) async {
+          final batch = txn.batch();
+          for (var i in upcomingTasks) {
+            values.add(i);
+            ids.add(i['id']);
+            batch.insert(
+            tableName3,
+            i,
+            conflictAlgorithm: ConflictAlgorithm.replace
+            );
+        }
       }
-      await db.insert(
-        tableName3,
-        values,
-        conflictAlgorithm: ConflictAlgorithm.replace
-        );
+      );
+    }
       
       log("1 Over");
 
@@ -262,7 +278,7 @@ class DatabaseService {
       }
       );
       log("2 Over");
-      return true;
+      return values;
     }
   }
 }
