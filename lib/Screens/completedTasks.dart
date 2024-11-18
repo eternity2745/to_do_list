@@ -101,7 +101,6 @@ class _CompletedTasksState extends State<CompletedTasks> with AutomaticKeepAlive
                 log("ENTERED STATEFUL");
               return Consumer<NavigationProvider>(
                 builder: (context, value, child) {
-                log("${value.completedTasks}");
                 return ListView.builder(
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,

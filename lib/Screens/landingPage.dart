@@ -65,7 +65,7 @@ LandingPage> with AutomaticKeepAliveClientMixin{
   }
 
   Future updateOverDueTasks() async {
-    await db.updateOverDueTasks();
+    Provider.of<NavigationProvider>(context, listen: false).updateOverDueTasks();
     getStatistics();
     getUpcomingTask();
     getLastCompleted();
@@ -82,6 +82,8 @@ LandingPage> with AutomaticKeepAliveClientMixin{
     upcEndTime = upcEndTime!.substring(0, upcEndTime!.length - 3);
     int timeHour24 = int.parse(upcEndTime!.substring(0, upcEndTime!.length-3));
     upcEndTime = "${timeHour24 == 0 ? 12 : timeHour24 > 12 ? (timeHour24-12) < 10 ? '0${timeHour24-12}' : timeHour24-12 : timeHour24 < 10 ? '0$timeHour24' : timeHour24}:${upcEndTime!.length == 5?upcEndTime!.substring(3) : upcEndTime!.substring(2)} $upcperiodOfHour";
+
+    Provider.of<NavigationProvider>(context, listen: false).updateUpcomingTasks(result[0]['id'] as int, result[0]['Task_Name'] as String, result[0]['Created'] as String, result[0]['End_Date'] as String, upcEndTime as String, result[0]['Period_Of_Hour'] as String);
     setState(() {
       
     });
@@ -360,7 +362,7 @@ LandingPage> with AutomaticKeepAliveClientMixin{
                               onPressed: () {
                                 if (_taskNameTextController.text != '' && _dateTimeTextController.text != '' && _timeTextController.text != '') {
                                 addTask(_taskNameTextController.text, _dateTimeTextController.text, "${time!.hour < 10 && time!.hour > 0 ? '0${time!.hour}' : time!.hour == 0 ? '00' : time!.hour}:${time!.minute == 0 ? '00' : time!.minute < 10 ? '0${time!.minute}' : time!.minute}", hourOfDay);
-                                Provider.of<NavigationProvider>(context, listen: false).changePersistStateUpcoming(false);
+                                Provider.of<NavigationProvider>(context, listen: false).changePersistStateUpcoming(true);
                                 updateOverDueTasks();
                                 setState(() 
                                 {

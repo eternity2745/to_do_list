@@ -222,20 +222,31 @@ class DatabaseService {
     
     DateTime dateTime = DateTime.now();
     String formattedDate = "${dateTime.day}/${dateTime.month}/${dateTime.year}";
-    String formattedTime = "${dateTime.hour}:${dateTime.minute}:${dateTime.second}";
+    //String formattedDate = '${dateTime.day}';
+    String hour = dateTime.hour < 10 ? '0${dateTime.hour}' : '${dateTime.hour}';
+    String minutes = dateTime.minute < 10 ? '0${dateTime.minute}' : '${dateTime.minute}';
+    String seconds = dateTime.second < 10 ? '0${dateTime.second}' : '${dateTime.second}';
+    String formattedTime = "$hour:$minutes:$seconds";
+    log(formattedTime);
+    log(formattedDate);
 
     var upcomingTasks = await db!.query(
       tableName1,
-      where: "$t1_columnName4 <= ? AND $t1_columnName5 <= ?",
+      where: "$t1_columnName4 <= ? AND $t1_columnName5 <= TIME(?)",
       whereArgs: [formattedDate, formattedTime],
       orderBy: "$t1_columnName4, $t1_columnName5"
     );
-    log("$upcomingTasks");
-
+    // var upcomingTasks = await db!.query(
+    //   tableName1,
+    //   where: "$t1_columnName5 <= TIME(?)",
+    //   whereArgs: [formattedTime],
+    //   orderBy: t1_columnName5
+    // );
+    log("UPCOMING TASKS $upcomingTasks");
+    List<Map<String, Object?>> values = [];
     if (upcomingTasks.isEmpty) {
-      return false;
+      return values;
     }else{
-      List<Map<String, Object?>> values = [];
       List ids = [];
       if (upcomingTasks.length == 1) {
         for (var i in upcomingTasks) {

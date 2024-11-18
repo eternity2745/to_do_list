@@ -122,7 +122,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
   @override
   void initState() {
     //getUpcomingTasks();
-    getOverdueTasks();
+    //getOverdueTasks();
     super.initState();
   }
 
@@ -140,7 +140,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
   Widget build(BuildContext context) {
     persistState = Provider.of<NavigationProvider>(context).persistStateUpcoming;
     updateKeepAlive();
-    updateOverDueTasks();
+    Provider.of<NavigationProvider>(context, listen: false).updateOverDueTasks();
     if (wantKeepAlive) {
       super.build(context);
     }
@@ -172,98 +172,102 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                 ),
                 ),
               SizedBox(height: height*0.008,),
-              if (overdueTasks.isEmpty)...{
+              if (Provider.of<NavigationProvider>(context, listen: false).overdueTasks.isEmpty)...{
               Text("Nothing Here"),
             }else...{
               StatefulBuilder(builder: (BuildContext context , setState) {
               log("REBUILD OVERDUE BUILDER");
-              return ListView.builder(
-              physics: NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: overdueTasks.length,
-              itemBuilder: (BuildContext context, int index) {                              
-              return Column(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Provider.of<NavigationProvider>(context, listen: false).updateTaskDetails(overdueTasks[index]['Task_Name'] as String, overdueTasks[index]['Created'] as String, overdueTasks[index]['End_Date'] as String, "${overdueTasks[index]['End_Time']} ${overdueTasks[index]['Period_Of_Hour']}", "No", "Yes");
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetails()));
-                    },
-                    child: Container(
-                      height: height*0.1,
-                      width: width*0.9,
-                      decoration: BoxDecoration(
-                        color: Colors.red.shade800,
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: height*0.008, horizontal: width*0.04),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        completeTasks(overdueTasks[index], 3);
-                                        overdueTasks.removeAt(index);
-                                        int noCompletedTasks = Provider.of<NavigationProvider>(context, listen: false).noCompletedTasks;
-                                        int noOverdueTasks = Provider.of<NavigationProvider>(context, listen: false).noOverdueTasks;
-                                        log("COMPLETED $noCompletedTasks");
-                                        log("OVERDUE $noOverdueTasks");
-                                        Provider.of<NavigationProvider>(context, listen: false).changePersistStateCompleted(false);
-                                        Provider.of<NavigationProvider>(context, listen: false).changenoCompletedTasks(noCompletedTasks+1);
-                                        Provider.of<NavigationProvider>(context, listen: false).changenoOverdueTasks(noOverdueTasks-1);
-                                      });
-                                    },
-                                    icon: const Icon(Icons.check_box_outline_blank_rounded)
-                                    ),
-                                    SizedBox(width: width*0.01),
-                                    Expanded(
-                                      child: Padding(
-                                        padding: EdgeInsets.only(top: height*0.008, bottom: height*0.01),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Expanded(
-                                              child: Text(
-                                              overdueTasks[index]['Task_Name'] as String,
-                                              style: TextStyle(
-                                                fontSize: height*0.025
-                                              ),
-                                              overflow: TextOverflow.ellipsis,                         
-                                              ),
-                                            ),
-                                            Row(
-                                              children: [
-                                                const Icon(Icons.calendar_month_outlined),
-                                                SizedBox(width: width*0.01,),
-                                                Text(overdueTasks[index]['End_Date'] as String),
-                                                SizedBox(width: width*0.03,),
-                                                const Icon(Icons.access_time_rounded),
-                                                SizedBox(width: width*0.01,),
-                                                Text("${overdueTasks[index]['End_Time'] as String} ${overdueTasks[index]['Period_Of_Hour'] as String}")
-                                              ],
-                                            )
-                                          ],
-                                        ),
+              return Consumer<NavigationProvider>(
+                builder: (context, value, child) {
+                return ListView.builder(
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: value.overdueTasks.length,
+                itemBuilder: (BuildContext context, int index) {                              
+                return Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Provider.of<NavigationProvider>(context, listen: false).updateTaskDetails(value.overdueTasks[index]['Task_Name'] as String, value.overdueTasks[index]['Created'] as String, value.overdueTasks[index]['End_Date'] as String, "${value.overdueTasks[index]['End_Time']} ${value.overdueTasks[index]['Period_Of_Hour']}", "No", "Yes");
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetails()));
+                      },
+                      child: Container(
+                        height: height*0.1,
+                        width: width*0.9,
+                        decoration: BoxDecoration(
+                          color: Colors.red.shade800,
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(vertical: height*0.008, horizontal: width*0.04),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    IconButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          completeTasks(value.overdueTasks[index], 3);
+                                          value.overdueTasks.removeAt(index);
+                                          int noCompletedTasks = Provider.of<NavigationProvider>(context, listen: false).noCompletedTasks;
+                                          int noOverdueTasks = Provider.of<NavigationProvider>(context, listen: false).noOverdueTasks;
+                                          log("COMPLETED $noCompletedTasks");
+                                          log("OVERDUE ${value.overdueTasks}");
+                                          Provider.of<NavigationProvider>(context, listen: false).changePersistStateCompleted(false);
+                                          Provider.of<NavigationProvider>(context, listen: false).changenoCompletedTasks(noCompletedTasks+1);
+                                          Provider.of<NavigationProvider>(context, listen: false).changenoOverdueTasks(noOverdueTasks-1);
+                                        });
+                                      },
+                                      icon: const Icon(Icons.check_box_outline_blank_rounded)
                                       ),
-                                    )
-                                ],
-                              ),
-                            )
-                          ],
+                                      SizedBox(width: width*0.01),
+                                      Expanded(
+                                        child: Padding(
+                                          padding: EdgeInsets.only(top: height*0.008, bottom: height*0.01),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                value.overdueTasks[index]['Task_Name'] as String,
+                                                style: TextStyle(
+                                                  fontSize: height*0.025
+                                                ),
+                                                overflow: TextOverflow.ellipsis,                         
+                                                ),
+                                              ),
+                                              Row(
+                                                children: [
+                                                  const Icon(Icons.calendar_month_outlined),
+                                                  SizedBox(width: width*0.01,),
+                                                  Text(value.overdueTasks[index]['End_Date'] as String),
+                                                  SizedBox(width: width*0.03,),
+                                                  const Icon(Icons.access_time_rounded),
+                                                  SizedBox(width: width*0.01,),
+                                                  Text("${value.overdueTasks[index]['End_Time'] as String} ${value.overdueTasks[index]['Period_Of_Hour'] as String}")
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      )
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: height*0.01,)
-                ],
-              );
-              }
+                    SizedBox(height: height*0.01,)
+                  ],
+                );
+                }
+                );
+                }
               );
               }
               )
