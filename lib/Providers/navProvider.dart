@@ -188,6 +188,13 @@ class NavigationProvider with ChangeNotifier {
     log("UPDATED AND NOTIFIED");
   }
 
+  Future getStatistics() async {
+    List statistics = await db.getStatistics();
+    noUpcomingTasks = statistics[0];
+    noCompletedTasks = statistics[1];
+    noOverdueTasks = statistics[2];
+  }
+
   void changenoOverdueTasks(int number) {
     noOverdueTasks = number;
     notifyListeners();

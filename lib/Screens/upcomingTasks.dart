@@ -114,9 +114,8 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
     details['Completed_Period_Of_Hour'] = periodOfHour;
 
     Map<String, Object?> detailsReplica = { for (var e in details.keys) e : details[e] };
-
-    db.completeTask(detailsReplica, tableNumber);
     Provider.of<NavigationProvider>(context, listen: false).updateCompletedTasks(details['id'] as int, details['Task_Name'] as String, details['Completed_Date'] as String, details['Completed_Time'] as String, details['Completed_Period_Of_Hour'] as String, details['Created'] as String, details['End_Date'] as String, details['End_Time'] as String, details['Period_Of_Hour'] as String);
+    await db.completeTask(detailsReplica, tableNumber);
   }
 
   @override
@@ -195,7 +194,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                         height: height*0.1,
                         width: width*0.9,
                         decoration: BoxDecoration(
-                          color: Colors.red.shade800,
+                          color: value.overdueTasks[index]["Deleted"] as bool? Colors.green.shade800 : Colors.red.shade800,
                           borderRadius: BorderRadius.circular(14),
                         ),
                         child: Padding(
@@ -209,19 +208,41 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                                   children: [
                                     IconButton(
                                       onPressed: () {
-                                        setState(() {
+                                          value.overdueTasks[index]["Deleted"] = true;
                                           completeTasks(value.overdueTasks[index], 3);
-                                          value.overdueTasks.removeAt(index);
+                                          log("${_controllerBottomCenter.state}");
+                                          _controllerBottomCenter.play();
                                           int noCompletedTasks = Provider.of<NavigationProvider>(context, listen: false).noCompletedTasks;
                                           int noOverdueTasks = Provider.of<NavigationProvider>(context, listen: false).noOverdueTasks;
-                                          log("COMPLETED $noCompletedTasks");
-                                          log("OVERDUE ${value.overdueTasks}");
-                                          Provider.of<NavigationProvider>(context, listen: false).changePersistStateCompleted(false);
+                                          //Provider.of<NavigationProvider>(context, listen: false).changePersistStateCompleted(false);
                                           Provider.of<NavigationProvider>(context, listen: false).changenoCompletedTasks(noCompletedTasks+1);
                                           Provider.of<NavigationProvider>(context, listen: false).changenoOverdueTasks(noOverdueTasks-1);
-                                        });
+                                          
+                                          Timer(Duration(milliseconds: 250), () {  
+                                              value.overdueTasks.removeAt(index);
+                                              
+                                          });
+                                          Timer(Duration(milliseconds: 1000), () {
+                                            setState(() {
+                                              
+                                            });
+                                          });
                                       },
-                                      icon: const Icon(Icons.check_box_outline_blank_rounded)
+                                      icon: AnimatedSwitcher(
+                                          duration: const Duration(milliseconds: 350),
+                                          transitionBuilder: (child, anim) => RotationTransition(
+                                                turns: child.key == ValueKey('icon3')
+                                                    ? Tween<double>(begin: 1, end: 0).animate(anim)
+                                                    : Tween<double>(begin: 1, end: 1).animate(anim),
+                                                child: SizeTransition(sizeFactor: anim, child: child),
+                                              ),
+                                          child: value.overdueTasks[index]["Deleted"] as bool
+                                              ? Icon(Icons.check_circle_outline_rounded, key: const ValueKey('icon3'))
+                                              : Icon(
+                                                  Icons.check_box_outline_blank_rounded,
+                                                  key: const ValueKey('icon4'),
+                                                  
+                                                )),
                                       ),
                                       SizedBox(width: width*0.01),
                                       Expanded(
@@ -231,10 +252,11 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               Expanded(
-                                                child: Text(
+                                                child: Text(                       
                                                 value.overdueTasks[index]['Task_Name'] as String,
                                                 style: TextStyle(
-                                                  fontSize: height*0.025
+                                                  fontSize: height*0.025,
+                                                  decoration: value.overdueTasks[index]["Deleted"] as bool ? TextDecoration.lineThrough : TextDecoration.none
                                                 ),
                                                 overflow: TextOverflow.ellipsis,                         
                                                 ),
@@ -243,11 +265,17 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                                                 children: [
                                                   const Icon(Icons.calendar_month_outlined),
                                                   SizedBox(width: width*0.01,),
-                                                  Text(value.overdueTasks[index]['End_Date'] as String),
+                                                  Text(value.overdueTasks[index]['End_Date'] as String, 
+                                                      style: TextStyle(
+                                                        decoration: value.overdueTasks[index]["Deleted"] as bool ? TextDecoration.lineThrough : TextDecoration.none),
+                                                        ),
                                                   SizedBox(width: width*0.03,),
                                                   const Icon(Icons.access_time_rounded),
                                                   SizedBox(width: width*0.01,),
-                                                  Text("${value.overdueTasks[index]['End_Time'] as String} ${value.overdueTasks[index]['Period_Of_Hour'] as String}")
+                                                  Text("${value.overdueTasks[index]['End_Time'] as String} ${value.overdueTasks[index]['Period_Of_Hour'] as String}",
+                                                      style: TextStyle(
+                                                        decoration: value.overdueTasks[index]["Deleted"] as bool ? TextDecoration.lineThrough : TextDecoration.none),
+                                                        ),
                                                 ],
                                               )
                                             ],
@@ -304,7 +332,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                         height: height*0.1,
                         width: width*0.9,
                         decoration: BoxDecoration(
-                          color: value.upcomingTasks[index]["Deleted"] as bool? Colors.grey.shade900 : Colors.blueGrey.shade900,
+                          color: value.upcomingTasks[index]["Deleted"] as bool? Colors.green.shade800 : Colors.blueGrey.shade900,
                           borderRadius: BorderRadius.circular(14),
                         ),
                         child: Padding(
@@ -342,6 +370,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                                           //Provider.of<NavigationProvider>(context, listen: false).changePersistStateCompleted(false);
                                           Provider.of<NavigationProvider>(context, listen: false).changenoCompletedTasks(noCompletedTasks+1);
                                           Provider.of<NavigationProvider>(context, listen: false).changenoUpcomingTasks(noUpcomingTasks-1);
+
                                           Timer(Duration(milliseconds: 250), () {  
                                               value.upcomingTasks.removeAt(index);
                                               
