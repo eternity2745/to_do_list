@@ -59,13 +59,20 @@ LandingPage> with AutomaticKeepAliveClientMixin{
   @override
   bool get wantKeepAlive => widget.isPersistState;
 
-  Future<void> addTask(String taskName, String date, String time, String periodOfHour) async {
+  Future addTask(String taskName, String date, String time, String periodOfHour) async {
     log(time);
-    db.createTask(taskName, date, time, periodOfHour);
+    await db.createTask(taskName, date, time, periodOfHour);    
   }
 
   Future updateOverDueTasks() async {
-    Provider.of<NavigationProvider>(context, listen: false).updateOverDueTasks();
+    Provider.of<NavigationProvider>(context, listen: false).updateOverDueTasks(checkUpcoming: true);
+    getStatistics();
+    getUpcomingTask();
+    getLastCompleted();
+  }
+
+  Future updateOverDueTasksinit() async {
+    //Provider.of<NavigationProvider>(context, listen: false).updateOverDueTasks();
     getStatistics();
     getUpcomingTask();
     getLastCompleted();
@@ -83,7 +90,7 @@ LandingPage> with AutomaticKeepAliveClientMixin{
     int timeHour24 = int.parse(upcEndTime!.substring(0, upcEndTime!.length-3));
     upcEndTime = "${timeHour24 == 0 ? 12 : timeHour24 > 12 ? (timeHour24-12) < 10 ? '0${timeHour24-12}' : timeHour24-12 : timeHour24 < 10 ? '0$timeHour24' : timeHour24}:${upcEndTime!.length == 5?upcEndTime!.substring(3) : upcEndTime!.substring(2)} $upcperiodOfHour";
 
-    Provider.of<NavigationProvider>(context, listen: false).updateUpcomingTasks(result[0]['id'] as int, result[0]['Task_Name'] as String, result[0]['Created'] as String, result[0]['End_Date'] as String, upcEndTime as String, result[0]['Period_Of_Hour'] as String);
+    //Provider.of<NavigationProvider>(context, listen: false).updateUpcomingTasks(result[0]['id'] as int, result[0]['Task_Name'] as String, result[0]['Created'] as String, result[0]['End_Date'] as String, upcEndTime as String, result[0]['Period_Of_Hour'] as String);
     setState(() {
       
     });
@@ -154,7 +161,7 @@ LandingPage> with AutomaticKeepAliveClientMixin{
   @override
   void initState() {
     log("OKKK");
-    updateOverDueTasks();
+    updateOverDueTasksinit();
     super.initState();
   }
 

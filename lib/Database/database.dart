@@ -92,7 +92,7 @@ class DatabaseService {
     );
   }
 
-  Future<void> createTask(String taskName, String date, String time, String periodOfHour) async {
+  Future createTask(String taskName, String date, String time, String periodOfHour) async {
 
     final db = await _instance.database;
     final id = DateTime.now().microsecondsSinceEpoch.toString();
@@ -110,6 +110,7 @@ class DatabaseService {
       },
       conflictAlgorithm: ConflictAlgorithm.replace
     );
+  return [id, created];
   }
 
   Future getTaskDetails() async {
@@ -232,8 +233,8 @@ class DatabaseService {
 
     var upcomingTasks = await db!.query(
       tableName1,
-      where: "$t1_columnName4 <= ? AND $t1_columnName5 <= TIME(?)",
-      whereArgs: [formattedDate, formattedTime],
+      where: "$t1_columnName4 < DATE(?) OR ($t1_columnName4 = DATE(?) AND $t1_columnName5 <= TIME(?))",
+      whereArgs: [formattedDate, formattedDate, formattedTime],
       orderBy: "$t1_columnName4, $t1_columnName5"
     );
     // var upcomingTasks = await db!.query(
@@ -291,5 +292,15 @@ class DatabaseService {
       log("2 Over");
       return values;
     }
+  }
+
+  Future updateUpcomingTasks() async { 
+    final db = await _instance.database;
+    var upcTask = await db!.query(
+      tableName1,
+      where: "id = (SELECT MAX(id) FROM $tableName1)" 
+    );
+    log("$upcTask");
+    return upcTask;
   }
 }

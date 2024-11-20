@@ -98,7 +98,6 @@ class _CompletedTasksState extends State<CompletedTasks> with AutomaticKeepAlive
               Text("Nothing Here"),
             }else...{
               StatefulBuilder(builder: (BuildContext context , setState) {
-                log("ENTERED STATEFUL");
               return Consumer<NavigationProvider>(
                 builder: (context, value, child) {
                 return ListView.builder(
@@ -106,7 +105,6 @@ class _CompletedTasksState extends State<CompletedTasks> with AutomaticKeepAlive
                 shrinkWrap: true,
                 itemCount: value.completedTasks.length,
                 itemBuilder: (BuildContext context, int index) {
-                  log("ENTERED BUILDER: ${value.completedTasks.length}");                              
                 return Column(
                   children: [
                     GestureDetector(
