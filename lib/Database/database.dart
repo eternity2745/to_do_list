@@ -233,7 +233,7 @@ class DatabaseService {
 
     var upcomingTasks = await db!.query(
       tableName1,
-      where: "$t1_columnName4 < DATE(?) OR ($t1_columnName4 = DATE(?) AND $t1_columnName5 <= TIME(?))",
+      where: "$t1_columnName4 < DATE(?) OR ($t1_columnName4 = ? AND $t1_columnName5 <= TIME(?))",
       whereArgs: [formattedDate, formattedDate, formattedTime],
       orderBy: "$t1_columnName4, $t1_columnName5"
     );
