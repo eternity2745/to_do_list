@@ -45,59 +45,6 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
 
   final db = DatabaseService();
 
-  // Future getUpcomingTasks() async {
-  //   List<Map<String, Object?>> results = await db.getUpcomingTask();
-  //   for (var i in results) {
-  //   upcEndTime = i['End_Time'] as String;
-  //   upcEndTime = upcEndTime!.substring(0, upcEndTime!.length - 3);
-  //   int timeHour24 = int.parse(upcEndTime!.substring(0, upcEndTime!.length-3));
-  //   upcEndTime = "${timeHour24 == 0 ? 12 : timeHour24 > 12 ? (timeHour24-12) < 10 ? '0${timeHour24-12}' : timeHour24-12 : timeHour24 < 10 ? '0$timeHour24' : timeHour24}:${upcEndTime!.length == 5?upcEndTime!.substring(3) : upcEndTime!.substring(2)}";
-  //   upcomingTasks.add({
-  //     "id":i["id"], 
-  //     "Task_Name":i["Task_Name"], 
-  //     "Created":i["Created"], 
-  //     "End_Date":i["End_Date"], 
-  //     "End_Time":upcEndTime, 
-  //     "Period_Of_Hour":i["Period_Of_Hour"],
-  //     "Deleted" : false
-  //     }
-  //     );
-  //   }
-  //   //log("$upcomingTasks");
-
-  // }
-
-  // Future getOverdueTasks() async {
-  //   List<Map<String, Object?>> results = await db.getOverdueTasks();
-  //   for (var i in results) {
-  //   overEndTime = i['End_Time'] as String;
-  //   overEndTime = overEndTime!.substring(0, overEndTime!.length - 3);
-  //   int timeHour24 = int.parse(overEndTime!.substring(0, overEndTime!.length-3));
-  //   overEndTime = "${timeHour24 == 0 ? 12 : timeHour24 > 12 ? (timeHour24-12) < 10 ? '0${timeHour24-12}' : timeHour24-12 : timeHour24 < 10 ? '0$timeHour24' : timeHour24}:${overEndTime!.length == 5?overEndTime!.substring(3) : overEndTime!.substring(2)}";
-  //   overdueTasks.add({
-  //     "id":i["id"], 
-  //     "Task_Name":i["Task_Name"], 
-  //     "Created":i["Created"], 
-  //     "End_Date":i["End_Date"], 
-  //     "End_Time":overEndTime,
-  //     "Period_Of_Hour":i["Period_Of_Hour"],
-  //     "Deleted" : false
-  //     }
-  //     );
-  //   }
-  //   log("HEHEHEHEHEH\n$overdueTasks");
-  //   setState(() {
-      
-  //   });
-  // }
-
-  // Future updateOverDueTasks() async {
-  //   bool update = await db.updateOverDueTasks();
-  //   if (update) {
-  //   getOverdueTasks();
-  //   }
-  // }
-
   Future deleteTask(int id, int tableNumber) async {
     await db.deleteTask(id, tableNumber);
     log("DELETED");

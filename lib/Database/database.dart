@@ -175,13 +175,13 @@ class DatabaseService {
     if (limit == null) {
     List<Map<String, Object?>> result = await db!.query(
       tableName2,
-      orderBy: "$t2_columnName3, $t2_columnName4"
+      orderBy: "$t2_columnName3 DESC, $t2_columnName4 DESC"
     );
     return result;
     }else{
       List<Map<String, Object?>> result = await db!.query(
       tableName2,
-      orderBy: "$t2_columnName3, $t2_columnName4 DESC",
+      orderBy: "$t2_columnName3 DESC, $t2_columnName4 DESC",
       limit: limit
     );
     return result;
