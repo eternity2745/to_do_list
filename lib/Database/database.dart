@@ -181,7 +181,7 @@ class DatabaseService {
     }else{
       List<Map<String, Object?>> result = await db!.query(
       tableName2,
-      orderBy: "$t2_columnName3, $t2_columnName4",
+      orderBy: "$t2_columnName3, $t2_columnName4 DESC",
       limit: limit
     );
     return result;

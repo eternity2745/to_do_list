@@ -23,6 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Provider.of<NavigationProvider>(context, listen: false).getCompletedTasks();
     Provider.of<NavigationProvider>(context, listen: false).getUpcomingTasks();
     Provider.of<NavigationProvider>(context, listen: false).getOverdueTasks();
+    Provider.of<NavigationProvider>(context, listen: false).getStatistics();
     super.initState();
   }
   

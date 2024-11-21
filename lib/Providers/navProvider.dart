@@ -25,6 +25,23 @@ class NavigationProvider with ChangeNotifier {
   List<Map<String, Object?>> upcomingTasks = [];
   List<Map<String, Object?>> overdueTasks = [];  
 
+  String upcomingTask = "";
+  String upcomingCreated = "";
+  String upcomingEndDate = "";
+  String upcomingEndTime = "";
+  String upcomingPeriodOfHour = "";
+
+  void updateUpcomingTask(String upcomingTask, String upcomingCreated, String upcomingEndDate, String upcomingEndTime, String upcomingPeriodOfHour, bool notify) {
+    this.upcomingTask = upcomingTask;
+    this.upcomingCreated = upcomingCreated;
+    this.upcomingEndDate = upcomingEndDate;
+    this.upcomingEndTime = upcomingEndTime;
+    this.upcomingPeriodOfHour = upcomingPeriodOfHour;
+    if (notify) {
+      notifyListeners();
+    }
+  }
+
   void updateTaskDetails(String taskName, String createdDate, String dueDate, String dueTime, String completed, String overdue) {
     this.taskName = taskName;
     this.createdDate = createdDate;
@@ -223,7 +240,11 @@ class NavigationProvider with ChangeNotifier {
           });
         }
         upcomingTasks.removeWhere((element) => element['id'] == i['id']);
+        changenoOverdueTasks(overdueTasks.length, notify: false);
+        changenoUpcomingTasks(upcomingTasks.length, notify: false);
+        
       }
+      updateUpcomingTask(upcomingTasks[0]['Task_Name'] as String, upcomingTasks[0]['Created'] as String, upcomingTasks[0]["End_Date"] as String, upcomingTasks[0]["End_Time"] as String, upcomingTasks[0]["Period_Of_Hour"] as String, false);
       notifyListeners();
     }else if (update.isEmpty && checkUpcoming == true){
       //List<Map<String, Object?>> taskDetail = await db.updateUpcomingTasks();
@@ -286,21 +307,28 @@ class NavigationProvider with ChangeNotifier {
     noUpcomingTasks = statistics[0];
     noCompletedTasks = statistics[1];
     noOverdueTasks = statistics[2];
+    notifyListeners();
   }
 
-  void changenoOverdueTasks(int number) {
+  void changenoOverdueTasks(int number, {bool notify = true}) {
     noOverdueTasks = number;
+    if (notify) {
     notifyListeners();
+    }
   }
 
-  void changenoCompletedTasks(int number) {
+  void changenoCompletedTasks(int number, {bool notify = true}) {
     noCompletedTasks = number;
+    if (notify) {
     notifyListeners();
+    }
   }
 
-  void changenoUpcomingTasks(int number) {
+  void changenoUpcomingTasks(int number,{bool notify = true}) {
     noUpcomingTasks = number;
+    if (notify) {
     notifyListeners();
+    }
   }
 
   void changePersistStateUpcoming(bool state) {

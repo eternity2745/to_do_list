@@ -63,17 +63,17 @@ LandingPage> with AutomaticKeepAliveClientMixin{
     log(time);
     await db.createTask(taskName, date, time, periodOfHour);    
   }
-
+  
   Future updateOverDueTasks() async {
     Provider.of<NavigationProvider>(context, listen: false).updateOverDueTasks(checkUpcoming: true);
-    getStatistics();
+    //getStatistics();
     getUpcomingTask();
     getLastCompleted();
   }
 
   Future updateOverDueTasksinit() async {
     //Provider.of<NavigationProvider>(context, listen: false).updateOverDueTasks();
-    getStatistics();
+    //getStatistics();
     getUpcomingTask();
     getLastCompleted();
   }
@@ -82,18 +82,13 @@ LandingPage> with AutomaticKeepAliveClientMixin{
     List<Map<String, Object?>> result = await db.getUpcomingTask(limit: 1);
     log("$result");
     if (result.isNotEmpty) {
-    upcTaskName = result[0]['Task_Name'] as String;
-    upcEndDate = result[0]['End_Date'] as String;
     upcEndTime = result[0]['End_Time'] as String;
-    upcperiodOfHour = result[0]['Period_Of_Hour'] as String;
     upcEndTime = upcEndTime!.substring(0, upcEndTime!.length - 3);
     int timeHour24 = int.parse(upcEndTime!.substring(0, upcEndTime!.length-3));
     upcEndTime = "${timeHour24 == 0 ? 12 : timeHour24 > 12 ? (timeHour24-12) < 10 ? '0${timeHour24-12}' : timeHour24-12 : timeHour24 < 10 ? '0$timeHour24' : timeHour24}:${upcEndTime!.length == 5?upcEndTime!.substring(3) : upcEndTime!.substring(2)} $upcperiodOfHour";
+    Provider.of<NavigationProvider>(context, listen: false).updateUpcomingTask(result[0]['Task_Name'] as String, result[0]['Created'] as String, result[0]['End_Date'] as String, upcEndTime!, result[0]["Period_Of_Hour"] as String, true);
 
     //Provider.of<NavigationProvider>(context, listen: false).updateUpcomingTasks(result[0]['id'] as int, result[0]['Task_Name'] as String, result[0]['Created'] as String, result[0]['End_Date'] as String, upcEndTime as String, result[0]['Period_Of_Hour'] as String);
-    setState(() {
-      
-    });
     }
   }
 
@@ -448,45 +443,50 @@ LandingPage> with AutomaticKeepAliveClientMixin{
                         )
                       }else...{                     
                       Expanded(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            IconButton(
-                              onPressed: () {}, 
-                              icon: const Icon(Icons.check_box_outline_blank_rounded)
-                              ),
-                              SizedBox(width: width*0.01),
-                              Expanded(
-                                child: Padding(
-                                  padding: EdgeInsets.only(top: height*0.008, bottom: height*0.01),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                        upcTaskName!,
-                                        style: TextStyle(
-                                          fontSize: height*0.025
-                                        ),
-                                        overflow: TextOverflow.ellipsis,                         
-                                        ),
-                                      ),
-                                      Row(
-                                        children: [
-                                          const Icon(Icons.calendar_month_outlined),
-                                          SizedBox(width: width*0.01,),
-                                          Text(upcEndDate!),
-                                          SizedBox(width: width*0.03,),
-                                          const Icon(Icons.access_time_rounded),
-                                          SizedBox(width: width*0.01,),
-                                          Text(upcEndTime!)
-                                        ],
-                                      )
-                                    ],
-                                  ),
+                        child: Consumer<NavigationProvider>(
+                          builder: (context, value, child) {                            
+                          return Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              IconButton(
+                                onPressed: () {}, 
+                                icon: const Icon(Icons.check_box_outline_blank_rounded)
                                 ),
-                              )
-                          ],
+                                SizedBox(width: width*0.01),
+                                Expanded(
+                                  child: Padding(
+                                    padding: EdgeInsets.only(top: height*0.008, bottom: height*0.01),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                          value.upcomingTask,
+                                          style: TextStyle(
+                                            fontSize: height*0.025
+                                          ),
+                                          overflow: TextOverflow.ellipsis,                         
+                                          ),
+                                        ),
+                                        Row(
+                                          children: [
+                                            const Icon(Icons.calendar_month_outlined),
+                                            SizedBox(width: width*0.01,),
+                                            Text(value.upcomingEndDate),
+                                            SizedBox(width: width*0.03,),
+                                            const Icon(Icons.access_time_rounded),
+                                            SizedBox(width: width*0.01,),
+                                            Text("${value.upcomingEndTime} ${value.upcomingPeriodOfHour}")
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                )
+                            ],
+                          
+                          );
+                          }
                         ),
                       )
                       }

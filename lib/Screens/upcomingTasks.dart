@@ -373,6 +373,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
 
                                           Timer(Duration(milliseconds: 250), () {  
                                               value.upcomingTasks.removeAt(index);
+                                              Provider.of<NavigationProvider>(context, listen: false).updateUpcomingTask(value.upcomingTasks[0]['Task_Name'] as String, value.upcomingTasks[0]['Created'] as String, value.upcomingTasks[0]['End_Date'] as String, value.upcomingTasks[0]['End_Time'] as String, value.upcomingTasks[0]['Period_Of_Hour'] as String, false);
                                               
                                           });
                                           Timer(Duration(milliseconds: 1000), () {
