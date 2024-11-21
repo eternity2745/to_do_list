@@ -72,6 +72,7 @@ class NavigationProvider with ChangeNotifier {
     DateTime tdDateTime = DateTime.parse("$tddate ${taskDetail[0]["End_Time"] as String}");
     log("$tdDateTime");
     int index = 0; 
+    bool checkIndex = false;
     var time1 = '';
     for (var i in upcomingTasks) {
       var date1OG = inputFormat.parse(i['End_Date'] as String);
@@ -94,6 +95,7 @@ class NavigationProvider with ChangeNotifier {
 
       if (tdDateTime.isBefore(upcDateTime)) {
           index = upcomingTasks.indexOf(i);
+          checkIndex = true;
           break;
         }
 
@@ -102,7 +104,8 @@ class NavigationProvider with ChangeNotifier {
     upcEndTime = upcEndTime.substring(0, upcEndTime.length - 3);
     int timeHour24 = int.parse(upcEndTime.substring(0, upcEndTime.length-3));
     upcEndTime = "${timeHour24 == 0 ? 12 : timeHour24 > 12 ? (timeHour24-12) < 10 ? '0${timeHour24-12}' : timeHour24-12 : timeHour24 < 10 ? '0$timeHour24' : timeHour24}:${upcEndTime.length == 5?upcEndTime.substring(3) : upcEndTime.substring(2)}";
-    if (index == 0) {
+    log("INDEX: $index");
+    if (index == 0 && checkIndex == false) {
       upcomingTasks.add({
         "id":taskDetail[0]["id"], 
         "Task_Name":taskDetail[0]["Task_Name"], 
@@ -124,26 +127,7 @@ class NavigationProvider with ChangeNotifier {
         "Deleted" : false
       });
     }
-    // Map<String, Object?> newTask = {
-    //   "id":id, 
-    //   "Task_Name":taskName, 
-    //   "Created":created, 
-    //   "End_Date":endDate, 
-    //   "End_Time":endTime.substring(0, endTime.length-3),
-    //   "Period_Of_Hour":periodOfHour,
-    //   "Deleted" : deleted
-    //   };
-    // log("$upcomingTasks");
-    // log("$newTask");
-    // if (upcomingTasks.any((element) => element['id'] == newTask['id'])) {
-    //   return false;
-    // }else{
-      
-    // upcomingTasks.add(
-    //   newTask
-    // );
-    // notifyListeners();
-    // }
+    notifyListeners();
   }
 
   Future getOverdueTasks() async {
