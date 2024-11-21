@@ -159,6 +159,15 @@ LandingPage> with AutomaticKeepAliveClientMixin{
   }
 
   @override
+  void dispose() {
+    _taskNameTextController.dispose();
+    _dateTimeTextController.dispose();
+    _dropdownController.dispose();
+    _timeTextController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (wantKeepAlive) {
      super.build(context);

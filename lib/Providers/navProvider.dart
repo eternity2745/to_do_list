@@ -12,6 +12,10 @@ class NavigationProvider with ChangeNotifier {
   int noCompletedTasks = 0;
   int noUpcomingTasks = 0;
 
+  int selectedIndex = 0;
+  String selectedTaskType = '';
+  int selectedTaskID = 0;
+
   final db = DatabaseService();
 
   String taskName = "";
@@ -42,13 +46,16 @@ class NavigationProvider with ChangeNotifier {
     }
   }
 
-  void updateTaskDetails(String taskName, String createdDate, String dueDate, String dueTime, String completed, String overdue) {
+  void updateTaskDetails(String taskName, String createdDate, String dueDate, String dueTime, String completed, String overdue, int selectedIndex, String selectedTaskType, int selectedTaskID) {
     this.taskName = taskName;
     this.createdDate = createdDate;
     this.dueDate = dueDate;
     this.dueTime = dueTime;
     this.completed = completed;
     this.overdue = overdue;
+    this.selectedIndex = selectedIndex;
+    this.selectedTaskType = selectedTaskType;
+    this.selectedTaskID = selectedTaskID;
     notifyListeners();
   }
 
@@ -300,6 +307,36 @@ class NavigationProvider with ChangeNotifier {
     });
     notifyListeners();
     log("UPDATED AND NOTIFIED");
+  }
+
+  Future deleteUpcTask() async {
+    await db.deleteUpcomingTask(selectedTaskID);
+    upcomingTasks.removeAt(selectedIndex);
+    if (upcomingTasks.isNotEmpty) {
+    updateUpcomingTask(upcomingTasks[0]['Task_Name'] as String, upcomingTasks[0]['Created'] as String, upcomingTasks[0]['End_Date'] as String, upcomingTasks[0]['End_Time'] as String, upcomingTasks[0]['Period_Of_Hour'] as String, false);
+    }
+    changenoUpcomingTasks(upcomingTasks.length, notify: false);
+    notifyListeners();
+  }
+
+  Future deleteOvrdTask() async {
+    await db.deleteOverdueTask(selectedTaskID);
+    overdueTasks.removeAt(selectedIndex);
+    if (overdueTasks.isNotEmpty) {
+    //updateUpcomingTask(overdueTasks[0]['Task_Name'] as String, overdueTasks[0]['Created'] as String, overdueTasks[0]['End_Date'] as String, overdueTasks[0]['End_Time'] as String, overdueTasks[0]['Period_Of_Hour'] as String, false);
+    }
+    changenoOverdueTasks(overdueTasks.length, notify: false);
+    notifyListeners();
+  }
+
+  Future deleteCompTask() async {
+    await db.deleteCompletedTask(selectedTaskID);
+    completedTasks.removeAt(selectedIndex);
+    if (completedTasks.isNotEmpty) {
+    //updateUpcomingTask(completedTasks[0]['Task_Name'] as String, completedTasks[0]['Created'] as String, completedTasks[0]['End_Date'] as String, completedTasks[0]['End_Time'] as String, completedTasks[0]['Period_Of_Hour'] as String, false);
+    }
+    changenoCompletedTasks(completedTasks.length, notify: false);
+    notifyListeners();
   }
 
   Future getStatistics() async {

@@ -134,7 +134,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                   children: [
                     GestureDetector(
                       onTap: () {
-                        Provider.of<NavigationProvider>(context, listen: false).updateTaskDetails(value.overdueTasks[index]['Task_Name'] as String, value.overdueTasks[index]['Created'] as String, value.overdueTasks[index]['End_Date'] as String, "${value.overdueTasks[index]['End_Time']} ${value.overdueTasks[index]['Period_Of_Hour']}", "No", "Yes");
+                        Provider.of<NavigationProvider>(context, listen: false).updateTaskDetails(value.overdueTasks[index]['Task_Name'] as String, value.overdueTasks[index]['Created'] as String, value.overdueTasks[index]['End_Date'] as String, "${value.overdueTasks[index]['End_Time']} ${value.overdueTasks[index]['Period_Of_Hour']}", "No", "Yes", index, "Overdue", value.overdueTasks[index]['id'] as int);
                         Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetails()));
                       },
                       child: Container(
@@ -272,7 +272,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                   children: [
                     GestureDetector(
                       onTap: () {
-                        Provider.of<NavigationProvider>(context, listen: false).updateTaskDetails(value.upcomingTasks[index]['Task_Name'] as String, value.upcomingTasks[index]['Created'] as String, value.upcomingTasks[index]['End_Date'] as String, "${value.upcomingTasks[index]['End_Time']} ${value.upcomingTasks[index]['Period_Of_Hour']}", "No", "No");
+                        Provider.of<NavigationProvider>(context, listen: false).updateTaskDetails(value.upcomingTasks[index]['Task_Name'] as String, value.upcomingTasks[index]['Created'] as String, value.upcomingTasks[index]['End_Date'] as String, "${value.upcomingTasks[index]['End_Time']} ${value.upcomingTasks[index]['Period_Of_Hour']}", "No", "No", index, "Upcoming", value.upcomingTasks[index]['id'] as int);
                         Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetails()));
                       },
                       child: Container(

@@ -32,7 +32,6 @@ dependencies:
     sdk: flutter
 
   molten_navigationbar_flutter: ^1.0.1
-  wolt_modal_sheet: ^0.9.3
   cool_dropdown: ^2.1.1
   sqflite: ^2.4.0
   provider: ^6.1.2
@@ -40,6 +39,7 @@ dependencies:
   animate_icons: ^2.0.0
   confetti: ^0.8.0
   intl: ^0.20.0
+  thanos_snap_effect: ^0.0.6
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -61,8 +61,8 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-  #shaders:
-  #  - packages/thanos_snap_effect/shader/thanos_snap_effect.glsl
+  shaders:
+    - packages/thanos_snap_effect/shader/thanos_snap_effect.glsl
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

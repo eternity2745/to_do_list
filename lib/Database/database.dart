@@ -297,4 +297,31 @@ class DatabaseService {
     log("$upcTask");
     return upcTask;
   }
+
+  Future deleteUpcomingTask(int id) async {
+    final db = await _instance.database;
+    await db!.delete(
+        tableName1,
+        where: "id = ?",
+        whereArgs: [id]
+      );
+  }
+
+  Future deleteOverdueTask(int id) async {
+    final db = await _instance.database;
+    await db!.delete(
+        tableName3,
+        where: "id = ?",
+        whereArgs: [id]
+      );
+  }
+
+  Future deleteCompletedTask(int id) async {
+    final db = await _instance.database;
+    await db!.delete(
+        tableName2,
+        where: "id = ?",
+        whereArgs: [id]
+      );
+  }
 }

@@ -109,7 +109,7 @@ class _CompletedTasksState extends State<CompletedTasks> with AutomaticKeepAlive
                   children: [
                     GestureDetector(
                       onTap: () {
-                        Provider.of<NavigationProvider>(context, listen: false).updateTaskDetails(completedTasks[index]['Task_Name'] as String, completedTasks[index]['Created'] as String, completedTasks[index]['End_Date'] as String, "${completedTasks[index]['End_Time']} ${completedTasks[index]['Period_Of_Hour']}", "Yes", "No");
+                        Provider.of<NavigationProvider>(context, listen: false).updateTaskDetails(value.completedTasks[index]['Task_Name'] as String, value.completedTasks[index]['Created'] as String, value.completedTasks[index]['End_Date'] as String, "${completedTasks[index]['End_Time']} ${completedTasks[index]['Period_Of_Hour']}", "Yes", "No", index, "Completed", value.completedTasks[index]['id'] as int);
                         Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetails()));
                       },
                       child: Container(
