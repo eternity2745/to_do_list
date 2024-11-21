@@ -69,6 +69,7 @@ LandingPage> with AutomaticKeepAliveClientMixin{
     //getStatistics();
     getUpcomingTask();
     getLastCompleted();
+    Provider.of<NavigationProvider>(context, listen: false).getStatistics();
   }
 
   Future updateOverDueTasksinit() async {
@@ -80,7 +81,7 @@ LandingPage> with AutomaticKeepAliveClientMixin{
 
   Future getUpcomingTask() async {
     List<Map<String, Object?>> result = await db.getUpcomingTask(limit: 1);
-    log("$result");
+    log("RESULT $result");
     if (result.isNotEmpty) {
     upcEndTime = result[0]['End_Time'] as String;
     upcEndTime = upcEndTime!.substring(0, upcEndTime!.length - 3);
@@ -125,7 +126,7 @@ LandingPage> with AutomaticKeepAliveClientMixin{
   Future<void> _selectDate(BuildContext context) async {
     dateTime = await showDatePicker(
                           context: context, 
-                          firstDate: DateTime(2000),
+                          firstDate: DateTime.now(),
                           lastDate: DateTime(3000)
                           );
     if (dateTime != null) {
