@@ -155,33 +155,74 @@ class NavigationProvider with ChangeNotifier {
   Future updateOverDueTasks({bool? checkUpcoming = false}) async {
     log("UPDATING OVERDUE TASKS");
     List<Map<String, Object?>> update = await db.updateOverDueTasks();
-    Map<String, Object?> newTask = {
-      "id": int, 
-      "Task_Name":'', 
-      "Created":'', 
-      "End_Date":'', 
-      "End_Time":'',
-      "Period_Of_Hour":'',
-      "Deleted" : bool
-      };
     log("UPDATE: $update");
     if (update.isNotEmpty) {
       String overEndTime = '';
+      var inputFormat = DateFormat('dd/MM/yyyy');
+      var outputFormat = DateFormat('yyyy-MM-dd');
       for (var i in update) {
+
+        var tddateOG = inputFormat.parse(i['End_Date'] as String);
+        var tddate = outputFormat.format(tddateOG);
+        log(tddate);
+        DateTime tdDateTime = DateTime.parse("$tddate ${i["End_Time"] as String}");
+        log("$tdDateTime");
+        int index = 0; 
+        bool checkIndex = false;
+        var time1 = '';
+        for (var j in overdueTasks) {
+          var date1OG = inputFormat.parse(j['End_Date'] as String);
+          var date1 = outputFormat.format(date1OG);
+          log(date1);
+          if (j["Period_Of_Hour"] as String == "AM") {
+            var duptime1 = j["End_Time"] as String;
+            if (duptime1.substring(0, 2) == "12") {
+              time1 = "00${duptime1.substring(2)}";
+            }else{
+              time1 = j["End_Time"] as String;
+            }
+          }else{
+              var duptime1 = j["End_Time"] as String;
+              int time24 = int.parse(duptime1.substring(0, 2)) + 12;
+              time1 = "${time24 == 24 ? time24-12 : time24}${duptime1.substring(2)}";
+          }
+          DateTime ovrdDateTime = DateTime.parse("$date1 $time1:00");
+          log("$ovrdDateTime");
+
+          if (tdDateTime.isBefore(ovrdDateTime)) {
+              index = overdueTasks.indexOf(j);
+              checkIndex = true;
+              break;
+            }
+        }
         overEndTime = i['End_Time'] as String;
         overEndTime = overEndTime.substring(0, overEndTime.length - 3);
         int timeHour24 = int.parse(overEndTime.substring(0, overEndTime.length-3));
         overEndTime = "${timeHour24 == 0 ? 12 : timeHour24 > 12 ? (timeHour24-12) < 10 ? '0${timeHour24-12}' : timeHour24-12 : timeHour24 < 10 ? '0$timeHour24' : timeHour24}:${overEndTime.length == 5?overEndTime.substring(3) : overEndTime.substring(2)}";
-        newTask['id'] = i['id'];
-        newTask['Task_Name'] = i['Task_Name'];
-        newTask['Created'] = i['Created'];
-        newTask['End_Date'] = i['End_Date'];
-        newTask['End_Time'] = overEndTime;
-        newTask['Period_Of_Hour'] = i['Period_Of_Hour'];
-        newTask["Deleted"] = false;
-        
-        overdueTasks.add(newTask);
-        upcomingTasks.removeWhere((element) => element['id'] == newTask['id']);
+        log("INDEX: $index");
+        if (index == 0 && checkIndex == false) {
+          overdueTasks.add({
+            "id": i['id'], 
+            "Task_Name": i['Task_Name'], 
+            "Created": i['Created'], 
+            "End_Date": i['End_Date'], 
+            "End_Time": overEndTime,
+            "Period_Of_Hour": i['Period_Of_Hour'],
+            "Deleted" : false
+        });
+        }else{
+          overdueTasks.insert(index,
+          { 
+            "id": i['id'], 
+            "Task_Name": i['Task_Name'], 
+            "Created": i['Created'], 
+            "End_Date": i['End_Date'], 
+            "End_Time": overEndTime,
+            "Period_Of_Hour": i['Period_Of_Hour'],
+            "Deleted" : false
+          });
+        }
+        upcomingTasks.removeWhere((element) => element['id'] == i['id']);
       }
       notifyListeners();
     }else if (update.isEmpty && checkUpcoming == true){

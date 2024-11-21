@@ -125,9 +125,6 @@ LandingPage> with AutomaticKeepAliveClientMixin{
     Provider.of<NavigationProvider>(context, listen: false).changenoCompletedTasks(statistics[1]);
     Provider.of<NavigationProvider>(context, listen: false).changenoOverdueTasks(statistics[2]);
     
-    setState(() {
-      
-    });
   }
 
   Future<void> _selectDate(BuildContext context) async {

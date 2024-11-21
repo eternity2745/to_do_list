@@ -43,7 +43,8 @@ class _HomeScreenState extends State<HomeScreen> {
         barHeight: height*0.08,
         onTabChange: (clickedIndex) {
           selectedIndex = clickedIndex;
-          if ((selectedIndex == 0 || selectedIndex == 2) && Provider.of<NavigationProvider>(context, listen: false).persistStateUpcoming == false) {
+          Provider.of<NavigationProvider>(context, listen: false).updateOverDueTasks();
+          if ((selectedIndex == 0 || selectedIndex == 2) && Provider.of<NavigationProvider>(context, listen: false).persistStateUpcoming == false) {            
             Provider.of<NavigationProvider>(context, listen: false).changePersistStateUpcoming(true);
           }else if((selectedIndex == 1 || selectedIndex == 2) && Provider.of<NavigationProvider>(context, listen: false).persistStateLanding == false) {
             Provider.of<NavigationProvider>(context, listen: false).changePersistStateLanding(true);

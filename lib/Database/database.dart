@@ -234,12 +234,7 @@ class DatabaseService {
     var upcomingTasks = await db!.rawQuery(
       "SELECT * FROM $tableName1 WHERE $t1_columnName4 < '$formattedDate' OR ($t1_columnName4 = '$formattedDate' AND $t1_columnName5 <= '$formattedTime') ORDER BY $t1_columnName4, $t1_columnName5"
     );
-    // var upcomingTasks = await db!.query(
-    //   tableName1,
-    //   where: "$t1_columnName5 <= TIME(?)",
-    //   whereArgs: [formattedTime],
-    //   orderBy: t1_columnName5
-    // );
+
     log("UPCOMING TASKS $upcomingTasks");
     List<Map<String, Object?>> values = [];
     if (upcomingTasks.isEmpty) {
@@ -268,6 +263,7 @@ class DatabaseService {
             i,
             conflictAlgorithm: ConflictAlgorithm.replace
             );
+          await batch.commit();
         }
       }
       );
