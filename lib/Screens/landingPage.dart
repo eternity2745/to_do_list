@@ -133,7 +133,7 @@ LandingPage> with AutomaticKeepAliveClientMixin{
   Future<void> _selectDate(BuildContext context) async {
     dateTime = await showDatePicker(
                           context: context, 
-                          firstDate: DateTime.now(),
+                          firstDate: DateTime(2000),
                           lastDate: DateTime(3000)
                           );
     if (dateTime != null) {

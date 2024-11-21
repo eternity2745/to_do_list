@@ -231,11 +231,8 @@ class DatabaseService {
     log(formattedTime);
     log(formattedDate);
 
-    var upcomingTasks = await db!.query(
-      tableName1,
-      where: "$t1_columnName4 < DATE(?) OR ($t1_columnName4 = ? AND $t1_columnName5 <= TIME(?))",
-      whereArgs: [formattedDate, formattedDate, formattedTime],
-      orderBy: "$t1_columnName4, $t1_columnName5"
+    var upcomingTasks = await db!.rawQuery(
+      "SELECT * FROM $tableName1 WHERE $t1_columnName4 < '$formattedDate' OR ($t1_columnName4 = '$formattedDate' AND $t1_columnName5 <= '$formattedTime') ORDER BY $t1_columnName4, $t1_columnName5"
     );
     // var upcomingTasks = await db!.query(
     //   tableName1,
@@ -248,6 +245,7 @@ class DatabaseService {
     if (upcomingTasks.isEmpty) {
       return values;
     }else{
+      //return values;
       List ids = [];
       if (upcomingTasks.length == 1) {
         for (var i in upcomingTasks) {
