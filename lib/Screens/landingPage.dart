@@ -69,7 +69,7 @@ LandingPage> with AutomaticKeepAliveClientMixin{
     //getStatistics();
     getUpcomingTask();
     getLastCompleted();
-    Provider.of<NavigationProvider>(context, listen: false).getStatistics();
+    //Provider.of<NavigationProvider>(context, listen: false).getStatistics(); //!INCORRECT STATS FETCHED WHEN GIVEN TIME OF 12:00 AM
   }
 
   Future updateOverDueTasksinit() async {

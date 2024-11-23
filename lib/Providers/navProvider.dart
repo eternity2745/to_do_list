@@ -151,6 +151,7 @@ class NavigationProvider with ChangeNotifier {
         "Deleted" : false
       });
     }
+    changenoUpcomingTasks(upcomingTasks.length, notify: false);
     notifyListeners();
   }
 

@@ -188,7 +188,7 @@ class DatabaseService {
     }
   }
 
-  Future getStatistics() async {
+  Future  getStatistics() async {
     final db = await _instance.database;
 
     List<Map<String, Object?>> upcomingTasks = await db!.rawQuery(
