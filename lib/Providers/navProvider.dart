@@ -8,6 +8,8 @@ class NavigationProvider with ChangeNotifier {
   bool persistStateLanding = true;
   bool persistStateCompleted = true;
 
+  bool callbackPossible = true;
+
   int noOverdueTasks = 0;
   int noCompletedTasks = 0;
   int noUpcomingTasks = 0;
@@ -295,7 +297,7 @@ class NavigationProvider with ChangeNotifier {
     comTime = comTime.substring(0, comTime.length - 3);
     int timeHour24 = int.parse(comTime.substring(0, comTime.length-3));
     comTime = "${timeHour24 == 0 ? 12 : timeHour24 > 12 ? (timeHour24-12) < 10 ? '0${timeHour24-12}' : timeHour24-12 : timeHour24 < 10 ? '0$timeHour24' : timeHour24}:${comTime.length == 5?comTime.substring(3) : comTime.substring(2)}";
-    completedTasks.add({
+    completedTasks.insert(0, {
       "id":id, 
       "Task_Name":taskName, 
       "Completed_Date":completedDate,
@@ -367,6 +369,10 @@ class NavigationProvider with ChangeNotifier {
     if (notify) {
     notifyListeners();
     }
+  }
+
+  void changeCallbackPossible(bool possible) {
+    callbackPossible = possible;
   }
 
   void changePersistStateUpcoming(bool state) {

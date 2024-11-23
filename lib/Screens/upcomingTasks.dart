@@ -118,10 +118,10 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                 ),
                 ),
               SizedBox(height: height*0.008,),
-              if (Provider.of<NavigationProvider>(context, listen: false).overdueTasks.isEmpty)...{
-              Text("Nothing Here"),
-            }else...{
               StatefulBuilder(builder: (BuildContext context , setState) {
+              if (Provider.of<NavigationProvider>(context, listen: false).overdueTasks.isEmpty){
+                  return Text("Nothing Here");
+              }else{
               log("REBUILD OVERDUE BUILDER");
               return Consumer<NavigationProvider>(
                 builder: (context, value, child) {
@@ -134,8 +134,10 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                   children: [
                     GestureDetector(
                       onTap: () {
-                        Provider.of<NavigationProvider>(context, listen: false).updateTaskDetails(value.overdueTasks[index]['Task_Name'] as String, value.overdueTasks[index]['Created'] as String, value.overdueTasks[index]['End_Date'] as String, "${value.overdueTasks[index]['End_Time']} ${value.overdueTasks[index]['Period_Of_Hour']}", "No", "Yes", index, "Overdue", value.overdueTasks[index]['id'] as int);
-                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetails()));
+                        if(Provider.of<NavigationProvider>(context, listen: false).callbackPossible) {
+                          Provider.of<NavigationProvider>(context, listen: false).updateTaskDetails(value.overdueTasks[index]['Task_Name'] as String, value.overdueTasks[index]['Created'] as String, value.overdueTasks[index]['End_Date'] as String, "${value.overdueTasks[index]['End_Time']} ${value.overdueTasks[index]['Period_Of_Hour']}", "No", "Yes", index, "Overdue", value.overdueTasks[index]['id'] as int);
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetails()));
+                        }
                       },
                       child: Container(
                         height: height*0.1,
@@ -155,10 +157,11 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                                   children: [
                                     IconButton(
                                       onPressed: () {
+                                          Provider.of<NavigationProvider>(context, listen: false).changeCallbackPossible(false);
+                                          _controllerBottomCenter.play();
                                           value.overdueTasks[index]["Deleted"] = true;
                                           completeTasks(value.overdueTasks[index], 3);
                                           log("${_controllerBottomCenter.state}");
-                                          _controllerBottomCenter.play();
                                           int noCompletedTasks = Provider.of<NavigationProvider>(context, listen: false).noCompletedTasks;
                                           int noOverdueTasks = Provider.of<NavigationProvider>(context, listen: false).noOverdueTasks;
                                           //Provider.of<NavigationProvider>(context, listen: false).changePersistStateCompleted(false);
@@ -167,7 +170,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                                           
                                           Timer(Duration(milliseconds: 250), () {  
                                               value.overdueTasks.removeAt(index);
-                                              
+                                              Provider.of<NavigationProvider>(context, listen: false).changeCallbackPossible(true);
                                           });
                                           Timer(Duration(milliseconds: 1000), () {
                                             setState(() {
@@ -245,8 +248,8 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                 }
               );
               }
-              )
-          },
+              }
+            ),
             Text(
                 "Pending",
                 style: TextStyle(
@@ -255,10 +258,12 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                 ),
               ),
             SizedBox(height: height*0.008,),
-            if (Provider.of<NavigationProvider>(context, listen: false).upcomingTasks.isEmpty)...{
-              Text("Nothing Here"),
-            }else...{          
+            
+       
               StatefulBuilder(builder: (BuildContext context , setState) {
+              if (Provider.of<NavigationProvider>(context, listen: false).upcomingTasks.isEmpty){
+               return Text("Nothing Here");
+              }else{
               log("REBUILD UPCOMING BUILDER");
               return Consumer<NavigationProvider>(
                 builder: (context, value, child) {
@@ -272,8 +277,10 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                   children: [
                     GestureDetector(
                       onTap: () {
-                        Provider.of<NavigationProvider>(context, listen: false).updateTaskDetails(value.upcomingTasks[index]['Task_Name'] as String, value.upcomingTasks[index]['Created'] as String, value.upcomingTasks[index]['End_Date'] as String, "${value.upcomingTasks[index]['End_Time']} ${value.upcomingTasks[index]['Period_Of_Hour']}", "No", "No", index, "Upcoming", value.upcomingTasks[index]['id'] as int);
-                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetails()));
+                        if (Provider.of<NavigationProvider>(context, listen: false).callbackPossible) {
+                          Provider.of<NavigationProvider>(context, listen: false).updateTaskDetails(value.upcomingTasks[index]['Task_Name'] as String, value.upcomingTasks[index]['Created'] as String, value.upcomingTasks[index]['End_Date'] as String, "${value.upcomingTasks[index]['End_Time']} ${value.upcomingTasks[index]['Period_Of_Hour']}", "No", "No", index, "Upcoming", value.upcomingTasks[index]['id'] as int);
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetails()));
+                        }
                       },
                       child: Container(
                         height: height*0.1,
@@ -308,13 +315,14 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                                                   
                                                 )),
                                           onPressed: () {
+                                          Provider.of<NavigationProvider>(context, listen: false).changeCallbackPossible(false);
                                           value.upcomingTasks[index]["Deleted"] = true;
                                           completeTasks(value.upcomingTasks[index], 1);
                                           log("${_controllerBottomCenter.state}");
                                           _controllerBottomCenter.play();
                                           int noCompletedTasks = Provider.of<NavigationProvider>(context, listen: false).noCompletedTasks;
                                           int noUpcomingTasks = Provider.of<NavigationProvider>(context, listen: false).noUpcomingTasks;
-                                          //Provider.of<NavigationProvider>(context, listen: false).changePersistStateCompleted(false);
+                                          Provider.of<NavigationProvider>(context, listen: false).changePersistStateCompleted(false);
                                           Provider.of<NavigationProvider>(context, listen: false).changenoCompletedTasks(noCompletedTasks+1);
                                           Provider.of<NavigationProvider>(context, listen: false).changenoUpcomingTasks(noUpcomingTasks-1);
 
@@ -323,6 +331,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                                               if (value.upcomingTasks.isNotEmpty) {
                                                 Provider.of<NavigationProvider>(context, listen: false).updateUpcomingTask(value.upcomingTasks[0]['Task_Name'] as String, value.upcomingTasks[0]['Created'] as String, value.upcomingTasks[0]['End_Date'] as String, value.upcomingTasks[0]['End_Time'] as String, value.upcomingTasks[0]['Period_Of_Hour'] as String, false);
                                               }
+                                              Provider.of<NavigationProvider>(context, listen: false).changeCallbackPossible(true);
                                           });
                                           Timer(Duration(milliseconds: 1000), () {
                                             setState(() {
@@ -386,8 +395,9 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                 }
               );
               }
-              )
-          },
+              }
+            )
+          ,
           Align(
             alignment: Alignment.bottomCenter,
             child: ConfettiWidget(
