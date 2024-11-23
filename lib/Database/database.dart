@@ -288,14 +288,24 @@ class DatabaseService {
     }
   }
 
-  Future updateUpcomingTasks() async { 
+  Future updateUpcomingTasks({int? id}) async {
     final db = await _instance.database;
-    var upcTask = await db!.query(
-      tableName1,
-      where: "id = (SELECT MAX(id) FROM $tableName1)" 
-    );
-    log("$upcTask");
-    return upcTask;
+
+    if (id == null) {
+      var upcTask = await db!.query(
+        tableName1,
+        where: "id = (SELECT MAX(id) FROM $tableName1)" 
+      );
+      log("$upcTask");
+      return upcTask;
+    }else{
+      var upcTask = await db!.query(
+        tableName1,
+        where: "id = $id"
+      );
+      log("$upcTask");
+      return upcTask;
+    }
   }
 
   Future deleteUpcomingTask(int id) async {
@@ -324,4 +334,31 @@ class DatabaseService {
         whereArgs: [id]
       );
   }
+
+  Future editTask(int id, int tableNumber, {String? dueDate, String? dueTime}) async {
+    final db = await _instance.database;
+
+    if (dueDate != null) {
+      if (tableNumber == 1) {
+        await db!.rawUpdate(
+            "UPDATE $tableName1 SET $t1_columnName4 = $dueDate WHERE $t1_columnName1 = $id"
+          );
+      }else{
+        await db!.rawUpdate(
+          "UPDATE $tableName3 SET $t3_columnName4 = $dueDate WHERE $t3_columnName1 = $id"
+        );
+      }
+    }else{
+      if (tableNumber == 1) {
+        await db!.rawUpdate(
+            "UPDATE $tableName1 SET $t1_columnName5 = $dueTime WHERE $t1_columnName1 = $id"
+          );
+      }else{
+        await db!.rawUpdate(
+          "UPDATE $tableName3 SET $t3_columnName5 = $dueTime WHERE $t3_columnName1 = $id"
+        );
+      }
+    }
+  }
+  
 }
