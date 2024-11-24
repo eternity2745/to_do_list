@@ -100,7 +100,7 @@ class NavigationProvider with ChangeNotifier {
     //log("$upcomingTasks");
   }
 
-  Future updateEditOverdueTasks(int selctedIndex, Map<String, Object?> task) async {
+  Future updateEditOverdueTasks(int selctedIndex, Map<String, Object?> task, bool isDueDate) async {
 
     List<Map<String, Object?>> taskDetail = [task];
     var inputFormat = DateFormat('dd/MM/yyyy');
@@ -110,7 +110,11 @@ class NavigationProvider with ChangeNotifier {
     log(tddate);
     DateTime tdDateTime = DateTime.parse("$tddate ${taskDetail[0]["End_Time"] as String}");
     if(tdDateTime.isAfter(DateTime.now())) {
-      await db.editTask(taskDetail[0]["id"] as int, 3, dueDate: taskDetail[0]["End_Date"] as String);
+      if (isDueDate) {
+        await db.editTask(taskDetail[0]["id"] as int, 3, dueDate: taskDetail[0]["End_Date"] as String);
+      }else{
+        await db.editTask(taskDetail[0]["id"] as int, 3, dueTime: taskDetail[0]["End_Time"] as String, duePeriod: taskDetail[0]["Period_Of_Hour"] as String);
+      }
       updateUpcomingTasks(task: task, selectedIndex: selctedIndex, updateOverdue: true);
       return;
     }
@@ -254,8 +258,9 @@ class NavigationProvider with ChangeNotifier {
     changenoUpcomingTasks(upcomingTasks.length, notify: false);
 
     if (updateOverdue!) {
+      log('$overdueTasks');
       overdueTasks.removeAt(selectedIndex!);
-      await db.editOverdueTask(taskDetail[0]["id"] as int, dueDate: taskDetail[0]["End_Date"] as String);
+      await db.editOverdueTask(taskDetail[0]["id"] as int);
       changenoOverdueTasks(overdueTasks.length, notify: false);
     }
     notifyListeners();

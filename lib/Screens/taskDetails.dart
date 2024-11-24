@@ -64,10 +64,8 @@ class _TaskDetailsState extends State<TaskDetails> with SingleTickerProviderStat
           Provider.of<NavigationProvider>(context, listen: false).overdueTasks[selectedIndex]["End_Date"] = "${dateTime!.day.toString()}/${dateTime!.month.toString().padLeft(2,'0')}/${dateTime!.year.toString().padLeft(2,'0')}";
           Map<String, Object?> ovrdEditTask = Provider.of<NavigationProvider>(context, listen: false).overdueTasks[selectedIndex];
           Provider.of<NavigationProvider>(context, listen: false).editTaskDetails(dueDate: "${dateTime!.day.toString()}/${dateTime!.month.toString().padLeft(2,'0')}/${dateTime!.year.toString().padLeft(2,'0')}", notify: false);
-          Provider.of<NavigationProvider>(context, listen: false).updateEditOverdueTasks(selectedIndex, ovrdEditTask);
-          
-        }
-        
+          Provider.of<NavigationProvider>(context, listen: false).updateEditOverdueTasks(selectedIndex, ovrdEditTask, true);    
+        }        
       }
     }
   }
@@ -80,7 +78,7 @@ class _TaskDetailsState extends State<TaskDetails> with SingleTickerProviderStat
     DateTime today = DateTime.now();
     String todayDate = "${today.day}/${today.month}/${today.year}";
     if (time != null && context.mounted) {
-      if (time!.hour <= TimeOfDay.now().hour && todayDate == dueDate) {
+      if (time!.hour <= today.hour && time!.minute <= today.minute && todayDate == dueDate) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
           content: Row( 
@@ -106,10 +104,10 @@ class _TaskDetailsState extends State<TaskDetails> with SingleTickerProviderStat
           )
         );
       }else{
-        if (selectedTaskType == "Upcoming") {
-          String dueTimeOG = "${time!.hour == 0 ? 12 : time!.hour > 12 ? (time!.hour-12) < 10 ? '0${time!.hour-12}' : time!.hour-12 : time!.hour < 10 ? '0${time!.hour}' : time!.hour}:${time!.minute == 0 ? '00' : time!.minute < 10 ? '0${time!.minute}' : time!.minute}";
+        String dueTimeOG = "${time!.hour == 0 ? 12 : time!.hour > 12 ? (time!.hour-12) < 10 ? '0${time!.hour-12}' : time!.hour-12 : time!.hour < 10 ? '0${time!.hour}' : time!.hour}:${time!.minute == 0 ? '00' : time!.minute < 10 ? '0${time!.minute}' : time!.minute}";
           String duePeriod = time!.period.name.toUpperCase();
           String hr24 = "${time!.hour < 10 ? '0${time!.hour}' : time!.hour}:${time!.minute<10 ? '0${time!.minute}' : time!.minute}:00";
+        if (selectedTaskType == "Upcoming") {         
           Provider.of<NavigationProvider>(context, listen: false).upcomingTasks[selectedIndex]["End_Time"] = dueTimeOG;
           Provider.of<NavigationProvider>(context, listen: false).upcomingTasks[selectedIndex]["Period_Of_Hour"] = duePeriod;
           Map<String, Object?> upcomingEditTask = Provider.of<NavigationProvider>(context, listen: false).upcomingTasks[selectedIndex];
@@ -120,11 +118,11 @@ class _TaskDetailsState extends State<TaskDetails> with SingleTickerProviderStat
           log(duePeriod);
           await db.editTask(id, 1, dueTime: "${time!.hour < 10 ? '0${time!.hour}' : time!.hour}:${time!.minute<10 ? '0${time!.minute}' : time!.minute}", duePeriod: duePeriod);
         }else{
-          Provider.of<NavigationProvider>(context, listen: false).overdueTasks[selectedIndex]["End_Date"] = "${dateTime!.day.toString()}/${dateTime!.month.toString().padLeft(2,'0')}/${dateTime!.year.toString().padLeft(2,'0')}";
+          Provider.of<NavigationProvider>(context, listen: false).overdueTasks[selectedIndex]["End_Time"] = dueTimeOG;
+          Provider.of<NavigationProvider>(context, listen: false).overdueTasks[selectedIndex]["Period_Of_Hour"] = duePeriod;
           Map<String, Object?> ovrdEditTask = Provider.of<NavigationProvider>(context, listen: false).overdueTasks[selectedIndex];
-          Provider.of<NavigationProvider>(context, listen: false).editTaskDetails(dueDate: "${dateTime!.day.toString()}/${dateTime!.month.toString().padLeft(2,'0')}/${dateTime!.year.toString().padLeft(2,'0')}", notify: false);
-          Provider.of<NavigationProvider>(context, listen: false).updateEditOverdueTasks(selectedIndex, ovrdEditTask);
-          
+          Provider.of<NavigationProvider>(context, listen: false).editTaskDetails(dueTime: "$dueTimeOG $duePeriod", notify: false);
+          Provider.of<NavigationProvider>(context, listen: false).updateEditOverdueTasks(selectedIndex, ovrdEditTask, false);        
         }
       }
     }
