@@ -100,7 +100,7 @@ class NavigationProvider with ChangeNotifier {
     //log("$upcomingTasks");
   }
 
-  Future updateEditOverdueTasks(Map<String, Object> task) async {
+  Future updateEditOverdueTasks(int selctedIndex, Map<String, Object?> task) async {
 
     List<Map<String, Object?>> taskDetail = [task];
     var inputFormat = DateFormat('dd/MM/yyyy');
@@ -110,7 +110,9 @@ class NavigationProvider with ChangeNotifier {
     log(tddate);
     DateTime tdDateTime = DateTime.parse("$tddate ${taskDetail[0]["End_Time"] as String}");
     if(tdDateTime.isAfter(DateTime.now())) {
-      updateUpcomingTasks(task: task);
+      await db.editTask(taskDetail[0]["id"] as int, 3, dueDate: taskDetail[0]["End_Date"] as String);
+      updateUpcomingTasks(task: task, selectedIndex: selctedIndex, updateOverdue: true);
+      return;
     }
     log("$tdDateTime");
     int index = 0; 
@@ -166,10 +168,11 @@ class NavigationProvider with ChangeNotifier {
         "Deleted" : false
       });
     }
+    await db.editTask(taskDetail[0]["id"] as int, 3, dueDate: taskDetail[0]["End_Date"] as String);
     notifyListeners();
   }
   //Future updateUpcomingTasks(int id, String taskName, String created, String endDate, String endTime, String periodOfHour, {bool deleted = false}) async {
-  Future updateUpcomingTasks({Map<String, Object?>? task, bool? updateOverdue = false}) async {
+  Future updateUpcomingTasks({Map<String, Object?>? task, bool? updateOverdue = false, int? selectedIndex}) async {
     List<Map<String, Object?>> taskDetail = [];
     if(task == null) {
       taskDetail = await db.updateUpcomingTasks();
@@ -251,7 +254,9 @@ class NavigationProvider with ChangeNotifier {
     changenoUpcomingTasks(upcomingTasks.length, notify: false);
 
     if (updateOverdue!) {
-      await db.editOverdueTask();
+      overdueTasks.removeAt(selectedIndex!);
+      await db.editOverdueTask(taskDetail[0]["id"] as int, dueDate: taskDetail[0]["End_Date"] as String);
+      changenoOverdueTasks(overdueTasks.length, notify: false);
     }
     notifyListeners();
   }

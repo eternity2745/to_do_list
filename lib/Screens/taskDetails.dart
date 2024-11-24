@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
@@ -45,22 +43,30 @@ class _TaskDetailsState extends State<TaskDetails> with SingleTickerProviderStat
     await db.completeTask(detailsReplica, tableNumber);
   }
 
-  Future<void> _selectDate(BuildContext context, int selectedIndex, int id) async {
+  Future<void> _selectDate(BuildContext context, int selectedIndex, int id, String selectedTaskType) async {
     dateTime = await showDatePicker(
                           context: context, 
-                          initialDate: DateTime.now().add(Duration(days: 1)),
-                          firstDate: DateTime.now().add(Duration(days: 1)),
+                          initialDate: selectedTaskType == "Upcoming" ? DateTime.now().add(Duration(days: 1)) : DateTime.now(),
+                          firstDate: selectedTaskType == "Upcoming" ? DateTime.now().add(Duration(days: 1)) : DateTime.now(),
                           lastDate: DateTime(3000),
                           );
     if (dateTime != null) {
       if (context.mounted) {
-        Provider.of<NavigationProvider>(context, listen: false).upcomingTasks[selectedIndex]["End_Date"] = "${dateTime!.day.toString()}/${dateTime!.month.toString().padLeft(2,'0')}/${dateTime!.year.toString().padLeft(2,'0')}";
-        Map<String, Object?> upcomingEditTask = Provider.of<NavigationProvider>(context, listen: false).upcomingTasks[selectedIndex];
-        Provider.of<NavigationProvider>(context, listen: false).upcomingTasks.removeAt(selectedIndex);
-        Provider.of<NavigationProvider>(context, listen: false).editTaskDetails(dueDate: "${dateTime!.day.toString()}/${dateTime!.month.toString().padLeft(2,'0')}/${dateTime!.year.toString().padLeft(2,'0')}", notify: false);
-        Provider.of<NavigationProvider>(context, listen: false).updateUpcomingTasks(task: upcomingEditTask);
-        await db.editTask(id, 1, dueDate: "${dateTime!.day.toString()}/${dateTime!.month.toString().padLeft(2,'0')}/${dateTime!.year.toString().padLeft(2,'0')}");
-        //Provider.of<NavigationProvider>(context).updateUpcomingTask(upcomingTask, upcomingCreated, upcomingEndDate, upcomingEndTime, upcomingPeriodOfHour, notify)
+        if (selectedTaskType == "Upcoming") {
+          Provider.of<NavigationProvider>(context, listen: false).upcomingTasks[selectedIndex]["End_Date"] = "${dateTime!.day.toString()}/${dateTime!.month.toString().padLeft(2,'0')}/${dateTime!.year.toString().padLeft(2,'0')}";
+          Map<String, Object?> upcomingEditTask = Provider.of<NavigationProvider>(context, listen: false).upcomingTasks[selectedIndex];
+          Provider.of<NavigationProvider>(context, listen: false).upcomingTasks.removeAt(selectedIndex);
+          Provider.of<NavigationProvider>(context, listen: false).editTaskDetails(dueDate: "${dateTime!.day.toString()}/${dateTime!.month.toString().padLeft(2,'0')}/${dateTime!.year.toString().padLeft(2,'0')}", notify: false);
+          Provider.of<NavigationProvider>(context, listen: false).updateUpcomingTasks(task: upcomingEditTask);
+          await db.editTask(id, 1, dueDate: "${dateTime!.day.toString()}/${dateTime!.month.toString().padLeft(2,'0')}/${dateTime!.year.toString().padLeft(2,'0')}");
+        }else{
+          Provider.of<NavigationProvider>(context, listen: false).overdueTasks[selectedIndex]["End_Date"] = "${dateTime!.day.toString()}/${dateTime!.month.toString().padLeft(2,'0')}/${dateTime!.year.toString().padLeft(2,'0')}";
+          Map<String, Object?> ovrdEditTask = Provider.of<NavigationProvider>(context, listen: false).overdueTasks[selectedIndex];
+          Provider.of<NavigationProvider>(context, listen: false).editTaskDetails(dueDate: "${dateTime!.day.toString()}/${dateTime!.month.toString().padLeft(2,'0')}/${dateTime!.year.toString().padLeft(2,'0')}", notify: false);
+          Provider.of<NavigationProvider>(context, listen: false).updateEditOverdueTasks(selectedIndex, ovrdEditTask);
+          
+        }
+        
       }
     }
   }
@@ -228,7 +234,7 @@ class _TaskDetailsState extends State<TaskDetails> with SingleTickerProviderStat
                               ),
                               ),
                             onPressed: () {
-                              _selectDate(context, value.selectedIndex, value.upcomingTasks[index]['id'] as int);
+                              _selectDate(context, value.selectedIndex, value.upcomingTasks[index]['id'] as int, value.selectedTaskType);
                             },
                             );
                             },

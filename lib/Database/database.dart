@@ -361,7 +361,20 @@ class DatabaseService {
     }
   }
 
-  Future editOverdueTask() async {
+  Future editOverdueTask(int id, {String? dueDate, String? dueTime}) async {
+    final db = await _instance.database;
+
+    await db!.rawInsert(
+      '''INSERT INTO $tableName1($t1_columnName1, $t1_columnName2, $t1_columnName3, $t1_columnName4, $t1_columnName5, $t1_columnName6)
+      SELECT * FROM $tableName3 WHERE id = $id
+      '''
+      );
+
+    await db.delete(
+      tableName3, 
+      where: "id = ?",
+      whereArgs: [id]
+    );
 
   }
   
