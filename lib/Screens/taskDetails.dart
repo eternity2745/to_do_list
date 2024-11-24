@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:confetti/confetti.dart';
@@ -44,7 +45,7 @@ class _TaskDetailsState extends State<TaskDetails> with SingleTickerProviderStat
     await db.completeTask(detailsReplica, tableNumber);
   }
 
-  Future<void> _selectDate(BuildContext context, selectedIndex) async {
+  Future<void> _selectDate(BuildContext context, int selectedIndex, int id) async {
     dateTime = await showDatePicker(
                           context: context, 
                           initialDate: DateTime.now().add(Duration(days: 1)),
@@ -53,8 +54,12 @@ class _TaskDetailsState extends State<TaskDetails> with SingleTickerProviderStat
                           );
     if (dateTime != null) {
       if (context.mounted) {
-        Provider.of<NavigationProvider>(context).upcomingTasks[selectedIndex]["End_Date"] = "${dateTime!.day.toString()}/${dateTime!.month.toString().padLeft(2,'0')}/${dateTime!.year.toString().padLeft(2,'0')}";
-        Provider.of<NavigationProvider>(context).upcomingTasks.removeAt(selectedIndex);
+        Provider.of<NavigationProvider>(context, listen: false).upcomingTasks[selectedIndex]["End_Date"] = "${dateTime!.day.toString()}/${dateTime!.month.toString().padLeft(2,'0')}/${dateTime!.year.toString().padLeft(2,'0')}";
+        Map<String, Object?> upcomingEditTask = Provider.of<NavigationProvider>(context, listen: false).upcomingTasks[selectedIndex];
+        Provider.of<NavigationProvider>(context, listen: false).upcomingTasks.removeAt(selectedIndex);
+        Provider.of<NavigationProvider>(context, listen: false).editTaskDetails(dueDate: "${dateTime!.day.toString()}/${dateTime!.month.toString().padLeft(2,'0')}/${dateTime!.year.toString().padLeft(2,'0')}", notify: false);
+        Provider.of<NavigationProvider>(context, listen: false).updateUpcomingTasks(task: upcomingEditTask);
+        await db.editTask(id, 1, dueDate: "${dateTime!.day.toString()}/${dateTime!.month.toString().padLeft(2,'0')}/${dateTime!.year.toString().padLeft(2,'0')}");
         //Provider.of<NavigationProvider>(context).updateUpcomingTask(upcomingTask, upcomingCreated, upcomingEndDate, upcomingEndTime, upcomingPeriodOfHour, notify)
       }
     }
@@ -223,7 +228,7 @@ class _TaskDetailsState extends State<TaskDetails> with SingleTickerProviderStat
                               ),
                               ),
                             onPressed: () {
-                              _selectDate(context, value.selectedIndex);
+                              _selectDate(context, value.selectedIndex, value.upcomingTasks[index]['id'] as int);
                             },
                             );
                             },

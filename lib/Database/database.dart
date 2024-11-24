@@ -123,7 +123,6 @@ class DatabaseService {
 
   Future getUpcomingTask({int? limit}) async {
     final db = await _instance.database;
-
     if (limit != null) {
     log("1 Upc");
     final List<Map<String, Object?>> result = await db!.query(
@@ -138,6 +137,7 @@ class DatabaseService {
       tableName1,
       orderBy: "$t1_columnName4, $t1_columnName5",
       );
+      log("$result");
     return result;
     }
   }
@@ -213,7 +213,7 @@ class DatabaseService {
       tableName3,
       orderBy: "$t1_columnName4, $t1_columnName5"
     );
-
+    log("$result");
     return result;
   }
 
@@ -341,24 +341,28 @@ class DatabaseService {
     if (dueDate != null) {
       if (tableNumber == 1) {
         await db!.rawUpdate(
-            "UPDATE $tableName1 SET $t1_columnName4 = $dueDate WHERE $t1_columnName1 = $id"
+            "UPDATE $tableName1 SET $t1_columnName4 = '$dueDate' WHERE $t1_columnName1 = $id"
           );
       }else{
         await db!.rawUpdate(
-          "UPDATE $tableName3 SET $t3_columnName4 = $dueDate WHERE $t3_columnName1 = $id"
+          "UPDATE $tableName3 SET $t3_columnName4 = '$dueDate' WHERE $t3_columnName1 = $id"
         );
       }
     }else{
       if (tableNumber == 1) {
         await db!.rawUpdate(
-            "UPDATE $tableName1 SET $t1_columnName5 = $dueTime WHERE $t1_columnName1 = $id"
+            "UPDATE $tableName1 SET $t1_columnName5 = '$dueTime' WHERE $t1_columnName1 = $id"
           );
       }else{
         await db!.rawUpdate(
-          "UPDATE $tableName3 SET $t3_columnName5 = $dueTime WHERE $t3_columnName1 = $id"
+          "UPDATE $tableName3 SET $t3_columnName5 = '$dueTime' WHERE $t3_columnName1 = $id"
         );
       }
     }
+  }
+
+  Future editOverdueTask() async {
+
   }
   
 }
