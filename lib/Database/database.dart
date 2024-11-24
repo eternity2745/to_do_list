@@ -123,6 +123,7 @@ class DatabaseService {
 
   Future getUpcomingTask({int? limit}) async {
     final db = await _instance.database;
+    await db!.delete(tableName1, where: "id = ?", whereArgs: [1732449768255713]);
     if (limit != null) {
     log("1 Upc");
     final List<Map<String, Object?>> result = await db!.query(
@@ -335,7 +336,7 @@ class DatabaseService {
       );
   }
 
-  Future editTask(int id, int tableNumber, {String? dueDate, String? dueTime}) async {
+  Future editTask(int id, int tableNumber, {String? dueDate, String? dueTime, String? duePeriod}) async {
     final db = await _instance.database;
 
     if (dueDate != null) {
@@ -350,9 +351,14 @@ class DatabaseService {
       }
     }else{
       if (tableNumber == 1) {
+        log("$dueTime $duePeriod");
         await db!.rawUpdate(
-            "UPDATE $tableName1 SET $t1_columnName5 = '$dueTime' WHERE $t1_columnName1 = $id"
+            "UPDATE $tableName1 SET $t1_columnName5 = '$dueTime:00' WHERE $t1_columnName1 = $id"
           );
+        await db.rawUpdate(
+            "UPDATE $tableName1 SET $t1_columnName6 = '$duePeriod' WHERE $t1_columnName1 = $id"
+        );
+
       }else{
         await db!.rawUpdate(
           "UPDATE $tableName3 SET $t3_columnName5 = '$dueTime' WHERE $t3_columnName1 = $id"

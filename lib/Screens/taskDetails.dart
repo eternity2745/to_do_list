@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
@@ -71,14 +72,15 @@ class _TaskDetailsState extends State<TaskDetails> with SingleTickerProviderStat
     }
   }
 
-  Future<void> _selectTime(BuildContext context) async {
+  Future<void> _selectTime(BuildContext context, int selectedIndex, int id, String selectedTaskType, String dueDate) async {
     time = await showTimePicker(
             context: context, 
             initialTime: TimeOfDay.now()
           );
-
+    DateTime today = DateTime.now();
+    String todayDate = "${today.day}/${today.month}/${today.year}";
     if (time != null && context.mounted) {
-      if (time!.hour <= TimeOfDay.now().hour) {
+      if (time!.hour <= TimeOfDay.now().hour && todayDate == dueDate) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
           content: Row( 
@@ -103,6 +105,27 @@ class _TaskDetailsState extends State<TaskDetails> with SingleTickerProviderStat
             curve: Curves.easeInToLinear
           )
         );
+      }else{
+        if (selectedTaskType == "Upcoming") {
+          String dueTimeOG = "${time!.hour == 0 ? 12 : time!.hour > 12 ? (time!.hour-12) < 10 ? '0${time!.hour-12}' : time!.hour-12 : time!.hour < 10 ? '0${time!.hour}' : time!.hour}:${time!.minute == 0 ? '00' : time!.minute < 10 ? '0${time!.minute}' : time!.minute}";
+          String duePeriod = time!.period.name.toUpperCase();
+          String hr24 = "${time!.hour < 10 ? '0${time!.hour}' : time!.hour}:${time!.minute<10 ? '0${time!.minute}' : time!.minute}:00";
+          Provider.of<NavigationProvider>(context, listen: false).upcomingTasks[selectedIndex]["End_Time"] = dueTimeOG;
+          Provider.of<NavigationProvider>(context, listen: false).upcomingTasks[selectedIndex]["Period_Of_Hour"] = duePeriod;
+          Map<String, Object?> upcomingEditTask = Provider.of<NavigationProvider>(context, listen: false).upcomingTasks[selectedIndex];
+          Provider.of<NavigationProvider>(context, listen: false).upcomingTasks.removeAt(selectedIndex);
+          Provider.of<NavigationProvider>(context, listen: false).editTaskDetails(dueTime: "$dueTimeOG $duePeriod", notify: false);
+          Provider.of<NavigationProvider>(context, listen: false).updateUpcomingTasks(task: upcomingEditTask);
+          log(hr24);
+          log(duePeriod);
+          await db.editTask(id, 1, dueTime: "${time!.hour < 10 ? '0${time!.hour}' : time!.hour}:${time!.minute<10 ? '0${time!.minute}' : time!.minute}", duePeriod: duePeriod);
+        }else{
+          Provider.of<NavigationProvider>(context, listen: false).overdueTasks[selectedIndex]["End_Date"] = "${dateTime!.day.toString()}/${dateTime!.month.toString().padLeft(2,'0')}/${dateTime!.year.toString().padLeft(2,'0')}";
+          Map<String, Object?> ovrdEditTask = Provider.of<NavigationProvider>(context, listen: false).overdueTasks[selectedIndex];
+          Provider.of<NavigationProvider>(context, listen: false).editTaskDetails(dueDate: "${dateTime!.day.toString()}/${dateTime!.month.toString().padLeft(2,'0')}/${dateTime!.year.toString().padLeft(2,'0')}", notify: false);
+          Provider.of<NavigationProvider>(context, listen: false).updateEditOverdueTasks(selectedIndex, ovrdEditTask);
+          
+        }
       }
     }
   }
@@ -258,7 +281,7 @@ class _TaskDetailsState extends State<TaskDetails> with SingleTickerProviderStat
                               ),
                               ),
                             onPressed: () {
-                              _selectTime(context);
+                              _selectTime(context, value.selectedIndex, value.selectedTaskID, value.selectedTaskType, value.dueDate);
                             },
                             );
                             },
