@@ -255,7 +255,7 @@ class _TaskDetailsState extends State<TaskDetails> with SingleTickerProviderStat
                               ),
                               ),
                             onPressed: () {
-                              _selectDate(context, value.selectedIndex, value.selectedTaskType == "Upcoming" ? value.upcomingTasks[index]['id'] as int : value.selectedTaskType == "Completed" ? value.completedTasks[index]['id'] as int : value.overdueTasks[index]['id'] as int, value.selectedTaskType);
+                              _selectDate(context, value.selectedIndex, value.selectedTaskID, value.selectedTaskType);
                             },
                             );
                             },
@@ -345,7 +345,7 @@ class _TaskDetailsState extends State<TaskDetails> with SingleTickerProviderStat
                         animation: _animationController,
                         child: ElevatedButton(
                           onPressed: () {
-                            if (Provider.of<NavigationProvider>(context).selectedTaskType != "Completed") {
+                            if (Provider.of<NavigationProvider>(context, listen: false).selectedTaskType != "Completed") {
                               _controllerBottomCenter.play();
                             }
                             Provider.of<NavigationProvider>(context, listen: false).changeCallbackPossible(false);
@@ -356,8 +356,8 @@ class _TaskDetailsState extends State<TaskDetails> with SingleTickerProviderStat
                               Provider.of<NavigationProvider>(context, listen:false).upcomingTasks.removeAt(selectedIndex);
                               Provider.of<NavigationProvider>(context, listen: false).changenoCompletedTasks(Provider.of<NavigationProvider>(context, listen: false).completedTasks.length);
                               Provider.of<NavigationProvider>(context, listen: false).changenoUpcomingTasks(Provider.of<NavigationProvider>(context, listen: false).upcomingTasks.length);
-                            }else if(Provider.of<NavigationProvider>(context).selectedTaskType == "Completed") {
-
+                            }else if(Provider.of<NavigationProvider>(context, listen: false).selectedTaskType == "Completed") {
+                              
                             }else{
                               List<Map<String, Object?>> overdueTasks = Provider.of<NavigationProvider>(context, listen: false).overdueTasks;
                               int selectedIndex = Provider.of<NavigationProvider>(context, listen: false).selectedIndex;
@@ -366,16 +366,20 @@ class _TaskDetailsState extends State<TaskDetails> with SingleTickerProviderStat
                               Provider.of<NavigationProvider>(context, listen: false).changenoCompletedTasks(Provider.of<NavigationProvider>(context, listen: false).completedTasks.length);
                               Provider.of<NavigationProvider>(context, listen: false).changenoOverdueTasks(Provider.of<NavigationProvider>(context, listen: false).overdueTasks.length);
                             }
-      
-                            Timer(
-                              Duration(milliseconds: 1000),
-                              () {
-                                if (context.mounted) {
-                                  Navigator.of(context).pop();
+                            if (Provider.of<NavigationProvider>(context, listen: false).selectedTaskType == "Completed") {
+                              Navigator.of(context).pop();
+                              Provider.of<NavigationProvider>(context, listen: false).changeCallbackPossible(true);
+                            }else{
+                              Timer( 
+                                Duration(milliseconds: 1000),
+                                () {
+                                  if (context.mounted) {
+                                    Navigator.of(context).pop();
+                                  }
+                                  Provider.of<NavigationProvider>(context, listen: false).changeCallbackPossible(true);
                                 }
-                                Provider.of<NavigationProvider>(context, listen: false).changeCallbackPossible(true);
-                              }
-                            );
+                              );
+                            }
                           }, 
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.grey.shade900,

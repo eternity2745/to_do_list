@@ -131,7 +131,7 @@ LandingPage> with AutomaticKeepAliveClientMixin{
                           );
     if (dateTime != null) {
       setState(() {
-        _dateTimeTextController.text = "${dateTime!.day.toString()}/${dateTime!.month.toString().padLeft(2,'0')}/${dateTime!.year.toString().padLeft(2,'0')}";//${dateTime!.hour.toString().padLeft(2,'0')}-${dateTime!.minute.toString().padLeft(2,'0')}
+        _dateTimeTextController.text = "${dateTime!.day.toString().padLeft(2, '0')}/${dateTime!.month.toString().padLeft(2,'0')}/${dateTime!.year.toString().padLeft(2,'0')}";//${dateTime!.hour.toString().padLeft(2,'0')}-${dateTime!.minute.toString().padLeft(2,'0')}
       });
     }
   }
@@ -370,6 +370,7 @@ LandingPage> with AutomaticKeepAliveClientMixin{
                             TextButton(
                               onPressed: () {
                                 if (_taskNameTextController.text != '' && _dateTimeTextController.text != '' && _timeTextController.text != '') {
+                                
                                 addTask(_taskNameTextController.text, _dateTimeTextController.text, "${time!.hour < 10 && time!.hour > 0 ? '0${time!.hour}' : time!.hour == 0 ? '00' : time!.hour}:${time!.minute == 0 ? '00' : time!.minute < 10 ? '0${time!.minute}' : time!.minute}", hourOfDay);
                                 Provider.of<NavigationProvider>(context, listen: false).changePersistStateUpcoming(true);
                                 updateOverDueTasks();

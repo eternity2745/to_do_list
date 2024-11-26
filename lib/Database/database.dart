@@ -97,7 +97,8 @@ class DatabaseService {
     final db = await _instance.database;
     final id = DateTime.now().microsecondsSinceEpoch.toString();
     log(id);
-    final created = "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}";
+    final dateTime = DateTime.now();
+    final created = "${dateTime.day < 10 ? '0${dateTime.day}' : dateTime.day}/${dateTime.month}/${dateTime.year}";
     await db!.insert(
       tableName1,
       {
@@ -233,7 +234,7 @@ class DatabaseService {
     log(formattedDate);
 
     var upcomingTasks = await db!.rawQuery(
-      "SELECT * FROM $tableName1 WHERE $t1_columnName4 < '$formattedDate' OR ($t1_columnName4 = '$formattedDate' AND $t1_columnName5 <= '$formattedTime') ORDER BY $t1_columnName4, $t1_columnName5"
+      "SELECT * FROM $tableName1 WHERE '$t1_columnName4' < $formattedDate OR ($t1_columnName4 = '$formattedDate' AND $t1_columnName5 <= '$formattedTime') ORDER BY $t1_columnName4, $t1_columnName5"
     );
 
     log("UPCOMING TASKS $upcomingTasks");
