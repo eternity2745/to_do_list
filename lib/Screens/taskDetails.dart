@@ -255,7 +255,7 @@ class _TaskDetailsState extends State<TaskDetails> with SingleTickerProviderStat
                               ),
                               ),
                             onPressed: () {
-                              _selectDate(context, value.selectedIndex, value.upcomingTasks[index]['id'] as int, value.selectedTaskType);
+                              _selectDate(context, value.selectedIndex, value.selectedTaskType == "Upcoming" ? value.upcomingTasks[index]['id'] as int : value.selectedTaskType == "Completed" ? value.completedTasks[index]['id'] as int : value.overdueTasks[index]['id'] as int, value.selectedTaskType);
                             },
                             );
                             },
@@ -345,7 +345,9 @@ class _TaskDetailsState extends State<TaskDetails> with SingleTickerProviderStat
                         animation: _animationController,
                         child: ElevatedButton(
                           onPressed: () {
-                            _controllerBottomCenter.play();
+                            if (Provider.of<NavigationProvider>(context).selectedTaskType != "Completed") {
+                              _controllerBottomCenter.play();
+                            }
                             Provider.of<NavigationProvider>(context, listen: false).changeCallbackPossible(false);
                             if (Provider.of<NavigationProvider>(context, listen: false).selectedTaskType == "Upcoming") {
                               List<Map<String, Object?>> upcomingTasks = Provider.of<NavigationProvider>(context, listen: false).upcomingTasks;
@@ -354,6 +356,8 @@ class _TaskDetailsState extends State<TaskDetails> with SingleTickerProviderStat
                               Provider.of<NavigationProvider>(context, listen:false).upcomingTasks.removeAt(selectedIndex);
                               Provider.of<NavigationProvider>(context, listen: false).changenoCompletedTasks(Provider.of<NavigationProvider>(context, listen: false).completedTasks.length);
                               Provider.of<NavigationProvider>(context, listen: false).changenoUpcomingTasks(Provider.of<NavigationProvider>(context, listen: false).upcomingTasks.length);
+                            }else if(Provider.of<NavigationProvider>(context).selectedTaskType == "Completed") {
+
                             }else{
                               List<Map<String, Object?>> overdueTasks = Provider.of<NavigationProvider>(context, listen: false).overdueTasks;
                               int selectedIndex = Provider.of<NavigationProvider>(context, listen: false).selectedIndex;
@@ -381,7 +385,7 @@ class _TaskDetailsState extends State<TaskDetails> with SingleTickerProviderStat
                             elevation: height*0.01
                           ),
                           child: Icon(
-                            Icons.check_rounded,
+                            Provider.of<NavigationProvider>(context).selectedTaskType == "Completed" ? Icons.undo_rounded : Icons.check_rounded,
                             color: Colors.green,
                             size: height*0.05,
                             )

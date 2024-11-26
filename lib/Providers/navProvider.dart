@@ -363,7 +363,9 @@ class NavigationProvider with ChangeNotifier {
         changenoUpcomingTasks(upcomingTasks.length, notify: false);
         
       }
+      if (upcomingTasks.isNotEmpty) {
       updateUpcomingTask(upcomingTasks[0]['Task_Name'] as String, upcomingTasks[0]['Created'] as String, upcomingTasks[0]["End_Date"] as String, upcomingTasks[0]["End_Time"] as String, upcomingTasks[0]["Period_Of_Hour"] as String, false);
+      }
       notifyListeners();
     }else if (update.isEmpty && checkUpcoming == true){
       //List<Map<String, Object?>> taskDetail = await db.updateUpcomingTasks();

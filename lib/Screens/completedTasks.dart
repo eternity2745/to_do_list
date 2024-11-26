@@ -128,16 +128,6 @@ class _CompletedTasksState extends State<CompletedTasks> with AutomaticKeepAlive
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    IconButton(
-                                      onPressed: () {
-                                        // setState(() {
-                                        //   deleteTask(completedTasks[index]['id'] as int, 3);
-                                        //   completedTasks.removeAt(index);
-                                        // });
-                                      },
-                                      icon: const Icon(Icons.check_box_outline_blank_rounded)
-                                      ),
-                                      SizedBox(width: width*0.01),
                                       Expanded(
                                         child: Padding(
                                           padding: EdgeInsets.only(top: height*0.008, bottom: height*0.01),
