@@ -234,7 +234,7 @@ class DatabaseService {
     log(formattedDate);
 
     var upcomingTasks = await db!.rawQuery(
-      "SELECT * FROM $tableName1 WHERE '$t1_columnName4' < $formattedDate OR ($t1_columnName4 = '$formattedDate' AND $t1_columnName5 <= '$formattedTime') ORDER BY $t1_columnName4, $t1_columnName5"
+      "SELECT * FROM $tableName1 WHERE '$t1_columnName4' < '$formattedDate' OR ($t1_columnName4 = '$formattedDate' AND $t1_columnName5 <= '$formattedTime') ORDER BY $t1_columnName4, $t1_columnName5"
     );
 
     log("UPCOMING TASKS $upcomingTasks");
