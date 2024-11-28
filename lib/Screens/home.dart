@@ -1,3 +1,4 @@
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:molten_navigationbar_flutter/molten_navigationbar_flutter.dart';
 import 'package:provider/provider.dart';
@@ -32,17 +33,17 @@ class _HomeScreenState extends State<HomeScreen> {
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
       
-      bottomNavigationBar: MoltenBottomNavigationBar(
-        tabs: [
-          MoltenTab(icon: Icon(Icons.home_outlined, size: height*0.035,)),
-          MoltenTab(icon: Icon(Icons.timelapse_outlined, size: height*0.035)),
-          MoltenTab(icon: Icon(Icons.done_outline_rounded, size: height*0.035))
+      bottomNavigationBar: CurvedNavigationBar(
+        items: [
+          Icon(Icons.home_outlined, size: height*0.035,),
+          Icon(Icons.timelapse_outlined, size: height*0.035),
+          Icon(Icons.done_outline_rounded, size: height*0.035)
         ]
         , 
-        selectedIndex: selectedIndex,
-        barColor: Colors.green.shade900,
-        barHeight: height*0.08,
-        onTabChange: (clickedIndex) {
+        index: selectedIndex,
+        color: Colors.blueGrey,
+        height: height*0.08,
+        onTap: (clickedIndex) {
           selectedIndex = clickedIndex;
           Provider.of<NavigationProvider>(context, listen: false).updateOverDueTasks();
           if ((selectedIndex == 0 || selectedIndex == 2) && Provider.of<NavigationProvider>(context, listen: false).persistStateUpcoming == false) {            
