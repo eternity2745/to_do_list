@@ -41,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ]
         , 
         index: selectedIndex,
-        color: Colors.blueGrey,
+        color: Colors.green,
         height: height*0.08,
         onTap: (clickedIndex) {
           selectedIndex = clickedIndex;
