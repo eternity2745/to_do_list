@@ -382,7 +382,7 @@ class _TaskDetailsState extends State<TaskDetails> with SingleTickerProviderStat
                                 "End_Time" : task["End_Time"],
                                 "Period_Of_Hour" : task["Period_Of_Hour"]
                               };
-                              Provider.of<NavigationProvider>(context, listen: false).undoCompleted(Provider.of<NavigationProvider>(context).selectedIndex,taskDetails);
+                              Provider.of<NavigationProvider>(context, listen: false).undoCompleted(Provider.of<NavigationProvider>(context, listen: false).selectedIndex,taskDetails);
                             }else{
                               List<Map<String, Object?>> overdueTasks = Provider.of<NavigationProvider>(context, listen: false).overdueTasks;
                               int selectedIndex = Provider.of<NavigationProvider>(context, listen: false).selectedIndex;

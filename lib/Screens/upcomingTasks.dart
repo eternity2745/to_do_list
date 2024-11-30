@@ -140,8 +140,12 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                   children: [
                     GestureDetector(
                       onTap: () {
+                        String endTime = value.overdueTasks[index]['End_Time'] as String;
+                        int hour = int.parse(endTime.substring(0,2));
+                        int minute = int.parse(endTime.substring(3,5));
+                        endTime = "${hour == 0 ? 12 : hour > 12 ? (hour-12) < 10 ? '0${hour-12}' : hour-12 : hour < 10 ? '0$hour' : hour}:${minute == 0 ? '00' : minute < 10 ? '0$minute' : minute}";
                         if(Provider.of<NavigationProvider>(context, listen: false).callbackPossible) {
-                          Provider.of<NavigationProvider>(context, listen: false).updateTaskDetails(value.overdueTasks[index]['Task_Name'] as String, value.overdueTasks[index]['Created'] as String, value.overdueTasks[index]['End_Date'] as String, "${value.overdueTasks[index]['End_Time']} ${value.overdueTasks[index]['Period_Of_Hour']}", "No", "Yes", index, "Overdue", value.overdueTasks[index]['id'] as int);
+                          Provider.of<NavigationProvider>(context, listen: false).updateTaskDetails(value.overdueTasks[index]['Task_Name'] as String, value.overdueTasks[index]['Created'] as String, value.overdueTasks[index]['End_Date'] as String, "$endTime ${value.overdueTasks[index]['Period_Of_Hour']}", "No", "Yes", index, "Overdue", value.overdueTasks[index]['id'] as int);
                           Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetails()));
                         }
                       },
@@ -284,7 +288,11 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                     GestureDetector(
                       onTap: () {
                         if (Provider.of<NavigationProvider>(context, listen: false).callbackPossible) {
-                          Provider.of<NavigationProvider>(context, listen: false).updateTaskDetails(value.upcomingTasks[index]['Task_Name'] as String, value.upcomingTasks[index]['Created'] as String, value.upcomingTasks[index]['End_Date'] as String, "${value.upcomingTasks[index]['End_Time']} ${value.upcomingTasks[index]['Period_Of_Hour']}", "No", "No", index, "Upcoming", value.upcomingTasks[index]['id'] as int);
+                        String endTime = value.upcomingTasks[index]['End_Time'] as String;
+                        int hour = int.parse(endTime.substring(0,2));
+                        int minute = int.parse(endTime.substring(3,5));
+                        endTime = "${hour == 0 ? 12 : hour > 12 ? (hour-12) < 10 ? '0${hour-12}' : hour-12 : hour < 10 ? '0$hour' : hour}:${minute == 0 ? '00' : minute < 10 ? '0$minute' : minute}";
+                          Provider.of<NavigationProvider>(context, listen: false).updateTaskDetails(value.upcomingTasks[index]['Task_Name'] as String, value.upcomingTasks[index]['Created'] as String, value.upcomingTasks[index]['End_Date'] as String, "$endTime ${value.upcomingTasks[index]['Period_Of_Hour']}", "No", "No", index, "Upcoming", value.upcomingTasks[index]['id'] as int);
                           Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetails()));
                         }
                       },
