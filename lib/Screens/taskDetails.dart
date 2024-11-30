@@ -255,7 +255,9 @@ class _TaskDetailsState extends State<TaskDetails> with SingleTickerProviderStat
                               ),
                               ),
                             onPressed: () {
+                              if (Provider.of<NavigationProvider>(context, listen: false).selectedTaskType != "Completed") {
                               _selectDate(context, value.selectedIndex, value.selectedTaskID, value.selectedTaskType);
+                              }
                             },
                             );
                             },
@@ -279,7 +281,9 @@ class _TaskDetailsState extends State<TaskDetails> with SingleTickerProviderStat
                               ),
                               ),
                             onPressed: () {
-                              _selectTime(context, value.selectedIndex, value.selectedTaskID, value.selectedTaskType, value.dueDate);
+                              if (Provider.of<NavigationProvider>(context, listen: false).selectedTaskType != "Completed") {
+                                _selectTime(context, value.selectedIndex, value.selectedTaskID, value.selectedTaskType, value.dueDate);
+                              }
                             },
                             );
                             },

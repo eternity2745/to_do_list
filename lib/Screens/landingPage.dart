@@ -459,11 +459,7 @@ LandingPage> with AutomaticKeepAliveClientMixin{
                           return Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              IconButton(
-                                onPressed: () {}, 
-                                icon: const Icon(Icons.check_box_outline_blank_rounded)
-                                ),
-                                SizedBox(width: width*0.01),
+                                SizedBox(width: width*0.05),
                                 Expanded(
                                   child: Padding(
                                     padding: EdgeInsets.only(top: height*0.008, bottom: height*0.01),
@@ -542,11 +538,7 @@ LandingPage> with AutomaticKeepAliveClientMixin{
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            IconButton(
-                              onPressed: () {}, 
-                              icon: const Icon(Icons.check_box_outline_blank_rounded)
-                              ),
-                              SizedBox(width: width*0.01),
+                              SizedBox(width: width*0.05),
                               Expanded(
                                 child: Padding(
                                   padding: EdgeInsets.only(top: height*0.008, bottom: height*0.01),
