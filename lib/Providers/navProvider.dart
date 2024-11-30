@@ -473,6 +473,7 @@ class NavigationProvider with ChangeNotifier {
     if (tdDateTime.isBefore(DateTime.now()) || tdDateTime.isAtSameMomentAs(DateTime.now()) ) {
       tableNumber = 3;
       updateEditOverdueTasks(0, taskDetails, false);
+      changenoOverdueTasks(noOverdueTasks+1);
     }else{
       tableNumber = 1;
       updateUpcomingTasks(task: taskDetails);
@@ -480,6 +481,7 @@ class NavigationProvider with ChangeNotifier {
 
     await db.undoCompleted(taskDetails['id'] as int, tableNumber);
     completedTasks.removeAt(selectedIndex);
+    changenoCompletedTasks(completedTasks.length);
   }
 
   void changenoOverdueTasks(int number, {bool notify = true}) {
