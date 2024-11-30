@@ -59,7 +59,13 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
     details['Completed_Time'] = time;
     details['Completed_Date'] = date;
     details['Completed_Period_Of_Hour'] = periodOfHour;
-
+    String endTime = details["End_Time"] as String;
+    if (details["Period_Of_Hour"] == "AM") {
+      endTime = "${endTime.substring(0,2) == "12" ? "00" : endTime.substring(0,2)}${endTime.substring(2)}:00";
+    }else{
+      endTime = "${int.parse(endTime.substring(0,2))+12}${endTime.substring(2)}:00";
+    }
+    details["End_Time"] = endTime;
     Map<String, Object?> detailsReplica = { for (var e in details.keys) e : details[e] };
     Provider.of<NavigationProvider>(context, listen: false).updateCompletedTasks(details['id'] as int, details['Task_Name'] as String, details['Completed_Date'] as String, details['Completed_Time'] as String, details['Completed_Period_Of_Hour'] as String, details['Created'] as String, details['End_Date'] as String, details['End_Time'] as String, details['Period_Of_Hour'] as String);
     await db.completeTask(detailsReplica, tableNumber);

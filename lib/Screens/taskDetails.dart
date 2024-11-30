@@ -38,7 +38,13 @@ class _TaskDetailsState extends State<TaskDetails> with SingleTickerProviderStat
     details['Completed_Time'] = time;
     details['Completed_Date'] = date;
     details['Completed_Period_Of_Hour'] = periodOfHour;
-
+    String endTime = details["End_Time"] as String;
+    if (details["Period_Of_Hour"] == "AM") {
+      endTime = "${endTime.substring(0,2) == "12" ? "00" : endTime.substring(0,2)}${endTime.substring(2)}:00";
+    }else{
+      endTime = "${int.parse(endTime.substring(0,2))+12}${endTime.substring(2)}:00";
+    }
+    details["End_Time"] = endTime;
     Map<String, Object?> detailsReplica = { for (var e in details.keys) e : details[e] };
     Provider.of<NavigationProvider>(context, listen: false).updateCompletedTasks(details['id'] as int, details['Task_Name'] as String, details['Completed_Date'] as String, details['Completed_Time'] as String, details['Completed_Period_Of_Hour'] as String, details['Created'] as String, details['End_Date'] as String, details['End_Time'] as String, details['Period_Of_Hour'] as String);
     await db.completeTask(detailsReplica, tableNumber);
@@ -361,7 +367,22 @@ class _TaskDetailsState extends State<TaskDetails> with SingleTickerProviderStat
                               Provider.of<NavigationProvider>(context, listen: false).changenoCompletedTasks(Provider.of<NavigationProvider>(context, listen: false).completedTasks.length);
                               Provider.of<NavigationProvider>(context, listen: false).changenoUpcomingTasks(Provider.of<NavigationProvider>(context, listen: false).upcomingTasks.length);
                             }else if(Provider.of<NavigationProvider>(context, listen: false).selectedTaskType == "Completed") {
-                              
+                              Map<String, Object?> task = Provider.of<NavigationProvider>(context, listen: false).completedTasks[Provider.of<NavigationProvider>(context, listen: false).selectedIndex];
+                              // String endTime = task["End_Time"] as String;
+                              // if (task["Period_Of_Hour"] == "AM") {
+                              //   endTime = "${endTime.substring(0,2) == "12" ? "00" : endTime.substring(0,2)}:${endTime.substring(2)}:00";
+                              // }else{
+                              //   endTime = "${int.parse(endTime.substring(0,2))+12}:${endTime.substring(2)}:00";
+                              // }
+                              Map<String, Object?> taskDetails = {
+                                "id" : task["id"],
+                                "Task_Name" : task["Task_Name"],
+                                "Created" : task["Created"],
+                                "End_Date" : task["End_Date"],
+                                "End_Time" : task["End_Time"],
+                                "Period_Of_Hour" : task["Period_Of_Hour"]
+                              };
+                              Provider.of<NavigationProvider>(context, listen: false).undoCompleted(Provider.of<NavigationProvider>(context).selectedIndex,taskDetails);
                             }else{
                               List<Map<String, Object?>> overdueTasks = Provider.of<NavigationProvider>(context, listen: false).overdueTasks;
                               int selectedIndex = Provider.of<NavigationProvider>(context, listen: false).selectedIndex;

@@ -124,7 +124,7 @@ class DatabaseService {
 
   Future getUpcomingTask({int? limit}) async {
     final db = await _instance.database;
-    //await db!.delete(tableName1, where: "id = ?", whereArgs: [1732449768255713]);
+    await db!.delete(tableName3, where: "id = ?", whereArgs: [1732642307048453]);
     if (limit != null) {
     log("1 Upc");
     final List<Map<String, Object?>> result = await db!.query(
@@ -173,12 +173,12 @@ class DatabaseService {
 
   Future getCompletedTasks({int? limit}) async {
     final db = await _instance.database;
-
     if (limit == null) {
     List<Map<String, Object?>> result = await db!.query(
       tableName2,
       orderBy: "$t2_columnName3 DESC, $t2_columnName4 DESC"
     );
+    log("$result");
     return result;
     }else{
       List<Map<String, Object?>> result = await db!.query(

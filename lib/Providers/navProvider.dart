@@ -184,6 +184,7 @@ class NavigationProvider with ChangeNotifier {
       taskDetail.add(task);
       log("$taskDetail");
     }
+
     //List<Map<String, Object?>> taskDetail = [for (var i in taskDetailOG) i];
     var inputFormat = DateFormat('dd/MM/yyyy');
     var outputFormat = DateFormat('yyyy-MM-dd');
@@ -461,14 +462,7 @@ class NavigationProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future undoCompleted(int id, taskDetails) async {
-    DateTime dateTime = DateTime.now();
-    String formattedDate = "${dateTime.day}/${dateTime.month}/${dateTime.year}";
-    String hour = dateTime.hour < 10 ? '0${dateTime.hour}' : '${dateTime.hour}';
-    String minutes = dateTime.minute < 10 ? '0${dateTime.minute}' : '${dateTime.minute}';
-    String seconds = dateTime.second < 10 ? '0${dateTime.second}' : '${dateTime.second}';
-    String formattedTime = "$hour:$minutes:$seconds";
-    DateTime currDateTime = DateTime.parse("$formattedDate $formattedTime");
+  Future undoCompleted(selectedIndex, Map<String, Object?>taskDetails) async {
     var inputFormat = DateFormat('dd/MM/yyyy');
     var outputFormat = DateFormat('yyyy-MM-dd');
     var tddateOG = inputFormat.parse(taskDetails['End_Date'] as String);
@@ -476,13 +470,16 @@ class NavigationProvider with ChangeNotifier {
     log(tddate);
     int tableNumber = 0;
     DateTime tdDateTime = DateTime.parse("$tddate ${taskDetails["End_Time"] as String}");
-    if (tdDateTime.isBefore(currDateTime) || tdDateTime.isAtSameMomentAs(currDateTime) ) {
+    if (tdDateTime.isBefore(DateTime.now()) || tdDateTime.isAtSameMomentAs(DateTime.now()) ) {
       tableNumber = 3;
+      updateEditOverdueTasks(0, taskDetails, false);
     }else{
       tableNumber = 1;
+      updateUpcomingTasks(task: taskDetails);
     }
-    
 
+    await db.undoCompleted(taskDetails['id'] as int, tableNumber);
+    completedTasks.removeAt(selectedIndex);
   }
 
   void changenoOverdueTasks(int number, {bool notify = true}) {
