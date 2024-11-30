@@ -1,6 +1,5 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:molten_navigationbar_flutter/molten_navigationbar_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do_list/Providers/navProvider.dart';
 import 'package:to_do_list/Screens/completedTasks.dart';
