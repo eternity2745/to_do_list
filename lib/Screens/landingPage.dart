@@ -189,7 +189,7 @@ LandingPage> with AutomaticKeepAliveClientMixin{
         icon: const Icon(Icons.add),
         iconSize: height*0.05,
         style: const ButtonStyle(
-          backgroundColor: WidgetStatePropertyAll(Colors.green),
+          backgroundColor: WidgetStatePropertyAll(Color.fromARGB(255, 105, 0, 144)),
           ),
         onPressed: () {
           showDialog(context: context, 
