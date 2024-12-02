@@ -126,7 +126,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
               SizedBox(height: height*0.008,),
               StatefulBuilder(builder: (BuildContext context , setState) {
               if (Provider.of<NavigationProvider>(context, listen: false).overdueTasks.isEmpty){
-                  return Image.asset("assets/images/overdueTasks.png", height: height*0.2,);
+                  return Image.asset("assets/images/overdueTasks.png", height: height*0.23,);
               }else{
               log("REBUILD OVERDUE BUILDER");
               return Consumer<NavigationProvider>(
@@ -272,7 +272,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
        
               StatefulBuilder(builder: (BuildContext context , setState) {
               if (Provider.of<NavigationProvider>(context, listen: false).upcomingTasks.isEmpty){
-               return Image.asset("assets/images/upcomingTasks.png");
+               return Image.asset("assets/images/upcomingTasks.png", height: height*0.25,);
               }else{
               log("REBUILD UPCOMING BUILDER");
               return Consumer<NavigationProvider>(

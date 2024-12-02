@@ -40,8 +40,9 @@ class _HomeScreenState extends State<HomeScreen> {
         ]
         , 
         index: selectedIndex,
-        color: Colors.green,
+        color: Colors.purple.shade800,
         height: height*0.08,
+        backgroundColor: Colors.pink.shade900,
         onTap: (clickedIndex) {
           selectedIndex = clickedIndex;
           Provider.of<NavigationProvider>(context, listen: false).updateOverDueTasks();
