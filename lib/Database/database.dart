@@ -105,7 +105,7 @@ class DatabaseService {
         t1_columnName1: id,
         t1_columnName2: taskName,
         t1_columnName3: created,
-        t1_columnName4: date,//"${date.length == 10? '${date.substring(6)}/${date.substring(3,5)}/${date.substring(0,2)}' : '${date.substring(5)}/${date.substring(2,4)}/${date.substring(0,1)}'}",
+        t1_columnName4: date,
         t1_columnName5: "$time:00",
         t1_columnName6: periodOfHour
       },
@@ -225,16 +225,13 @@ class DatabaseService {
     
     DateTime dateTime = DateTime.now();
     String formattedDate = "${dateTime.day}/${dateTime.month}/${dateTime.year}";
-    //String formattedDate = '${dateTime.day}';
     String hour = dateTime.hour < 10 ? '0${dateTime.hour}' : '${dateTime.hour}';
     String minutes = dateTime.minute < 10 ? '0${dateTime.minute}' : '${dateTime.minute}';
     String seconds = dateTime.second < 10 ? '0${dateTime.second}' : '${dateTime.second}';
     String formattedTime = "$hour:$minutes:$seconds";
-    log(formattedTime);
-    log(formattedDate);
 
     var upcomingTasks = await db!.rawQuery(
-      "SELECT * FROM $tableName1 WHERE '$t1_columnName4' < '$formattedDate' OR ($t1_columnName4 = '$formattedDate' AND $t1_columnName5 <= '$formattedTime') ORDER BY $t1_columnName4, $t1_columnName5"
+      "SELECT * FROM $tableName1 WHERE $t1_columnName4 < '$formattedDate' OR ($t1_columnName4 = '$formattedDate' AND $t1_columnName5 <= '$formattedTime') ORDER BY $t1_columnName4, $t1_columnName5"
     );
 
     log("UPCOMING TASKS $upcomingTasks");
@@ -242,7 +239,6 @@ class DatabaseService {
     if (upcomingTasks.isEmpty) {
       return values;
     }else{
-      //return values;
       List ids = [];
       if (upcomingTasks.length == 1) {
         for (var i in upcomingTasks) {
