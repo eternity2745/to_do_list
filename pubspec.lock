@@ -65,14 +65,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.8.0"
-  cool_dropdown:
-    dependency: "direct main"
-    description:
-      name: cool_dropdown
-      sha256: "23926fd242b625bcb7ab30c1336498d60f78267518db439141ca19de403ab030"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.1.1"
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -195,14 +187,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.15.0"
-  molten_navigationbar_flutter:
-    dependency: "direct main"
-    description:
-      name: molten_navigationbar_flutter
-      sha256: "875f0771b7b259eaa6c1f4814262870799d2ef9f6fe9ecc0868ccbe271c2bc74"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.1"
   nested:
     dependency: transitive
     description:

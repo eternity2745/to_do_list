@@ -2,9 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'dart:developer';
-
-import 'package:cool_dropdown/cool_dropdown.dart';
-import 'package:cool_dropdown/models/cool_dropdown_item.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do_list/Database/database.dart';
 import 'package:to_do_list/Providers/navProvider.dart';
@@ -22,19 +19,16 @@ class _LandingPage extends State<
 LandingPage> with AutomaticKeepAliveClientMixin{
 
   DateTime? dateTime;
-  final TextEditingController _dateTimeTextController = TextEditingController();
-  final TextEditingController _timeTextController = TextEditingController();
-  final DropdownController _dropdownController = DropdownController(); 
   final TextEditingController _taskNameTextController = TextEditingController();
 
   bool _validateTask= false;
-  bool _validateDateTime= false;
+  bool _validateDate = false;
   bool _validateTime = false;
 
-
   String taskNameText = '';
-  String dateText = '';
-  String timeText = '';
+  String dateText = 'DD/MM/YY';
+  String timeText = 'HH:MM';
+  String periodOfHourText = '';
 
   int noCompletedTasks = 0;
   int noUpcomingTasks = 0;
@@ -123,7 +117,7 @@ LandingPage> with AutomaticKeepAliveClientMixin{
     
   }
 
-  Future<void> _selectDate(BuildContext context) async {
+  Future<void> _selectDate(BuildContext context, setState) async {
     dateTime = await showDatePicker(
                           context: context, 
                           firstDate: DateTime.now(),
@@ -131,12 +125,13 @@ LandingPage> with AutomaticKeepAliveClientMixin{
                           );
     if (dateTime != null) {
       setState(() {
-        _dateTimeTextController.text = "${dateTime!.day.toString().padLeft(2, '0')}/${dateTime!.month.toString().padLeft(2,'0')}/${dateTime!.year.toString().padLeft(2,'0')}";//${dateTime!.hour.toString().padLeft(2,'0')}-${dateTime!.minute.toString().padLeft(2,'0')}
+        dateText = "${dateTime!.day.toString().padLeft(2, '0')}/${dateTime!.month.toString().padLeft(2,'0')}/${dateTime!.year.toString().padLeft(2,'0')}";
+        _validateDate = false;
       });
     }
   }
 
-  Future<void> _selectTime(BuildContext context) async {
+  Future<void> _selectTime(BuildContext context, setState) async {
     time = await showTimePicker(
             context: context, 
             initialTime: const TimeOfDay(hour: 00, minute: 00)
@@ -144,9 +139,9 @@ LandingPage> with AutomaticKeepAliveClientMixin{
 
     if (time != null) {
       setState(() {  
-        _timeTextController.text = "${time!.hour == 0 ? 12 : time!.hour > 12 ? (time!.hour-12) < 10 ? '0${time!.hour-12}' : time!.hour-12 : time!.hour < 10 ? '0${time!.hour}' : time!.hour}:${time!.minute == 0 ? '00' : time!.minute < 10 ? '0${time!.minute}' : time!.minute}";
-        hourOfDay = time!.period.name == 'am' ? "AM" : "PM";
-        _dropdownController.setValue(CoolDropdownItem(label: hourOfDay, value: hourOfDay));
+        timeText = "${time!.hour == 0 ? 12 : time!.hour > 12 ? (time!.hour-12) < 10 ? '0${time!.hour-12}' : time!.hour-12 : time!.hour < 10 ? '0${time!.hour}' : time!.hour}:${time!.minute == 0 ? '00' : time!.minute < 10 ? '0${time!.minute}' : time!.minute}";
+        periodOfHourText = time!.period.name == 'am' ? "AM" : "PM";
+        _validateTime = false;
       });
     }
   }
@@ -161,9 +156,6 @@ LandingPage> with AutomaticKeepAliveClientMixin{
   @override
   void dispose() {
     _taskNameTextController.dispose();
-    _dateTimeTextController.dispose();
-    _dropdownController.dispose();
-    _timeTextController.dispose();
     super.dispose();
   }
 
@@ -202,16 +194,20 @@ LandingPage> with AutomaticKeepAliveClientMixin{
               canPop: true,
               onPopInvokedWithResult: (didPop, popped) {
                 if (didPop) {
-                  _timeTextController.text = "";
-                  _dateTimeTextController.text = "";
                   _taskNameTextController.text = "";
+                  dateText = "DD/MM/YY";
+                  timeText = "HH:MM";
+                  periodOfHourText = "";
+                  _validateTask = false;
+                  _validateTime = false;
+                  _validateDate = false;
                 }
               },
               child: Dialog(
                 elevation: height*0.1,
                 // ignore: sized_box_for_whitespace
                 child: Container(
-                  height: height*0.44,
+                  height: height*0.42,
                   width: width*0.8,
                   child: Padding(
                     padding: EdgeInsets.symmetric(vertical: height*0.02, horizontal: width*0.05),
@@ -232,134 +228,68 @@ LandingPage> with AutomaticKeepAliveClientMixin{
                             controller: _taskNameTextController,
                             decoration: InputDecoration( 
                               labelText: "Task Name",
-                              border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
-                              errorText : _validateTask ? '' : null,
+                              labelStyle: TextStyle(
+                                color: _validateTask ? Colors.red.shade400 : Colors.white70
+                              ),
+                              border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12)), borderSide: BorderSide(color: _validateTask ? Colors.red.shade400 : Colors.white60)),
+                              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12)), borderSide: BorderSide(color: _validateTask ? Colors.red.shade400 : Colors.white60)),
+                              //errorText : _validateTask ? '' : null,
                             ),
-                              // validator: (value) {
-                              //   if (value!.isEmpty) {
-                              //     return 'Empty';
-                              //   }else{
-                              //     return null;
-                              //   }
-                              // },
+                            onChanged: (value) {
+                              if (_validateTask == true) {
+                                setState(() {
+                                  _validateTask = false;
+                                });
+                              }
+                            },
                           ),
                         ),
                         SizedBox(height: height*0.02,),
-                        SizedBox(
-                          height: height*0.07,
-                          child: TextField(
-                            //key: _dateTimeKey,
-                            controller: _dateTimeTextController,
-                            decoration: InputDecoration(
-                              suffixIcon: IconButton(
-                                icon: Icon(Icons.calendar_month_outlined),
-                                onPressed: () {
-                                  _selectDate(context);
-                                }
-                              ),
-                              labelText: "DD/MM/YY",
-                              border: const OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
-                              errorText : _validateDateTime ? '' : null,
-                              // errorStyle: _validateDateTime? TextStyle(
-                              //   color: Colors.red
-                              // ) : null
+                        GestureDetector(
+                          onTap: () {
+                            _selectDate(context, setState);
+                          },
+                          child: Container(
+                            //duration: Durations.extralong4,
+                            padding: EdgeInsets.symmetric(vertical: height*0.015, horizontal: width*0.04),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: _validateDate? Colors.red : Colors.white60),
+                              borderRadius: BorderRadius.circular(12)
                             ),
-                            // validator: (value) {
-                            //   if (value!.isEmpty) {
-                            //     return 'Empty';
-                            //   }else{
-                            //     return null;
-                            //   }
-                            // },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(dateText,
+                                style: TextStyle(color: _validateDate ? Colors.red.shade400 : Colors.white70),
+                                ),
+                                Icon(Icons.calendar_month_rounded)
+                              ],
+                            ),
                           ),
                         ),
                         SizedBox(height: height*0.02,),
-                        Row(
-                          children: [
-                            SizedBox(
-                              width: width*0.48,
-                              height: height*0.07,
-                              child: TextField(
-                                // key: _timeKey,
-                                controller: _timeTextController,
-                                decoration: InputDecoration(
-                                  suffixIcon: IconButton(
-                                    icon: Icon(Icons.access_time_rounded),
-                                    onPressed: () {
-                                      _selectTime(context);
-                                    },
-                                  ),
-                                  labelText: "HH:MM",
-                                  border: const OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
-                                  errorText : _validateTime ? '' : null,
-                                  //errorStyle: TextStyle(height: 0)
-                                ),
-                            //       validator: (value) {
-                            //         if (value!.isEmpty) {
-                            //           return 'Empty';
-                            //         }else{
-                            //           return null;
-                            //         }
-                            // },
-                              ),
+                        GestureDetector(
+                          onTap: () {
+                            _selectTime(context, setState);
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(vertical: height*0.015, horizontal: width*0.04),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: _validateTime ? Colors.red.shade400 : Colors.white60),
+                              borderRadius: BorderRadius.circular(12)
                             ),
-                            SizedBox(width: width*0.02,),
-                            SizedBox(
-                              width: width*0.2,
-                              height: height*0.05,
-                              child: CoolDropdown(
-                                defaultItem : CoolDropdownItem(label: hourOfDay, value: hourOfDay),
-                                resultOptions: ResultOptions(
-                                  //placeholder: hourOfDay,
-                                  placeholderTextStyle: TextStyle(
-                                    color: Colors.grey.shade300
-                                  ),
-                                  textStyle: TextStyle(
-                                    color: Colors.grey.shade300
-                                  ),
-                                  boxDecoration: BoxDecoration(
-                                    color: Colors.transparent,
-                                    border: Border(top: BorderSide(color: Colors.grey), bottom: BorderSide(color: Colors.grey), left: BorderSide(color: Colors.grey), right: BorderSide(color: Colors.grey)),
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  openBoxDecoration: BoxDecoration(
-                                    color: Colors.transparent,
-                                    border: Border(top: BorderSide(color: Colors.grey), bottom: BorderSide(color: Colors.grey), left: BorderSide(color: Colors.grey), right: BorderSide(color: Colors.grey)),
-                                    borderRadius: BorderRadius.circular(6),
-                                  )
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("$timeText $periodOfHourText",
+                                style: TextStyle(
+                                  color: _validateTime ? Colors.red.shade400 : Colors.white70
                                 ),
-                                dropdownList: [
-                                  CoolDropdownItem(
-                                    label: "AM", 
-                                    value: "AM"
-                                    ),
-                                    CoolDropdownItem(
-                                      label: "PM", 
-                                      value: "PM"
-                                      )
-                                ], 
-                                dropdownOptions: DropdownOptions(
-                                  color: Colors.grey.shade900,
-                                  animationType: DropdownAnimationType.scale,
-                                  curve: Curves.linear
                                 ),
-                                dropdownItemOptions: DropdownItemOptions(
-                                  textStyle: TextStyle(
-                                    color: Colors.grey.shade300
-                                  )
-                                ),
-                                controller: _dropdownController, 
-                                onChange: (change) {
-              
-                                }
-                                ),
-                              // child: const TextField(
-                              //   decoration: const InputDecoration(
-                              //     border: const OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12)))
-                              //   ),                             
-                              // ),
+                                Icon(Icons.access_time_rounded)
+                              ],
                             ),
-                          ],
+                          ),
                         ),
                         SizedBox(height: height*0.02,),
                         Row(
@@ -369,25 +299,29 @@ LandingPage> with AutomaticKeepAliveClientMixin{
                           children: [
                             TextButton(
                               onPressed: () {
-                                if (_taskNameTextController.text != '' && _dateTimeTextController.text != '' && _timeTextController.text != '') {
+                                if (_taskNameTextController.text != '' && dateText != 'DD/MM/YY' && timeText != 'HH:MM') {
                                 
-                                addTask(_taskNameTextController.text, _dateTimeTextController.text, "${time!.hour < 10 && time!.hour > 0 ? '0${time!.hour}' : time!.hour == 0 ? '00' : time!.hour}:${time!.minute == 0 ? '00' : time!.minute < 10 ? '0${time!.minute}' : time!.minute}", hourOfDay);
+                                addTask(_taskNameTextController.text, dateText, "${time!.hour < 10 && time!.hour > 0 ? '0${time!.hour}' : time!.hour == 0 ? '00' : time!.hour}:${time!.minute == 0 ? '00' : time!.minute < 10 ? '0${time!.minute}' : time!.minute}", periodOfHourText);
                                 Provider.of<NavigationProvider>(context, listen: false).changePersistStateUpcoming(true);
                                 updateOverDueTasks();
                                 setState(() 
                                 {
                                   _taskNameTextController.text = "";
-                                  _dateTimeTextController.text = "";
-                                  _timeTextController.text = "";
+                                  dateText = "DD/MM/YY";
+                                  timeText = "HH:MM";
+                                  periodOfHourText = "";
+                                  _validateTask = false;
+                                  _validateTime = false;
+                                  _validateDate = false;
                                 });
                                 Navigator.pop(context);
                                 }else{
                                   log("HEHE");
-                                  setState(() 
+                                  setState(()
                                 {
-                                  _validateTask = true;
-                                  _validateDateTime = true;
-                                  _validateTime = true;
+                                  _validateTask = _taskNameTextController.text == '' ? true : false;
+                                  _validateTime = timeText == "HH:MM" ? true : false;
+                                  _validateDate = dateText == "DD/MM/YY" ? true : false;
                                 });
                                 }
                               }, 
@@ -396,8 +330,12 @@ LandingPage> with AutomaticKeepAliveClientMixin{
                               TextButton(
                               onPressed: () {
                                 _taskNameTextController.text = "";
-                                _dateTimeTextController.text = "";
-                                _timeTextController.text = "";
+                                dateText = "DD/MM/YY";
+                                timeText = "HH:MM";
+                                periodOfHourText = "";
+                                _validateTask = false;
+                                _validateTime = false;
+                                _validateDate = false;
                                 Navigator.pop(context);
                               }, 
                               child: Text("Cancel")
