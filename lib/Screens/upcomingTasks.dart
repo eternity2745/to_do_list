@@ -170,7 +170,8 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                                           Provider.of<NavigationProvider>(context, listen: false).changeCallbackPossible(false);
                                           _controllerBottomCenter.play();
                                           value.overdueTasks[index]["Deleted"] = true;
-                                          completeTasks(value.overdueTasks[index], 3);
+                                          Map<String, Object?> ovrdTasksCopy = { for (var e in value.overdueTasks[index].keys) e : value.overdueTasks[index][e] };
+                                          completeTasks(ovrdTasksCopy, 3);
                                           log("${_controllerBottomCenter.state}");
                                           int noCompletedTasks = Provider.of<NavigationProvider>(context, listen: false).noCompletedTasks;
                                           int noOverdueTasks = Provider.of<NavigationProvider>(context, listen: false).noOverdueTasks;
@@ -331,7 +332,8 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                                           onPressed: () {
                                           Provider.of<NavigationProvider>(context, listen: false).changeCallbackPossible(false);
                                           value.upcomingTasks[index]["Deleted"] = true;
-                                          completeTasks(value.upcomingTasks[index], 1);
+                                          Map<String, Object?> upcTasksCopy = { for (var e in value.upcomingTasks[index].keys) e : value.upcomingTasks[index][e] };
+                                          completeTasks(upcTasksCopy, 1);
                                           log("${_controllerBottomCenter.state}");
                                           _controllerBottomCenter.play();
                                           int noCompletedTasks = Provider.of<NavigationProvider>(context, listen: false).noCompletedTasks;
