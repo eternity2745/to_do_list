@@ -231,7 +231,7 @@ class DatabaseService {
     String formattedTime = "$hour:$minutes:$seconds";
 
     var upcomingTasks = await db!.rawQuery(
-      "SELECT * FROM $tableName1 WHERE $t1_columnName4 < '$formattedDate' OR ($t1_columnName4 = '$formattedDate' AND $t1_columnName5 <= '$formattedTime') ORDER BY $t1_columnName4, $t1_columnName5"
+      "SELECT * FROM $tableName1 WHERE $t1_columnName4 < $formattedDate OR ($t1_columnName4 = '$formattedDate' AND $t1_columnName5 <= '$formattedTime') ORDER BY $t1_columnName4, $t1_columnName5"
     );
 
     log("UPCOMING TASKS $upcomingTasks");
@@ -393,7 +393,7 @@ class DatabaseService {
       SELECT $t2_columnName1, $t2_columnName2, $t2_columnName6, $t2_columnName7, $t2_columnName8, $t2_columnName9 FROM $tableName2 WHERE id = $id
       '''
       );
-    }else {
+    }else{
       await db!.rawInsert(
         '''INSERT INTO $tableName3($t3_columnName1, $t3_columnName2, $t3_columnName3, $t3_columnName4, $t3_columnName5, $t3_columnName6)
       SELECT $t2_columnName1, $t2_columnName2, $t2_columnName6, $t2_columnName7, $t2_columnName8, $t2_columnName9 FROM $tableName2 WHERE id = $id

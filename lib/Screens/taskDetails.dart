@@ -368,7 +368,7 @@ class _TaskDetailsState extends State<TaskDetails> with SingleTickerProviderStat
                               Provider.of<NavigationProvider>(context, listen: false).changenoUpcomingTasks(Provider.of<NavigationProvider>(context, listen: false).upcomingTasks.length);
                             }else if(Provider.of<NavigationProvider>(context, listen: false).selectedTaskType == "Completed") {
                               Map<String, Object?> task = Provider.of<NavigationProvider>(context, listen: false).completedTasks[Provider.of<NavigationProvider>(context, listen: false).selectedIndex];
-                              // String endTime = task["End_Time"] as String;
+                              //String endTime = task["End_Time"] as String;
                               // if (task["Period_Of_Hour"] == "AM") {
                               //   endTime = "${endTime.substring(0,2) == "12" ? "00" : endTime.substring(0,2)}:${endTime.substring(2)}:00";
                               // }else{
@@ -386,7 +386,7 @@ class _TaskDetailsState extends State<TaskDetails> with SingleTickerProviderStat
                             }else{
                               List<Map<String, Object?>> overdueTasks = Provider.of<NavigationProvider>(context, listen: false).overdueTasks;
                               int selectedIndex = Provider.of<NavigationProvider>(context, listen: false).selectedIndex;
-                              completeTasks(overdueTasks[selectedIndex], 1);
+                              completeTasks(overdueTasks[selectedIndex], 3);
                               Provider.of<NavigationProvider>(context, listen:false).overdueTasks.removeAt(selectedIndex);
                               Provider.of<NavigationProvider>(context, listen: false).changenoCompletedTasks(Provider.of<NavigationProvider>(context, listen: false).completedTasks.length);
                               Provider.of<NavigationProvider>(context, listen: false).changenoOverdueTasks(Provider.of<NavigationProvider>(context, listen: false).overdueTasks.length);
