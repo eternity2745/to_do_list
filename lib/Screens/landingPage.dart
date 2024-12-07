@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'dart:developer';
 import 'package:provider/provider.dart';
 import 'package:to_do_list/Database/database.dart';
@@ -177,186 +178,196 @@ LandingPage> with AutomaticKeepAliveClientMixin{
           ),
           )
         ),
-      floatingActionButton: IconButton(
-        icon: const Icon(Icons.add),
-        iconSize: height*0.05,
-        style: const ButtonStyle(
-          backgroundColor: WidgetStatePropertyAll(Color.fromARGB(255, 105, 0, 144)),
+      floatingActionButton: Animate(
+        onPlay: (controller) {
+          controller.repeat(reverse: true);
+        },
+        onComplete: (controller) {
+        },
+        effects: [BoxShadowEffect(begin: BoxShadow(color: Colors.deepPurple.shade900, blurRadius: height*0.01), end: BoxShadow(color: Colors.deepPurple.shade300, blurRadius: height*0.013), duration: Duration(milliseconds: 2000), borderRadius: BorderRadius.circular(15))],
+        autoPlay: true,
+        child: FloatingActionButton.extended(
+          enableFeedback: true,
+          label: Text("Create Task"),
+          icon: Icon(
+            Icons.add,
+            size: height*0.035,
           ),
-        onPressed: () {
-          showDialog(context: context, 
-          barrierDismissible: false,
-          barrierColor: Colors.black87,
-          builder: (BuildContext context) {
-            return StatefulBuilder(
-              builder:(context, setState) {             
-            return PopScope(
-              canPop: true,
-              onPopInvokedWithResult: (didPop, popped) {
-                if (didPop) {
-                  _taskNameTextController.text = "";
-                  dateText = "DD/MM/YY";
-                  timeText = "HH:MM";
-                  periodOfHourText = "";
-                  _validateTask = false;
-                  _validateTime = false;
-                  _validateDate = false;
-                }
-              },
-              child: Dialog(
-                elevation: height*0.1,
-                // ignore: sized_box_for_whitespace
-                child: Container(
-                  height: height*0.42,
-                  width: width*0.8,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: height*0.02, horizontal: width*0.05),
-                    child: Column(
-                      children: [
-                        Text("Create New Task", 
-                        style: TextStyle(
-                          fontSize: height*0.03,
-                          fontWeight: FontWeight.bold
+            onPressed: () {
+              showDialog(context: context, 
+              barrierDismissible: false,
+              barrierColor: Colors.black87,
+              builder: (BuildContext context) {
+                return StatefulBuilder(
+                  builder:(context, setState) {             
+                return PopScope(
+                  canPop: true,
+                  onPopInvokedWithResult: (didPop, popped) {
+                    if (didPop) {
+                      _taskNameTextController.text = "";
+                      dateText = "DD/MM/YY";
+                      timeText = "HH:MM";
+                      periodOfHourText = "";
+                      _validateTask = false;
+                      _validateTime = false;
+                      _validateDate = false;
+                    }
+                  },
+                  child: Dialog(
+                    elevation: height*0.1,
+                    // ignore: sized_box_for_whitespace
+                    child: Container(
+                      height: height*0.42,
+                      width: width*0.8,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: height*0.02, horizontal: width*0.05),
+                        child: Column(
+                          children: [
+                            Text("Create New Task", 
+                            style: TextStyle(
+                              fontSize: height*0.03,
+                              fontWeight: FontWeight.bold
+                            ),
+                          ),
+                            SizedBox(height: height*0.03,),
+                            // ignore: prefer_const_constructors
+                            SizedBox(
+                              height: height*0.07,
+                              child: TextField(
+                                // key: _taskNameKey,
+                                controller: _taskNameTextController,
+                                decoration: InputDecoration( 
+                                  labelText: "Task Name",
+                                  labelStyle: TextStyle(
+                                    color: _validateTask ? Colors.red.shade400 : Colors.white70
+                                  ),
+                                  border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12)), borderSide: BorderSide(color: _validateTask ? Colors.red.shade400 : Colors.white60)),
+                                  enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12)), borderSide: BorderSide(color: _validateTask ? Colors.red.shade400 : Colors.white60)),
+                                  
+                                ),
+                                onChanged: (value) {
+                                  if (_validateTask == true) {
+                                    setState(() {
+                                      _validateTask = false;
+                                    });
+                                  }
+                                },
+                              ),
+                            ),
+                            SizedBox(height: height*0.02,),
+                            GestureDetector(
+                              onTap: () {
+                                _selectDate(context, setState);
+                              },
+                              child: Container(
+                                //duration: Durations.extralong4,
+                                padding: EdgeInsets.symmetric(vertical: height*0.015, horizontal: width*0.04),
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: _validateDate? Colors.red : Colors.white60),
+                                  borderRadius: BorderRadius.circular(12)
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(dateText,
+                                    style: TextStyle(color: _validateDate ? Colors.red.shade400 : Colors.white70),
+                                    ),
+                                    Icon(Icons.calendar_month_rounded,
+                                    color: _validateDate ? Colors.red.shade400 : Colors.white70,
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: height*0.02,),
+                            GestureDetector(
+                              onTap: () {
+                                _selectTime(context, setState);
+                              },
+                              child: Container(
+                                padding: EdgeInsets.symmetric(vertical: height*0.015, horizontal: width*0.04),
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: _validateTime ? Colors.red.shade400 : Colors.white60),
+                                  borderRadius: BorderRadius.circular(12)
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text("$timeText $periodOfHourText",
+                                    style: TextStyle(
+                                      color: _validateTime ? Colors.red.shade400 : Colors.white70
+                                    ),
+                                    ),
+                                    Icon(Icons.access_time_rounded, 
+                                    color : _validateTime ? Colors.red.shade400 : Colors.white70
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: height*0.02,),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              
+                              children: [
+                                TextButton(
+                                  onPressed: () {
+                                    if (_taskNameTextController.text != '' && dateText != 'DD/MM/YY' && timeText != 'HH:MM') {
+                                    
+                                    addTask(_taskNameTextController.text, dateText, "${time!.hour < 10 && time!.hour > 0 ? '0${time!.hour}' : time!.hour == 0 ? '00' : time!.hour}:${time!.minute == 0 ? '00' : time!.minute < 10 ? '0${time!.minute}' : time!.minute}", periodOfHourText);
+                                    Provider.of<NavigationProvider>(context, listen: false).changePersistStateUpcoming(true);
+                                    updateOverDueTasks();
+                                    setState(() 
+                                    {
+                                      _taskNameTextController.text = "";
+                                      dateText = "DD/MM/YY";
+                                      timeText = "HH:MM";
+                                      periodOfHourText = "";
+                                      _validateTask = false;
+                                      _validateTime = false;
+                                      _validateDate = false;
+                                    });
+                                    Navigator.pop(context);
+                                    }else{
+                                      log("HEHE");
+                                      setState(()
+                                    {
+                                      _validateTask = _taskNameTextController.text == '' ? true : false;
+                                      _validateTime = timeText == "HH:MM" ? true : false;
+                                      _validateDate = dateText == "DD/MM/YY" ? true : false;
+                                    });
+                                    }
+                                  }, 
+                                  child: Text("Done")
+                                  ),
+                                  TextButton(
+                                  onPressed: () {
+                                    _taskNameTextController.text = "";
+                                    dateText = "DD/MM/YY";
+                                    timeText = "HH:MM";
+                                    periodOfHourText = "";
+                                    _validateTask = false;
+                                    _validateTime = false;
+                                    _validateDate = false;
+                                    Navigator.pop(context);
+                                  }, 
+                                  child: Text("Cancel")
+                                  )
+                              ],
+                            )
+                          ],
                         ),
                       ),
-                        SizedBox(height: height*0.03,),
-                        // ignore: prefer_const_constructors
-                        SizedBox(
-                          height: height*0.07,
-                          child: TextField(
-                            // key: _taskNameKey,
-                            controller: _taskNameTextController,
-                            decoration: InputDecoration( 
-                              labelText: "Task Name",
-                              labelStyle: TextStyle(
-                                color: _validateTask ? Colors.red.shade400 : Colors.white70
-                              ),
-                              border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12)), borderSide: BorderSide(color: _validateTask ? Colors.red.shade400 : Colors.white60)),
-                              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12)), borderSide: BorderSide(color: _validateTask ? Colors.red.shade400 : Colors.white60)),
-                              
-                            ),
-                            onChanged: (value) {
-                              if (_validateTask == true) {
-                                setState(() {
-                                  _validateTask = false;
-                                });
-                              }
-                            },
-                          ),
-                        ),
-                        SizedBox(height: height*0.02,),
-                        GestureDetector(
-                          onTap: () {
-                            _selectDate(context, setState);
-                          },
-                          child: Container(
-                            //duration: Durations.extralong4,
-                            padding: EdgeInsets.symmetric(vertical: height*0.015, horizontal: width*0.04),
-                            decoration: BoxDecoration(
-                              border: Border.all(color: _validateDate? Colors.red : Colors.white60),
-                              borderRadius: BorderRadius.circular(12)
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(dateText,
-                                style: TextStyle(color: _validateDate ? Colors.red.shade400 : Colors.white70),
-                                ),
-                                Icon(Icons.calendar_month_rounded,
-                                color: _validateDate ? Colors.red.shade400 : Colors.white70,
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: height*0.02,),
-                        GestureDetector(
-                          onTap: () {
-                            _selectTime(context, setState);
-                          },
-                          child: Container(
-                            padding: EdgeInsets.symmetric(vertical: height*0.015, horizontal: width*0.04),
-                            decoration: BoxDecoration(
-                              border: Border.all(color: _validateTime ? Colors.red.shade400 : Colors.white60),
-                              borderRadius: BorderRadius.circular(12)
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text("$timeText $periodOfHourText",
-                                style: TextStyle(
-                                  color: _validateTime ? Colors.red.shade400 : Colors.white70
-                                ),
-                                ),
-                                Icon(Icons.access_time_rounded, 
-                                color : _validateTime ? Colors.red.shade400 : Colors.white70
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: height*0.02,),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          
-                          children: [
-                            TextButton(
-                              onPressed: () {
-                                if (_taskNameTextController.text != '' && dateText != 'DD/MM/YY' && timeText != 'HH:MM') {
-                                
-                                addTask(_taskNameTextController.text, dateText, "${time!.hour < 10 && time!.hour > 0 ? '0${time!.hour}' : time!.hour == 0 ? '00' : time!.hour}:${time!.minute == 0 ? '00' : time!.minute < 10 ? '0${time!.minute}' : time!.minute}", periodOfHourText);
-                                Provider.of<NavigationProvider>(context, listen: false).changePersistStateUpcoming(true);
-                                updateOverDueTasks();
-                                setState(() 
-                                {
-                                  _taskNameTextController.text = "";
-                                  dateText = "DD/MM/YY";
-                                  timeText = "HH:MM";
-                                  periodOfHourText = "";
-                                  _validateTask = false;
-                                  _validateTime = false;
-                                  _validateDate = false;
-                                });
-                                Navigator.pop(context);
-                                }else{
-                                  log("HEHE");
-                                  setState(()
-                                {
-                                  _validateTask = _taskNameTextController.text == '' ? true : false;
-                                  _validateTime = timeText == "HH:MM" ? true : false;
-                                  _validateDate = dateText == "DD/MM/YY" ? true : false;
-                                });
-                                }
-                              }, 
-                              child: Text("Done")
-                              ),
-                              TextButton(
-                              onPressed: () {
-                                _taskNameTextController.text = "";
-                                dateText = "DD/MM/YY";
-                                timeText = "HH:MM";
-                                periodOfHourText = "";
-                                _validateTask = false;
-                                _validateTime = false;
-                                _validateDate = false;
-                                Navigator.pop(context);
-                              }, 
-                              child: Text("Cancel")
-                              )
-                          ],
-                        )
-                      ],
                     ),
                   ),
-                ),
-              ),
-            );
+                );
+                  }
+                );
               }
-            );
-          }
-          );
-        },
+              );
+            },
+          ),
       ),
       body: SingleChildScrollView(
         child: Container(
