@@ -233,7 +233,7 @@ LandingPage> with AutomaticKeepAliveClientMixin{
                               ),
                               border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12)), borderSide: BorderSide(color: _validateTask ? Colors.red.shade400 : Colors.white60)),
                               enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12)), borderSide: BorderSide(color: _validateTask ? Colors.red.shade400 : Colors.white60)),
-                              //errorText : _validateTask ? '' : null,
+                              
                             ),
                             onChanged: (value) {
                               if (_validateTask == true) {
@@ -262,7 +262,9 @@ LandingPage> with AutomaticKeepAliveClientMixin{
                                 Text(dateText,
                                 style: TextStyle(color: _validateDate ? Colors.red.shade400 : Colors.white70),
                                 ),
-                                Icon(Icons.calendar_month_rounded)
+                                Icon(Icons.calendar_month_rounded,
+                                color: _validateDate ? Colors.red.shade400 : Colors.white70,
+                                )
                               ],
                             ),
                           ),
@@ -286,7 +288,9 @@ LandingPage> with AutomaticKeepAliveClientMixin{
                                   color: _validateTime ? Colors.red.shade400 : Colors.white70
                                 ),
                                 ),
-                                Icon(Icons.access_time_rounded)
+                                Icon(Icons.access_time_rounded, 
+                                color : _validateTime ? Colors.red.shade400 : Colors.white70
+                                )
                               ],
                             ),
                           ),
