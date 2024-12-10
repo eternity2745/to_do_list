@@ -49,6 +49,9 @@ LandingPage> with AutomaticKeepAliveClientMixin{
   TimeOfDay? time;
   String datePicked = "DD/MM/YY";
 
+  late double height;
+  late double width;
+
   final db = DatabaseService();
 
   @override
@@ -151,6 +154,11 @@ LandingPage> with AutomaticKeepAliveClientMixin{
   void initState() {
     log("OKKK");
     updateOverDueTasksinit();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+
+    width = MediaQuery.of(context).size.width;
+    height = MediaQuery.of(context).size.height;
+    });
     super.initState();
   }
 
@@ -165,8 +173,8 @@ LandingPage> with AutomaticKeepAliveClientMixin{
     if (wantKeepAlive) {
      super.build(context);
    }
-    double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
+    //double height = MediaQuery.of(context).size.height;
+    // double width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         forceMaterialTransparency: true,

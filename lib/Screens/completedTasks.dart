@@ -85,19 +85,14 @@ class _CompletedTasksState extends State<CompletedTasks> with AutomaticKeepAlive
         child: Container(
           padding: EdgeInsets.symmetric(vertical: height*0.03, horizontal: width*0.08),
           child: Column(
+            //mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                "Completed",
-                style: TextStyle(
-                  fontSize: height*0.04,
-                  fontWeight: FontWeight.w500
-                ),
-                ),
               SizedBox(height: height*0.008,),
-              if (completedTasks.isEmpty)...{
-              Text("Nothing Here"),
-            }else...{
               StatefulBuilder(builder: (BuildContext context , setState) {
+              if (completedTasks.isEmpty) {
+                return Image.asset("assets/images/completedTasks.png", height: height*0.3,);
+              }else{
               return Consumer<NavigationProvider>(
                 builder: (context, value, child) {
                 return ListView.builder(
@@ -179,8 +174,8 @@ class _CompletedTasksState extends State<CompletedTasks> with AutomaticKeepAlive
                 }
               );
               }
-              )
-          },
+              }
+            ),
             ]
           )
         )

@@ -269,8 +269,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                 ),
               ),
             SizedBox(height: height*0.008,),
-            
-       
+
               StatefulBuilder(builder: (BuildContext context , setState) {
               if (Provider.of<NavigationProvider>(context, listen: false).upcomingTasks.isEmpty){
                return Image.asset("assets/images/upcomingTasks.png", height: height*0.25,);
