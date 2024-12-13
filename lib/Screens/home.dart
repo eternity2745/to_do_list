@@ -1,7 +1,6 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:to_do_list/Database/database.dart';
 import 'package:to_do_list/Providers/navProvider.dart';
 import 'package:to_do_list/Screens/completedTasks.dart';
