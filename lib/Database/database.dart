@@ -409,10 +409,4 @@ class DatabaseService {
       whereArgs: [id]
       );
   }
-  
-  Future closeDatabase() async {
-    final db = await _instance.database;
-    await db!.close();
-  }
-
 }
