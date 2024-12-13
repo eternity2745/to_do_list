@@ -173,13 +173,15 @@ class NavigationProvider with ChangeNotifier {
   Future updateEditOverdueTasks(int selctedIndex, Map<String, Object?> task, bool isDueDate, {bool? undoCompleted = false}) async {
 
     List<Map<String, Object?>> taskDetail = [task];
+    log("Started UPDATING");
     var inputFormat = DateFormat('dd/MM/yyyy');
     var outputFormat = DateFormat('yyyy-MM-dd');
     var tddateOG = inputFormat.parse(taskDetail[0]['End_Date'] as String);
     var tddate = outputFormat.format(tddateOG);
-    log(tddate);
-    DateTime tdDateTime = DateTime.parse("$tddate ${taskDetail[0]["End_Time"] as String}");
+    DateTime tdDateTime = DateTime.parse("$tddate ${taskDetail[0]["End_Time"] as String}:00");
+    log("THIS IS $tdDateTime");
     if(tdDateTime.isAfter(DateTime.now())) {
+      log("ENTERED THAT THING");
       if (isDueDate) {
         await db.editTask(taskDetail[0]["id"] as int, 3, dueDate: tddate);
       }else{
@@ -188,7 +190,6 @@ class NavigationProvider with ChangeNotifier {
       updateUpcomingTasks(task: task, selectedIndex: selctedIndex, updateOverdue: true);
       return;
     }
-    log("$tdDateTime");
     int index = 0; 
     bool checkIndex = false;
     var time1 = '';
@@ -196,7 +197,6 @@ class NavigationProvider with ChangeNotifier {
     for (var i in overdueTasks) {
       var date1OG = inputFormat.parse(i['End_Date'] as String);
       var date1 = outputFormat.format(date1OG);
-      log(date1);
       if (i["Period_Of_Hour"] as String == "AM") {
         var duptime1 = i["End_Time"] as String;
         if (duptime1.substring(0, 2) == "12") {
@@ -210,7 +210,6 @@ class NavigationProvider with ChangeNotifier {
           time1 = "${time24 == 24 ? time24-12 : time24}${duptime1.substring(2)}";
       }
       DateTime ovrdDateTime = DateTime.parse("$date1 $time1:00");
-      log("$ovrdDateTime");
 
       if (tdDateTime.isBefore(ovrdDateTime)) {
           index = overdueTasks.indexOf(i);
@@ -305,8 +304,8 @@ class NavigationProvider with ChangeNotifier {
     }
     String upcEndTime = taskDetail[0]['End_Time'] as String;
     log(upcEndTime);
-    if (task == null || undoComplete == true) {
-      upcEndTime = upcEndTime.substring(0, upcEndTime.length - 3);
+    if (task == null || undoComplete == true || updateOverdue == true) {
+      upcEndTime = task == null || undoComplete == true ? upcEndTime.substring(0, upcEndTime.length - 3) : upcEndTime;
       int timeHour24 = int.parse(upcEndTime.substring(0, upcEndTime.length-3));
       upcEndTime = "${timeHour24 == 0 ? 12 : timeHour24 > 12 ? (timeHour24-12) < 10 ? '0${timeHour24-12}' : timeHour24-12 : timeHour24 < 10 ? '0$timeHour24' : timeHour24}:${upcEndTime.length == 5?upcEndTime.substring(3) : upcEndTime.substring(2)}";
     }
