@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do_list/Database/database.dart';
 import 'package:to_do_list/Providers/navProvider.dart';
@@ -104,11 +105,20 @@ class _CompletedTasksState extends State<CompletedTasks> with AutomaticKeepAlive
                   children: [
                     GestureDetector(
                       onTap: () {
+                        String endDate = '';
                         String endTime = completedTasks[index]['End_Time'] as String;
                         int hour = int.parse(endTime.substring(0,2));
                         int minute = int.parse(endTime.substring(3,5));
                         endTime = "${hour == 0 ? 12 : hour > 12 ? (hour-12) < 10 ? '0${hour-12}' : hour-12 : hour < 10 ? '0$hour' : hour}:${minute == 0 ? '00' : minute < 10 ? '0$minute' : minute}";
-                        Provider.of<NavigationProvider>(context, listen: false).updateTaskDetails(value.completedTasks[index]['Task_Name'] as String, value.completedTasks[index]['Created'] as String, value.completedTasks[index]['End_Date'] as String, "$endTime ${completedTasks[index]['Period_Of_Hour']}", "Yes", "No", index, "Completed", value.completedTasks[index]['id'] as int);
+                        DateFormat inputformat = DateFormat('yyyy-MM-dd');
+                        var tgdate = inputformat.tryParse(value.completedTasks[index]['End_Date'] as String);
+                        if (tgdate != null) {
+                          DateFormat outputFormat = DateFormat('dd/MM/yyyy');
+                          endDate = outputFormat.format(tgdate);
+                        }else{
+                          endDate = value.completedTasks[index]['End_Date'] as String;
+                        }
+                        Provider.of<NavigationProvider>(context, listen: false).updateTaskDetails(value.completedTasks[index]['Task_Name'] as String, value.completedTasks[index]['Created'] as String, endDate, "$endTime ${value.completedTasks[index]['Period_Of_Hour']}", "Yes", "No", index, "Completed", value.completedTasks[index]['id'] as int);
                         Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetails()));
                       },
                       child: Container(

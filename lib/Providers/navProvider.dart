@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'dart:developer';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
@@ -174,10 +176,15 @@ class NavigationProvider with ChangeNotifier {
 
     List<Map<String, Object?>> taskDetail = [task];
     log("Started UPDATING");
+    var tddate = '';
     var inputFormat = DateFormat('dd/MM/yyyy');
     var outputFormat = DateFormat('yyyy-MM-dd');
-    var tddateOG = inputFormat.parse(taskDetail[0]['End_Date'] as String);
-    var tddate = outputFormat.format(tddateOG);
+    var tddateOG = inputFormat.tryParse(taskDetail[0]['End_Date'] as String);
+    if (tddateOG != null) {
+    tddate = outputFormat.format(tddateOG);
+    }else{
+      tddate = taskDetail[0]['End_Date'] as String;
+    }
     DateTime tdDateTime = DateTime.parse("$tddate ${taskDetail[0]["End_Time"] as String}:00");
     log("THIS IS $tdDateTime");
     if(tdDateTime.isAfter(DateTime.now())) {
@@ -227,13 +234,23 @@ class NavigationProvider with ChangeNotifier {
       ovrdEndTime = "${timeHour24 == 0 ? 12 : timeHour24 > 12 ? (timeHour24-12) < 10 ? '0${timeHour24-12}' : timeHour24-12 : timeHour24 < 10 ? '0$timeHour24' : timeHour24}:${ovrdEndTime.length == 5?ovrdEndTime.substring(3) : ovrdEndTime.substring(2)}";
     }
 
+    DateFormat finalinputformat = DateFormat('yyyy-MM-dd');
+    var f_tddateOG = finalinputformat.tryParse(taskDetail[0]['End_Date'] as String);
+    var f_endDate = '';
+    if (f_tddateOG != null) {
+      DateFormat finaloutputformat = DateFormat('dd/MM/yyyy');
+      f_endDate = finaloutputformat.format(f_tddateOG);
+    }else{
+      f_endDate = taskDetail[0]['End_Date'] as String;
+    }
+
     log("INDEX: $index");
     if (index == 0 && checkIndex == false) {
       overdueTasks.add({
         "id":taskDetail[0]["id"], 
         "Task_Name":taskDetail[0]["Task_Name"], 
         "Created":taskDetail[0]["Created"], 
-        "End_Date":taskDetail[0]["End_Date"], 
+        "End_Date":f_endDate, 
         "End_Time":ovrdEndTime, 
         "Period_Of_Hour":taskDetail[0]["Period_Of_Hour"],
         "Deleted" : false
@@ -244,7 +261,7 @@ class NavigationProvider with ChangeNotifier {
         "id":taskDetail[0]["id"], 
         "Task_Name":taskDetail[0]["Task_Name"], 
         "Created":taskDetail[0]["Created"], 
-        "End_Date":taskDetail[0]["End_Date"], 
+        "End_Date":f_endDate, 
         "End_Time":ovrdEndTime, 
         "Period_Of_Hour":taskDetail[0]["Period_Of_Hour"],
         "Deleted" : false
@@ -259,14 +276,19 @@ class NavigationProvider with ChangeNotifier {
     var tddate = '';
     var inputFormat = DateFormat('dd/MM/yyyy');
     var outputFormat = DateFormat('yyyy-MM-dd');
+
     if(task == null) {
       taskDetail = await db.updateUpcomingTasks();
       tddate = taskDetail[0]['End_Date'] as String;
     }else{
       taskDetail.add(task);
       log("$taskDetail");
-      var tddateOG = inputFormat.parse(taskDetail[0]['End_Date'] as String);
-      tddate = outputFormat.format(tddateOG);
+      var tddateOG = inputFormat.tryParse(taskDetail[0]['End_Date'] as String);
+      if (tddateOG != null) {
+        tddate = outputFormat.format(tddateOG);
+      }else{
+        tddate = taskDetail[0]['End_Date'] as String;
+      }
     }
 
     //List<Map<String, Object?>> taskDetail = [for (var i in taskDetailOG) i];
@@ -309,10 +331,13 @@ class NavigationProvider with ChangeNotifier {
     upcEndTime = "${timeHour24 == 0 ? 12 : timeHour24 > 12 ? (timeHour24-12) < 10 ? '0${timeHour24-12}' : timeHour24-12 : timeHour24 < 10 ? '0$timeHour24' : timeHour24}:${upcEndTime.length == 5?upcEndTime.substring(3) : upcEndTime.substring(2)}";
     
     String upcEndDate = '';
-    if (task == null) {
-      DateFormat finalinputformat = DateFormat('yyyy-MM-dd');
-      DateFormat finaloutputformat = DateFormat('dd/MM/yyyy');
+    DateFormat finalinputformat = DateFormat('yyyy-MM-dd');
+    DateFormat finaloutputformat = DateFormat('dd/MM/yyyy');
+    var f_tddateOG = finalinputformat.tryParse(taskDetail[0]['End_Date'] as String);
+    if (f_tddateOG != null) { 
       upcEndDate = finaloutputformat.format(finalinputformat.parse(taskDetail[0]['End_Date'] as String));
+    }else{
+      upcEndDate = taskDetail[0]['End_Date'] as String;
     }
 
     log("INDEX: $index, $upcEndDate");
@@ -321,7 +346,7 @@ class NavigationProvider with ChangeNotifier {
         "id":taskDetail[0]["id"], 
         "Task_Name":taskDetail[0]["Task_Name"], 
         "Created":taskDetail[0]["Created"], 
-        "End_Date": upcEndDate == '' ? taskDetail[0]["End_Date"] : upcEndDate, 
+        "End_Date": upcEndDate, 
         "End_Time":upcEndTime, 
         "Period_Of_Hour":taskDetail[0]["Period_Of_Hour"],
         "Deleted" : false
@@ -332,7 +357,7 @@ class NavigationProvider with ChangeNotifier {
         "id":taskDetail[0]["id"], 
         "Task_Name":taskDetail[0]["Task_Name"], 
         "Created":taskDetail[0]["Created"], 
-        "End_Date": upcEndDate == '' ? taskDetail[0]["End_Date"] : upcEndDate, 
+        "End_Date": upcEndDate, 
         "End_Time":upcEndTime, 
         "Period_Of_Hour":taskDetail[0]["Period_Of_Hour"],
         "Deleted" : false
@@ -477,15 +502,19 @@ class NavigationProvider with ChangeNotifier {
     log("Completed_Task called");
     List<Map<String, Object?>> results = await db.getCompletedTasks();
     String? upcEndTime = '';
+    String comDate = '';
     for (var i in results) {
     upcEndTime = i['Completed_Time'] as String;
     upcEndTime = upcEndTime.substring(0, upcEndTime.length - 3);
     int timeHour24 = int.parse(upcEndTime.substring(0, upcEndTime.length-3));
     upcEndTime = "${timeHour24 == 0 ? 12 : timeHour24 > 12 ? (timeHour24-12) < 10 ? '0${timeHour24-12}' : timeHour24-12 : timeHour24 < 10 ? '0$timeHour24' : timeHour24}:${upcEndTime.length == 5?upcEndTime.substring(3) : upcEndTime.substring(2)}";
+    DateFormat inputformat = DateFormat('yyyy-MM-dd');
+    DateFormat outputFormat = DateFormat('dd/MM/yyyy');
+    comDate = outputFormat.format(inputformat.parse(i['Completed_Date'] as String));
     completedTasks.add({
       "id":i["id"], 
-      "Task_Name":i["Task_Name"], 
-      "Completed_Date":i["Completed_Date"],
+      "Task_Name":i["Task_Name"],
+      "Completed_Date": comDate,
       "Completed_Time" : upcEndTime,
       "Completed_Period_Of_Hour" : i["Completed_Period_Of_Hour"],
       "Created":i["Created"], 
@@ -501,19 +530,24 @@ class NavigationProvider with ChangeNotifier {
   void updateCompletedTasks(int id, String taskName, String completedDate, String completedTime, String completedPeriodOfHour, String created, String endDate, String endTime, String periodOfHour) {
     log("UPDATING COMPLETED TASKS");
     String? comTime = '';
+    String comDate = '';
     comTime = completedTime;
     comTime = comTime.substring(0, comTime.length - 3);
     int timeHour24 = int.parse(comTime.substring(0, comTime.length-3));
     comTime = "${timeHour24 == 0 ? 12 : timeHour24 > 12 ? (timeHour24-12) < 10 ? '0${timeHour24-12}' : timeHour24-12 : timeHour24 < 10 ? '0$timeHour24' : timeHour24}:${comTime.length == 5?comTime.substring(3) : comTime.substring(2)}";
+    log("END TIME $endTime");
+    DateFormat inputformat = DateFormat('yyyy-MM-dd');
+    DateFormat outputFormat = DateFormat('dd/MM/yyyy');
+    comDate = outputFormat.format(inputformat.parse(completedDate));
     completedTasks.insert(0, {
       "id":id, 
       "Task_Name":taskName, 
-      "Completed_Date":completedDate,
+      "Completed_Date":comDate,
       "Completed_Time" : comTime,
       "Completed_Period_Of_Hour" : completedPeriodOfHour,
       "Created":created, 
       "End_Date":endDate, 
-      "End_Time": endTime, 
+      "End_Time": endTime,
       "Period_Of_Hour":periodOfHour
     });
     notifyListeners();
@@ -561,8 +595,13 @@ class NavigationProvider with ChangeNotifier {
   Future undoCompleted(selectedIndex, Map<String, Object?>taskDetails) async {
     var inputFormat = DateFormat('dd/MM/yyyy');
     var outputFormat = DateFormat('yyyy-MM-dd');
-    var tddateOG = inputFormat.parse(taskDetails['End_Date'] as String);
-    var tddate = outputFormat.format(tddateOG);
+    var tddateOG = inputFormat.tryParse(taskDetails['End_Date'] as String);
+    var tddate = '';
+    if (tddateOG != null) {
+      tddate = outputFormat.format(tddateOG);
+    }else{
+      tddate = taskDetails['End_Date'] as String;
+    }
     log(tddate);
     int tableNumber = 0;
     DateTime tdDateTime = DateTime.parse("$tddate ${taskDetails["End_Time"] as String}");

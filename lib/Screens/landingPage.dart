@@ -464,80 +464,84 @@ LandingPage> with AutomaticKeepAliveClientMixin{
                 ),
               ),
             SizedBox(height: height*0.05,),
-            Container(
-                height: height*0.16,
-                width: width*0.9,
-                decoration: BoxDecoration(
-                  color: Colors.green.shade900,
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: height*0.008, horizontal: width*0.04),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("Last Completed",
-                      style: TextStyle(
-                        fontSize: height*0.03,
-                        fontWeight: FontWeight.bold
-                      ),
-                      ),
-                      SizedBox(height: height*0.02,),
-                      if (Provider.of<NavigationProvider>(context).noCompletedTasks == 0)...{
-                        Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          "   There Are No\nCompleted Tasks",
-                          style: TextStyle(
-                            fontSize: height*0.025,
-                            fontWeight: FontWeight.w500
-                          ),
-                        //overflow: TextOverflow.ellipsis,
-                        )
-                        )
-                      }else...{
-                      Expanded(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                              SizedBox(width: width*0.05),
-                              Expanded(
-                                child: Padding(
-                                  padding: EdgeInsets.only(top: height*0.008, bottom: height*0.01),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Expanded(
-                                        child: Text(comTaskName!,
-                                        style: TextStyle(
-                                          fontSize: height*0.025
-                                        ),
-                                        overflow: TextOverflow.ellipsis,                         
-                                        ),
-                                      ),
-                                      Row(
-                                        children: [
-                                          const Icon(Icons.calendar_month_outlined),
-                                          SizedBox(width: width*0.01,),
-                                          Text(comCompletedDate!),
-                                          SizedBox(width: width*0.03,),
-                                          const Icon(Icons.access_time_rounded),
-                                          SizedBox(width: width*0.01,),
-                                          Text(comCompletedTime!)
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              )
-                          ],
-                        ),
-                      )
-                      }
-                    ],
+            Consumer<NavigationProvider>(
+              builder: (context, value, child) {
+                return Container(
+                  height: height*0.16,
+                  width: width*0.9,
+                  decoration: BoxDecoration(
+                    color: Colors.green.shade900,
+                    borderRadius: BorderRadius.circular(14),
                   ),
-                ),
-              ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: height*0.008, horizontal: width*0.04),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Last Completed",
+                        style: TextStyle(
+                          fontSize: height*0.03,
+                          fontWeight: FontWeight.bold
+                        ),
+                        ),
+                        SizedBox(height: height*0.02,),
+                        if (Provider.of<NavigationProvider>(context).noCompletedTasks == 0)...{
+                          Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            "   There Are No\nCompleted Tasks",
+                            style: TextStyle(
+                              fontSize: height*0.025,
+                              fontWeight: FontWeight.w500
+                            ),
+                          //overflow: TextOverflow.ellipsis,
+                          )
+                          )
+                        }else...{
+                        Expanded(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                                SizedBox(width: width*0.05),
+                                Expanded(
+                                  child: Padding(
+                                    padding: EdgeInsets.only(top: height*0.008, bottom: height*0.01),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Expanded(
+                                          child: Text(value.completedTasks[0]['Task_Name'] as String,
+                                          style: TextStyle(
+                                            fontSize: height*0.025
+                                          ),
+                                          overflow: TextOverflow.ellipsis,                         
+                                          ),
+                                        ),
+                                        Row(
+                                          children: [
+                                            const Icon(Icons.calendar_month_outlined),
+                                            SizedBox(width: width*0.01,),
+                                            Text(value.completedTasks[0]['Completed_Date'] as String),
+                                            SizedBox(width: width*0.03,),
+                                            const Icon(Icons.access_time_rounded),
+                                            SizedBox(width: width*0.01,),
+                                            Text("${value.completedTasks[0]['Completed_Time'] as String} ${value.completedTasks[0]['Completed_Period_Of_Hour']}")
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                )
+                            ],
+                          ),
+                        )
+                        }
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
             SizedBox(height: height*0.04,),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,

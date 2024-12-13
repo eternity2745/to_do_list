@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
 // ignore: depend_on_referenced_packages
@@ -97,10 +96,8 @@ class DatabaseService {
 
     final db = await _instance.database;
     final id = DateTime.now().microsecondsSinceEpoch.toString();
-    log(id);
     final dateTime = DateTime.now();
     final created = "${dateTime.day < 10 ? '0${dateTime.day}' : dateTime.day}/${dateTime.month}/${dateTime.year}";
-    //final created = "${dateTime.year}/${dateTime.month}/${dateTime.day < 10 ? '0${dateTime.day}' : dateTime.day}";
     DateFormat inputFormat = DateFormat("dd/MM/yyyy");
     DateFormat outputFormat = DateFormat("yyyy-MM-dd");
     var dueDate = inputFormat.parse(date);
@@ -131,15 +128,13 @@ class DatabaseService {
 
   Future getUpcomingTask({int? limit}) async {
     final db = await _instance.database;
-    //await db!.delete(tableName1, where: "id = ?", whereArgs: [1734080594302774]);
+    //await db!.delete(tableName2, where: "id in (?,?)", whereArgs: [1734112546521240, 1734085199284423]);
     if (limit != null) {
-    log("1 Upc");
     final List<Map<String, Object?>> result = await db!.query(
       tableName1,
       orderBy: "$t1_columnName4, $t1_columnName5",
       limit: limit
       );
-    log("2 Upc");
     return result;
     }else{
       final List<Map<String, Object?>> result = await db!.query(
@@ -147,7 +142,6 @@ class DatabaseService {
       orderBy: "$t1_columnName4, $t1_columnName5",
       );
 
-      log("$result");
     return result;
     }
   }
@@ -165,7 +159,6 @@ class DatabaseService {
 
   Future completeTask(Map<String, Object?> taskDetail, int tableNumber) async {
     final db = await _instance.database;
-    log("TASKDETAIL\n$taskDetail");
     taskDetail.remove("Deleted");
     DateFormat inputFormat = DateFormat('dd/MM/yyyy');
     DateFormat outputFormat = DateFormat('yyyy-MM-dd');
@@ -190,7 +183,6 @@ class DatabaseService {
       tableName2,
       orderBy: "$t2_columnName3 DESC, $t2_columnName4 DESC"
     );
-    log("$result");
     return result;
     }else{
       List<Map<String, Object?>> result = await db!.query(
@@ -227,7 +219,6 @@ class DatabaseService {
       tableName3,
       orderBy: "$t1_columnName4, $t1_columnName5"
     );
-    log("$result");
     return result;
   }
 
@@ -246,8 +237,6 @@ class DatabaseService {
     var upcomingTasks = await db!.rawQuery(
       "SELECT * FROM $tableName1 WHERE $t1_columnName4 < $formattedDate OR ($t1_columnName4 = '$formattedDate' AND $t1_columnName5 <= '$formattedTime') ORDER BY $t1_columnName4, $t1_columnName5"
     );
-
-    log("UPCOMING TASKS $upcomingTasks");
     List<Map<String, Object?>> values = [];
     if (upcomingTasks.isEmpty) {
       return values;
@@ -279,8 +268,6 @@ class DatabaseService {
       }
       );
     }
-      
-      log("1 Over");
 
       await db.transaction((txn) async {
         final batch = txn.batch();
@@ -294,7 +281,6 @@ class DatabaseService {
         }
       }
       );
-      log("2 Over");
       return values;
     }
   }
@@ -307,14 +293,12 @@ class DatabaseService {
         tableName1,
         where: "id = (SELECT MAX(id) FROM $tableName1)" 
       );
-      log("$upcTask");
       return upcTask;
     }else{
       var upcTask = await db!.query(
         tableName1,
         where: "id = $id"
       );
-      log("$upcTask");
       return upcTask;
     }
   }
@@ -352,8 +336,11 @@ class DatabaseService {
     if (dueDate != null) {
       DateFormat inputformat = DateFormat('dd/MM/yyyy');
       DateFormat outputFormat = DateFormat('yyyy-MM-dd');
-      var date = inputformat.parse(dueDate);
+      var date = inputformat.tryParse(dueDate);
+      if (date != null) {
       dueDate = outputFormat.format(date);
+      }
+
       if (tableNumber == 1) {
         await db!.rawUpdate(
             "UPDATE $tableName1 SET $t1_columnName4 = '$dueDate' WHERE $t1_columnName1 = $id"
@@ -365,7 +352,6 @@ class DatabaseService {
       }
     }else{
       if (tableNumber == 1) {
-        log("$dueTime $duePeriod");
         await db!.rawUpdate(
             "UPDATE $tableName1 SET $t1_columnName5 = '$dueTime:00' WHERE $t1_columnName1 = $id"
           );

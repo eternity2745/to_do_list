@@ -55,7 +55,7 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
     DateTime dateTime = DateTime.now();
     String periodOfHour = dateTime.hour < 12 ? "AM" : "PM";
     String time = "${dateTime.hour < 10 && dateTime.hour > 0 ? '0${dateTime.hour}' : dateTime.hour == 0 ? '00' : dateTime.hour}:${dateTime.minute == 0 ? '00' : dateTime.minute < 10 ? '0${dateTime.minute}' : dateTime.minute}:00";
-    String date = "${dateTime.day}/${dateTime.month}/${dateTime.year}";
+    String date = "${dateTime.year}-${dateTime.month}-${dateTime.day}";
     details['Completed_Time'] = time;
     details['Completed_Date'] = date;
     details['Completed_Period_Of_Hour'] = periodOfHour;

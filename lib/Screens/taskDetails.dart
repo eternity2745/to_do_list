@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +33,7 @@ class _TaskDetailsState extends State<TaskDetails> with SingleTickerProviderStat
     DateTime dateTime = DateTime.now();
     String periodOfHour = dateTime.hour < 12 ? "AM" : "PM";
     String time = "${dateTime.hour < 10 && dateTime.hour > 0 ? '0${dateTime.hour}' : dateTime.hour == 0 ? '00' : dateTime.hour}:${dateTime.minute == 0 ? '00' : dateTime.minute < 10 ? '0${dateTime.minute}' : dateTime.minute}:00";
-    String date = "${dateTime.day}/${dateTime.month}/${dateTime.year}";
+    String date = "${dateTime.year}-${dateTime.month}-${dateTime.day}";
     details['Completed_Time'] = time;
     details['Completed_Date'] = date;
     details['Completed_Period_Of_Hour'] = periodOfHour;
@@ -72,6 +71,9 @@ class _TaskDetailsState extends State<TaskDetails> with SingleTickerProviderStat
           Provider.of<NavigationProvider>(context, listen: false).editTaskDetails(dueDate: "${dateTime!.day.toString()}/${dateTime!.month.toString().padLeft(2,'0')}/${dateTime!.year.toString().padLeft(2,'0')}", notify: false);
           Provider.of<NavigationProvider>(context, listen: false).updateEditOverdueTasks(selectedIndex, ovrdEditTask, true);    
         }        
+      }
+      if (context.mounted) {
+        Navigator.of(context).pop();
       }
     }
   }
@@ -130,6 +132,9 @@ class _TaskDetailsState extends State<TaskDetails> with SingleTickerProviderStat
           Provider.of<NavigationProvider>(context, listen: false).editTaskDetails(dueTime: "$dueTimeOG $duePeriod", notify: false);
           Provider.of<NavigationProvider>(context, listen: false).updateEditOverdueTasks(selectedIndex, ovrdEditTask, false);        
         }
+      }
+      if (context.mounted) {
+        Navigator.of(context).pop();
       }
     }
   }
