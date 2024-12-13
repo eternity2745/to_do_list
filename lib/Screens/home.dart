@@ -31,7 +31,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
-      
       bottomNavigationBar: CurvedNavigationBar(
         items: [
           Icon(Icons.home_outlined, size: height*0.035,),
