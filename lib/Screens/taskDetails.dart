@@ -92,7 +92,7 @@ class _TaskDetailsState extends State<TaskDetails> with SingleTickerProviderStat
             Icon(Icons.warning),
             SizedBox(width: MediaQuery.of(context).size.width*0.02,),
             Text(
-            time!.hour < TimeOfDay.now().hour ? "Selected Time Cant Be Past Current Time" : "Selected Time Cant Be Current Time",
+            time!.hour <= today.hour && time!.minute < today.minute ? "Selected Time Cant Be Past Current Time" : "Selected Time Cant Be Current Time",
             style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold

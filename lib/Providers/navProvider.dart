@@ -222,7 +222,7 @@ class NavigationProvider with ChangeNotifier {
 
     log(ovrdEndTime);
     if (undoCompleted == true) {
-      ovrdEndTime = ovrdEndTime.substring(0, ovrdEndTime.length - 3);
+      //ovrdEndTime = ovrdEndTime.substring(0, ovrdEndTime.length - 3);
       int timeHour24 = int.parse(ovrdEndTime.substring(0, ovrdEndTime.length-3));
       ovrdEndTime = "${timeHour24 == 0 ? 12 : timeHour24 > 12 ? (timeHour24-12) < 10 ? '0${timeHour24-12}' : timeHour24-12 : timeHour24 < 10 ? '0$timeHour24' : timeHour24}:${ovrdEndTime.length == 5?ovrdEndTime.substring(3) : ovrdEndTime.substring(2)}";
     }
@@ -233,7 +233,7 @@ class NavigationProvider with ChangeNotifier {
         "id":taskDetail[0]["id"], 
         "Task_Name":taskDetail[0]["Task_Name"], 
         "Created":taskDetail[0]["Created"], 
-        "End_Date":tddate, 
+        "End_Date":taskDetail[0]["End_Date"], 
         "End_Time":ovrdEndTime, 
         "Period_Of_Hour":taskDetail[0]["Period_Of_Hour"],
         "Deleted" : false
@@ -308,13 +308,20 @@ class NavigationProvider with ChangeNotifier {
     int timeHour24 = int.parse(upcEndTime.substring(0, upcEndTime.length-3));
     upcEndTime = "${timeHour24 == 0 ? 12 : timeHour24 > 12 ? (timeHour24-12) < 10 ? '0${timeHour24-12}' : timeHour24-12 : timeHour24 < 10 ? '0$timeHour24' : timeHour24}:${upcEndTime.length == 5?upcEndTime.substring(3) : upcEndTime.substring(2)}";
     
-    log("INDEX: $index");
+    String upcEndDate = '';
+    if (task == null) {
+      DateFormat finalinputformat = DateFormat('yyyy-MM-dd');
+      DateFormat finaloutputformat = DateFormat('dd/MM/yyyy');
+      upcEndDate = finaloutputformat.format(finalinputformat.parse(taskDetail[0]['End_Date'] as String));
+    }
+
+    log("INDEX: $index, $upcEndDate");
     if (index == 0 && checkIndex == false) {
       upcomingTasks.add({
         "id":taskDetail[0]["id"], 
         "Task_Name":taskDetail[0]["Task_Name"], 
         "Created":taskDetail[0]["Created"], 
-        "End_Date":taskDetail[0]["End_Date"], 
+        "End_Date": upcEndDate == '' ? taskDetail[0]["End_Date"] : upcEndDate, 
         "End_Time":upcEndTime, 
         "Period_Of_Hour":taskDetail[0]["Period_Of_Hour"],
         "Deleted" : false
@@ -325,7 +332,7 @@ class NavigationProvider with ChangeNotifier {
         "id":taskDetail[0]["id"], 
         "Task_Name":taskDetail[0]["Task_Name"], 
         "Created":taskDetail[0]["Created"], 
-        "End_Date":taskDetail[0]["End_Date"], 
+        "End_Date": upcEndDate == '' ? taskDetail[0]["End_Date"] : upcEndDate, 
         "End_Time":upcEndTime, 
         "Period_Of_Hour":taskDetail[0]["Period_Of_Hour"],
         "Deleted" : false
@@ -561,6 +568,8 @@ class NavigationProvider with ChangeNotifier {
     DateTime tdDateTime = DateTime.parse("$tddate ${taskDetails["End_Time"] as String}");
     if (tdDateTime.isBefore(DateTime.now()) || tdDateTime.isAtSameMomentAs(DateTime.now()) ) {
       tableNumber = 3;
+      String endTime = taskDetails['End_Time'] as String;
+      taskDetails['End_Time'] = endTime.substring(0, endTime.length-3);
       updateEditOverdueTasks(0, taskDetails, false, undoCompleted: true);
       changenoOverdueTasks(noOverdueTasks+1);
     }else{
