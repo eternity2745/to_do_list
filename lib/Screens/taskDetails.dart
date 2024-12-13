@@ -117,6 +117,7 @@ class _TaskDetailsState extends State<TaskDetails> with SingleTickerProviderStat
           Provider.of<NavigationProvider>(context, listen: false).upcomingTasks[selectedIndex]["End_Time"] = dueTimeOG;
           Provider.of<NavigationProvider>(context, listen: false).upcomingTasks[selectedIndex]["Period_Of_Hour"] = duePeriod;
           Map<String, Object?> upcomingEditTask = Provider.of<NavigationProvider>(context, listen: false).upcomingTasks[selectedIndex];
+          upcomingEditTask['End_Time'] = hr24;
           Provider.of<NavigationProvider>(context, listen: false).upcomingTasks.removeAt(selectedIndex);
           Provider.of<NavigationProvider>(context, listen: false).editTaskDetails(dueTime: "$dueTimeOG $duePeriod", notify: false);
           Provider.of<NavigationProvider>(context, listen: false).updateUpcomingTasks(task: upcomingEditTask);

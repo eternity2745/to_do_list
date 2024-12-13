@@ -304,11 +304,10 @@ class NavigationProvider with ChangeNotifier {
     }
     String upcEndTime = taskDetail[0]['End_Time'] as String;
     log(upcEndTime);
-    if (task == null || undoComplete == true || updateOverdue == true) {
-      upcEndTime = task == null || undoComplete == true ? upcEndTime.substring(0, upcEndTime.length - 3) : upcEndTime;
-      int timeHour24 = int.parse(upcEndTime.substring(0, upcEndTime.length-3));
-      upcEndTime = "${timeHour24 == 0 ? 12 : timeHour24 > 12 ? (timeHour24-12) < 10 ? '0${timeHour24-12}' : timeHour24-12 : timeHour24 < 10 ? '0$timeHour24' : timeHour24}:${upcEndTime.length == 5?upcEndTime.substring(3) : upcEndTime.substring(2)}";
-    }
+    upcEndTime = task == null || undoComplete == true ? upcEndTime.substring(0, upcEndTime.length - 3) : upcEndTime;
+    int timeHour24 = int.parse(upcEndTime.substring(0, upcEndTime.length-3));
+    upcEndTime = "${timeHour24 == 0 ? 12 : timeHour24 > 12 ? (timeHour24-12) < 10 ? '0${timeHour24-12}' : timeHour24-12 : timeHour24 < 10 ? '0$timeHour24' : timeHour24}:${upcEndTime.length == 5?upcEndTime.substring(3) : upcEndTime.substring(2)}";
+    
     log("INDEX: $index");
     if (index == 0 && checkIndex == false) {
       upcomingTasks.add({
