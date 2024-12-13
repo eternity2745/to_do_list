@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:intl/intl.dart';
 import 'dart:developer';
 import 'package:provider/provider.dart';
 import 'package:to_do_list/Database/database.dart';
@@ -81,11 +82,16 @@ LandingPage> with AutomaticKeepAliveClientMixin{
     List<Map<String, Object?>> result = await db.getUpcomingTask(limit: 1);
     log("RESULT $result");
     if (result.isNotEmpty) {
+    DateFormat inputFormat = DateFormat('yyyy-MM-dd');
+    DateFormat outputFormat = DateFormat('dd/MM/yyyy');
     upcEndTime = result[0]['End_Time'] as String;
     upcEndTime = upcEndTime!.substring(0, upcEndTime!.length - 3);
     int timeHour24 = int.parse(upcEndTime!.substring(0, upcEndTime!.length-3));
     upcEndTime = "${timeHour24 == 0 ? 12 : timeHour24 > 12 ? (timeHour24-12) < 10 ? '0${timeHour24-12}' : timeHour24-12 : timeHour24 < 10 ? '0$timeHour24' : timeHour24}:${upcEndTime!.length == 5?upcEndTime!.substring(3) : upcEndTime!.substring(2)} $upcperiodOfHour";
-    Provider.of<NavigationProvider>(context, listen: false).updateUpcomingTask(result[0]['Task_Name'] as String, result[0]['Created'] as String, result[0]['End_Date'] as String, upcEndTime!, result[0]["Period_Of_Hour"] as String, true);
+    upcEndDate = result[0]['End_Date'] as String;
+    var dueDate = inputFormat.parse(upcEndDate!);
+    upcEndDate = outputFormat.format(dueDate);
+    Provider.of<NavigationProvider>(context, listen: false).updateUpcomingTask(result[0]['Task_Name'] as String, result[0]['Created'] as String, upcEndDate!, upcEndTime!, result[0]["Period_Of_Hour"] as String, true);
 
     //Provider.of<NavigationProvider>(context, listen: false).updateUpcomingTasks(result[0]['id'] as int, result[0]['Task_Name'] as String, result[0]['Created'] as String, result[0]['End_Date'] as String, upcEndTime as String, result[0]['Period_Of_Hour'] as String);
     }
@@ -154,11 +160,6 @@ LandingPage> with AutomaticKeepAliveClientMixin{
   void initState() {
     log("OKKK");
     updateOverDueTasksinit();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-
-    width = MediaQuery.of(context).size.width;
-    height = MediaQuery.of(context).size.height;
-    });
     super.initState();
   }
 
@@ -173,8 +174,8 @@ LandingPage> with AutomaticKeepAliveClientMixin{
     if (wantKeepAlive) {
      super.build(context);
    }
-    //double height = MediaQuery.of(context).size.height;
-    // double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         forceMaterialTransparency: true,

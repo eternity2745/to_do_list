@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart';
@@ -99,13 +100,19 @@ class DatabaseService {
     log(id);
     final dateTime = DateTime.now();
     final created = "${dateTime.day < 10 ? '0${dateTime.day}' : dateTime.day}/${dateTime.month}/${dateTime.year}";
+    //final created = "${dateTime.year}/${dateTime.month}/${dateTime.day < 10 ? '0${dateTime.day}' : dateTime.day}";
+    DateFormat inputFormat = DateFormat("dd/MM/yyyy");
+    DateFormat outputFormat = DateFormat("yyyy-MM-dd");
+    var dueDate = inputFormat.parse(date);
+    String dueDateOG = outputFormat.format(dueDate);
+  
     await db!.insert(
       tableName1,
       {
         t1_columnName1: id,
         t1_columnName2: taskName,
         t1_columnName3: created,
-        t1_columnName4: date,
+        t1_columnName4: dueDateOG,
         t1_columnName5: "$time:00",
         t1_columnName6: periodOfHour
       },
@@ -124,7 +131,7 @@ class DatabaseService {
 
   Future getUpcomingTask({int? limit}) async {
     final db = await _instance.database;
-    //await db!.delete(tableName2, where: "id = ?", whereArgs: [1732642307048453]);
+    //await db!.delete(tableName3, where: "id = ?", whereArgs: [1734086317633471]);
     if (limit != null) {
     log("1 Upc");
     final List<Map<String, Object?>> result = await db!.query(
@@ -139,6 +146,7 @@ class DatabaseService {
       tableName1,
       orderBy: "$t1_columnName4, $t1_columnName5",
       );
+
       log("$result");
     return result;
     }
@@ -159,6 +167,10 @@ class DatabaseService {
     final db = await _instance.database;
     log("TASKDETAIL\n$taskDetail");
     taskDetail.remove("Deleted");
+    DateFormat inputFormat = DateFormat('dd/MM/yyyy');
+    DateFormat outputFormat = DateFormat('yyyy-MM-dd');
+    var dueDate = inputFormat.parse(taskDetail['End_Date'] as String);
+    taskDetail['End_Date'] = outputFormat.format(dueDate);
     await db!.insert(
       tableName2, 
       taskDetail,
@@ -224,7 +236,8 @@ class DatabaseService {
     final db = await _instance.database;
     
     DateTime dateTime = DateTime.now();
-    String formattedDate = "${dateTime.day}/${dateTime.month}/${dateTime.year}";
+    //String formattedDate = "${dateTime.day}/${dateTime.month}/${dateTime.year}";
+    String formattedDate = "${dateTime.year}-${dateTime.month}-${dateTime.day}";
     String hour = dateTime.hour < 10 ? '0${dateTime.hour}' : '${dateTime.hour}';
     String minutes = dateTime.minute < 10 ? '0${dateTime.minute}' : '${dateTime.minute}';
     String seconds = dateTime.second < 10 ? '0${dateTime.second}' : '${dateTime.second}';
