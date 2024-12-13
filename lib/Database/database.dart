@@ -350,6 +350,10 @@ class DatabaseService {
     final db = await _instance.database;
 
     if (dueDate != null) {
+      DateFormat inputformat = DateFormat('dd/MM/yyyy');
+      DateFormat outputFormat = DateFormat('yyyy-MM-dd');
+      var date = inputformat.parse(dueDate);
+      dueDate = outputFormat.format(date);
       if (tableNumber == 1) {
         await db!.rawUpdate(
             "UPDATE $tableName1 SET $t1_columnName4 = '$dueDate' WHERE $t1_columnName1 = $id"

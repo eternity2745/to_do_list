@@ -181,7 +181,7 @@ class NavigationProvider with ChangeNotifier {
     DateTime tdDateTime = DateTime.parse("$tddate ${taskDetail[0]["End_Time"] as String}");
     if(tdDateTime.isAfter(DateTime.now())) {
       if (isDueDate) {
-        await db.editTask(taskDetail[0]["id"] as int, 3, dueDate: taskDetail[0]["End_Date"] as String);
+        await db.editTask(taskDetail[0]["id"] as int, 3, dueDate: tddate);
       }else{
         await db.editTask(taskDetail[0]["id"] as int, 3, dueTime: taskDetail[0]["End_Time"] as String, duePeriod: taskDetail[0]["Period_Of_Hour"] as String);
       }
@@ -220,6 +220,7 @@ class NavigationProvider with ChangeNotifier {
     }
 
     String ovrdEndTime = taskDetail[0]['End_Time'] as String;
+
     log(ovrdEndTime);
     if (undoCompleted == true) {
       ovrdEndTime = ovrdEndTime.substring(0, ovrdEndTime.length - 3);
@@ -227,14 +228,13 @@ class NavigationProvider with ChangeNotifier {
       ovrdEndTime = "${timeHour24 == 0 ? 12 : timeHour24 > 12 ? (timeHour24-12) < 10 ? '0${timeHour24-12}' : timeHour24-12 : timeHour24 < 10 ? '0$timeHour24' : timeHour24}:${ovrdEndTime.length == 5?ovrdEndTime.substring(3) : ovrdEndTime.substring(2)}";
     }
 
-
     log("INDEX: $index");
     if (index == 0 && checkIndex == false) {
       overdueTasks.add({
         "id":taskDetail[0]["id"], 
         "Task_Name":taskDetail[0]["Task_Name"], 
         "Created":taskDetail[0]["Created"], 
-        "End_Date":taskDetail[0]["End_Date"], 
+        "End_Date":tddate, 
         "End_Time":ovrdEndTime, 
         "Period_Of_Hour":taskDetail[0]["Period_Of_Hour"],
         "Deleted" : false
