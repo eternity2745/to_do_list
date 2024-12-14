@@ -175,7 +175,6 @@ class _TaskDetailsState extends State<TaskDetails> with SingleTickerProviderStat
                     width: width*0.9,
                     decoration: BoxDecoration(
                       color: Colors.transparent,
-                      //gradient: LinearGradient(colors: [Colors.green.shade900, Colors.blue.shade900]),
                       borderRadius: BorderRadius.circular(14),
                     ),
                     child: Padding(
@@ -229,26 +228,6 @@ class _TaskDetailsState extends State<TaskDetails> with SingleTickerProviderStat
                           ),
                         ),
                         Divider(endIndent: width*0.03,),
-                        // ListTile(
-                        //   leading: Text(
-                        //     "Created Time",
-                        //     style: TextStyle(
-                        //       fontSize: height*0.03,
-                        //     ),
-                        //   ),
-                        //   trailing: TextButton(
-                        //     child: Text(
-                        //   createdTime,
-                        //   style: TextStyle(
-                        //     fontSize: height*0.02
-                        //   ),
-                        //   ),
-                        //   onPressed: () {
-                            
-                        //   },
-                        //   ),
-                        // ),
-                        // Divider(endIndent: width*0.03,),
                         ListTile(
                           leading: Text(
                             "Due Date",
@@ -373,12 +352,6 @@ class _TaskDetailsState extends State<TaskDetails> with SingleTickerProviderStat
                               Provider.of<NavigationProvider>(context, listen: false).changenoUpcomingTasks(Provider.of<NavigationProvider>(context, listen: false).upcomingTasks.length);
                             }else if(Provider.of<NavigationProvider>(context, listen: false).selectedTaskType == "Completed") {
                               Map<String, Object?> task = Provider.of<NavigationProvider>(context, listen: false).completedTasks[Provider.of<NavigationProvider>(context, listen: false).selectedIndex];
-                              //String endTime = task["End_Time"] as String;
-                              // if (task["Period_Of_Hour"] == "AM") {
-                              //   endTime = "${endTime.substring(0,2) == "12" ? "00" : endTime.substring(0,2)}:${endTime.substring(2)}:00";
-                              // }else{
-                              //   endTime = "${int.parse(endTime.substring(0,2))+12}:${endTime.substring(2)}:00";
-                              // }
                               Map<String, Object?> taskDetails = {
                                 "id" : task["id"],
                                 "Task_Name" : task["Task_Name"],

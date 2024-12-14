@@ -36,7 +36,6 @@ class DatabaseService {
   static const t3_columnName5 = "End_Time";
   static const t3_columnName6 = "Period_Of_Hour";
   
-  //singleton class
   static final DatabaseService _instance = DatabaseService._internal();
   factory DatabaseService() => _instance;
   DatabaseService._internal();
@@ -128,7 +127,6 @@ class DatabaseService {
 
   Future getUpcomingTask({int? limit}) async {
     final db = await _instance.database;
-    //await db!.delete(tableName2, where: "id in (?,?)", whereArgs: [1734112546521240, 1734085199284423]);
     if (limit != null) {
     final List<Map<String, Object?>> result = await db!.query(
       tableName1,
@@ -227,7 +225,6 @@ class DatabaseService {
     final db = await _instance.database;
     
     DateTime dateTime = DateTime.now();
-    //String formattedDate = "${dateTime.day}/${dateTime.month}/${dateTime.year}";
     String formattedDate = "${dateTime.year}-${dateTime.month}-${dateTime.day}";
     String hour = dateTime.hour < 10 ? '0${dateTime.hour}' : '${dateTime.hour}';
     String minutes = dateTime.minute < 10 ? '0${dateTime.minute}' : '${dateTime.minute}';

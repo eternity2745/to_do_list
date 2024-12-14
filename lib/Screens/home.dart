@@ -55,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
           }else if((selectedIndex == 0 || selectedIndex == 1) && Provider.of<NavigationProvider>(context, listen: false).persistStateCompleted == false){
             Provider.of<NavigationProvider>(context, listen: false).changePersistStateCompleted(true);
           }
-          _pageController.jumpToPage(selectedIndex);// curve: Curves.linear, duration: Duration(milliseconds: 100));
+          _pageController.jumpToPage(selectedIndex);
           setState(() {
             
           });

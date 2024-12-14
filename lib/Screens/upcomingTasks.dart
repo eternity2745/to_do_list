@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:animate_icons/animate_icons.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
@@ -47,11 +46,9 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
 
   Future deleteTask(int id, int tableNumber) async {
     await db.deleteTask(id, tableNumber);
-    log("DELETED");
   }
 
   Future completeTasks(Map<String, Object?> details, int tableNumber) async {
-    log("DETAILS: $details");
     DateTime dateTime = DateTime.now();
     String periodOfHour = dateTime.hour < 12 ? "AM" : "PM";
     String time = "${dateTime.hour < 10 && dateTime.hour > 0 ? '0${dateTime.hour}' : dateTime.hour == 0 ? '00' : dateTime.hour}:${dateTime.minute == 0 ? '00' : dateTime.minute < 10 ? '0${dateTime.minute}' : dateTime.minute}:00";
@@ -72,13 +69,6 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
   }
 
   @override
-  void initState() {
-    //getUpcomingTasks();
-    //getOverdueTasks();
-    super.initState();
-  }
-
-  @override
   void dispose() {
     _controllerBottomCenter.dispose();
     super.dispose();
@@ -96,7 +86,6 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
     if (wantKeepAlive) {
       super.build(context);
     }
-    log("$wantKeepAlive");
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -128,7 +117,6 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
               if (Provider.of<NavigationProvider>(context, listen: false).overdueTasks.isEmpty){
                   return Image.asset("assets/images/overdueTasks.png", height: height*0.23,);
               }else{
-              log("REBUILD OVERDUE BUILDER");
               return Consumer<NavigationProvider>(
                 builder: (context, value, child) {
                 return ListView.builder(
@@ -172,10 +160,8 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                                           value.overdueTasks[index]["Deleted"] = true;
                                           Map<String, Object?> ovrdTasksCopy = { for (var e in value.overdueTasks[index].keys) e : value.overdueTasks[index][e] };
                                           completeTasks(ovrdTasksCopy, 3);
-                                          log("${_controllerBottomCenter.state}");
                                           int noCompletedTasks = Provider.of<NavigationProvider>(context, listen: false).noCompletedTasks;
                                           int noOverdueTasks = Provider.of<NavigationProvider>(context, listen: false).noOverdueTasks;
-                                          //Provider.of<NavigationProvider>(context, listen: false).changePersistStateCompleted(false);
                                           Provider.of<NavigationProvider>(context, listen: false).changenoCompletedTasks(noCompletedTasks+1);
                                           Provider.of<NavigationProvider>(context, listen: false).changenoOverdueTasks(noOverdueTasks-1);
                                           
@@ -274,10 +260,8 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
               if (Provider.of<NavigationProvider>(context, listen: false).upcomingTasks.isEmpty){
                return Image.asset("assets/images/upcomingTasks.png", height: height*0.25,);
               }else{
-              log("REBUILD UPCOMING BUILDER");
               return Consumer<NavigationProvider>(
                 builder: (context, value, child) {
-                  log("${value.upcomingTasks.length}");
                 return ListView.builder(
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
@@ -333,7 +317,6 @@ class _UpcomingTasksState extends State<UpcomingTasks> with AutomaticKeepAliveCl
                                           value.upcomingTasks[index]["Deleted"] = true;
                                           Map<String, Object?> upcTasksCopy = { for (var e in value.upcomingTasks[index].keys) e : value.upcomingTasks[index][e] };
                                           completeTasks(upcTasksCopy, 1);
-                                          log("${_controllerBottomCenter.state}");
                                           _controllerBottomCenter.play();
                                           int noCompletedTasks = Provider.of<NavigationProvider>(context, listen: false).noCompletedTasks;
                                           int noUpcomingTasks = Provider.of<NavigationProvider>(context, listen: false).noUpcomingTasks;

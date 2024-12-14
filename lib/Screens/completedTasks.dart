@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -24,7 +22,6 @@ class _CompletedTasksState extends State<CompletedTasks> with AutomaticKeepAlive
 
   Future getCompletedTasks() async {
     List<Map<String, Object?>> results = await db.getCompletedTasks();
-    log("RESULT:\n$results");
     String? upcEndTime = '';
     for (var i in results) {
     upcEndTime = i['Completed_Time'] as String;
@@ -47,17 +44,10 @@ class _CompletedTasksState extends State<CompletedTasks> with AutomaticKeepAlive
     setState(() {
       
     });
-    log("COMPLETED TASKS:\n$completedTasks");
   }
 
   @override
   bool get wantKeepAlive => persistState;
-
-  @override
-  void initState() {
-    //getCompletedTasks();
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +76,6 @@ class _CompletedTasksState extends State<CompletedTasks> with AutomaticKeepAlive
         child: Container(
           padding: EdgeInsets.symmetric(vertical: height*0.03, horizontal: width*0.08),
           child: Column(
-            //mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               SizedBox(height: height*0.008,),

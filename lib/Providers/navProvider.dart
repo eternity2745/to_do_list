@@ -1,6 +1,4 @@
 // ignore_for_file: non_constant_identifier_names
-
-import 'dart:developer';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:to_do_list/Database/database.dart';
@@ -78,7 +76,6 @@ class NavigationProvider with ChangeNotifier {
   }
 
   Future getUpcomingTasks() async {
-    log("Upcoming Tasks Called");
     upcomingTasks = [];
     List<Map<String, Object?>> results = await db.getUpcomingTask();
     DateFormat inputFormat = DateFormat('yyyy-MM-dd');
@@ -105,7 +102,6 @@ class NavigationProvider with ChangeNotifier {
       );
     }
     notifyListeners();
-    //log("$upcomingTasks");
   }
 
   Future updateUndoOverdueTasks(Map<String, Object?> task) async {
@@ -114,7 +110,6 @@ class NavigationProvider with ChangeNotifier {
     var outputFormat = DateFormat('yyyy-MM-dd');
     var tddateOG = inputFormat.parse(taskDetail[0]['End_Date'] as String);
     var tddate = outputFormat.format(tddateOG);
-    log(tddate);
     DateTime tdDateTime = DateTime.parse("$tddate ${taskDetail[0]["End_Time"] as String}");
     int index = 0; 
     bool checkIndex = false;
@@ -123,7 +118,6 @@ class NavigationProvider with ChangeNotifier {
     for (var i in overdueTasks) {
       var date1OG = inputFormat.parse(i['End_Date'] as String);
       var date1 = outputFormat.format(date1OG);
-      log(date1);
       if (i["Period_Of_Hour"] as String == "AM") {
         var duptime1 = i["End_Time"] as String;
         if (duptime1.substring(0, 2) == "12") {
@@ -137,7 +131,6 @@ class NavigationProvider with ChangeNotifier {
           time1 = "${time24 == 24 ? time24-12 : time24}${duptime1.substring(2)}";
       }
       DateTime ovrdDateTime = DateTime.parse("$date1 $time1:00");
-      log("$ovrdDateTime");
 
       if (tdDateTime.isBefore(ovrdDateTime)) {
           index = overdueTasks.indexOf(i);
@@ -146,7 +139,6 @@ class NavigationProvider with ChangeNotifier {
         }
     }
 
-    log("INDEX: $index");
     if (index == 0 && checkIndex == false) {
       overdueTasks.add({
         "id":taskDetail[0]["id"], 
@@ -175,7 +167,6 @@ class NavigationProvider with ChangeNotifier {
   Future updateEditOverdueTasks(int selctedIndex, Map<String, Object?> task, bool isDueDate, {bool? undoCompleted = false}) async {
 
     List<Map<String, Object?>> taskDetail = [task];
-    log("Started UPDATING");
     var tddate = '';
     var inputFormat = DateFormat('dd/MM/yyyy');
     var outputFormat = DateFormat('yyyy-MM-dd');
@@ -186,9 +177,7 @@ class NavigationProvider with ChangeNotifier {
       tddate = taskDetail[0]['End_Date'] as String;
     }
     DateTime tdDateTime = DateTime.parse("$tddate ${taskDetail[0]["End_Time"] as String}:00");
-    log("THIS IS $tdDateTime");
     if(tdDateTime.isAfter(DateTime.now())) {
-      log("ENTERED THAT THING");
       if (isDueDate) {
         await db.editTask(taskDetail[0]["id"] as int, 3, dueDate: tddate);
       }else{
@@ -227,9 +216,7 @@ class NavigationProvider with ChangeNotifier {
 
     String ovrdEndTime = taskDetail[0]['End_Time'] as String;
 
-    log(ovrdEndTime);
     if (undoCompleted == true) {
-      //ovrdEndTime = ovrdEndTime.substring(0, ovrdEndTime.length - 3);
       int timeHour24 = int.parse(ovrdEndTime.substring(0, ovrdEndTime.length-3));
       ovrdEndTime = "${timeHour24 == 0 ? 12 : timeHour24 > 12 ? (timeHour24-12) < 10 ? '0${timeHour24-12}' : timeHour24-12 : timeHour24 < 10 ? '0$timeHour24' : timeHour24}:${ovrdEndTime.length == 5?ovrdEndTime.substring(3) : ovrdEndTime.substring(2)}";
     }
@@ -244,7 +231,6 @@ class NavigationProvider with ChangeNotifier {
       f_endDate = taskDetail[0]['End_Date'] as String;
     }
 
-    log("INDEX: $index");
     if (index == 0 && checkIndex == false) {
       overdueTasks.add({
         "id":taskDetail[0]["id"], 
@@ -270,7 +256,6 @@ class NavigationProvider with ChangeNotifier {
     await db.editTask(taskDetail[0]["id"] as int, 3, dueDate: taskDetail[0]["End_Date"] as String);
     notifyListeners();
   }
-  //Future updateUpcomingTasks(int id, String taskName, String created, String endDate, String endTime, String periodOfHour, {bool deleted = false}) async {
   Future updateUpcomingTasks({Map<String, Object?>? task, bool? updateOverdue = false, int? selectedIndex, bool? undoComplete = false}) async {
     List<Map<String, Object?>> taskDetail = [];
     var tddate = '';
@@ -282,7 +267,6 @@ class NavigationProvider with ChangeNotifier {
       tddate = taskDetail[0]['End_Date'] as String;
     }else{
       taskDetail.add(task);
-      log("$taskDetail");
       var tddateOG = inputFormat.tryParse(taskDetail[0]['End_Date'] as String);
       if (tddateOG != null) {
         tddate = outputFormat.format(tddateOG);
@@ -290,18 +274,13 @@ class NavigationProvider with ChangeNotifier {
         tddate = taskDetail[0]['End_Date'] as String;
       }
     }
-
-    //List<Map<String, Object?>> taskDetail = [for (var i in taskDetailOG) i];
-    log(tddate);
     DateTime tdDateTime = DateTime.parse("$tddate ${taskDetail[0]["End_Time"] as String}");
-    log("$tdDateTime");
     int index = 0; 
     bool checkIndex = false;
     var time1 = '';
     for (var i in upcomingTasks) {
       var date1OG = inputFormat.parse(i['End_Date'] as String);
       var date1 = outputFormat.format(date1OG);
-      log(date1);
       if (i["Period_Of_Hour"] as String == "AM") {
         var duptime1 = i["End_Time"] as String;
         if (duptime1.substring(0, 2) == "12") {
@@ -315,7 +294,6 @@ class NavigationProvider with ChangeNotifier {
           time1 = "${time24 == 24 ? time24-12 : time24}${duptime1.substring(2)}";
       }
       DateTime upcDateTime = DateTime.parse("$date1 $time1:00");
-      log("$upcDateTime");
 
       if (tdDateTime.isBefore(upcDateTime)) {
           index = upcomingTasks.indexOf(i);
@@ -325,7 +303,6 @@ class NavigationProvider with ChangeNotifier {
 
     }
     String upcEndTime = taskDetail[0]['End_Time'] as String;
-    log(upcEndTime);
     upcEndTime = task == null || undoComplete == true ? upcEndTime.substring(0, upcEndTime.length - 3) : upcEndTime;
     int timeHour24 = int.parse(upcEndTime.substring(0, upcEndTime.length-3));
     upcEndTime = "${timeHour24 == 0 ? 12 : timeHour24 > 12 ? (timeHour24-12) < 10 ? '0${timeHour24-12}' : timeHour24-12 : timeHour24 < 10 ? '0$timeHour24' : timeHour24}:${upcEndTime.length == 5?upcEndTime.substring(3) : upcEndTime.substring(2)}";
@@ -340,7 +317,6 @@ class NavigationProvider with ChangeNotifier {
       upcEndDate = taskDetail[0]['End_Date'] as String;
     }
 
-    log("INDEX: $index, $upcEndDate");
     if (index == 0 && checkIndex == false) {
       upcomingTasks.add({
         "id":taskDetail[0]["id"], 
@@ -370,7 +346,6 @@ class NavigationProvider with ChangeNotifier {
     changenoUpcomingTasks(upcomingTasks.length, notify: false);
 
     if (updateOverdue!) {
-      log('$overdueTasks');
       overdueTasks.removeAt(selectedIndex!);
       await db.editOverdueTask(taskDetail[0]["id"] as int);
       changenoOverdueTasks(overdueTasks.length, notify: false);
@@ -407,9 +382,7 @@ class NavigationProvider with ChangeNotifier {
   }
 
   Future updateOverDueTasks({bool? checkUpcoming = false}) async {
-    log("UPDATING OVERDUE TASKS");
     List<Map<String, Object?>> update = await db.updateOverDueTasks();
-    log("UPDATE: $update");
     if (update.isNotEmpty) {
       String overEndTime = '';
       String overEndDate = '';
@@ -417,16 +390,13 @@ class NavigationProvider with ChangeNotifier {
       var outputFormat = DateFormat('yyyy-MM-dd');
       for (var i in update) {
         String tddate = i['End_Date'] as String;
-        log(tddate);
         DateTime tdDateTime = DateTime.parse("$tddate ${i["End_Time"] as String}");
-        log("$tdDateTime");
         int index = 0; 
         bool checkIndex = false;
         var time1 = '';
         for (var j in overdueTasks) {
           var date1OG = inputFormat.parse(j['End_Date'] as String);
           var date1 = outputFormat.format(date1OG);
-          log(date1);
           if (j["Period_Of_Hour"] as String == "AM") {
             var duptime1 = j["End_Time"] as String;
             if (duptime1.substring(0, 2) == "12") {
@@ -440,7 +410,6 @@ class NavigationProvider with ChangeNotifier {
               time1 = "${time24 == 24 ? time24-12 : time24}${duptime1.substring(2)}";
           }
           DateTime ovrdDateTime = DateTime.parse("$date1 $time1:00");
-          log("$ovrdDateTime");
 
           if (tdDateTime.isBefore(ovrdDateTime)) {
               index = overdueTasks.indexOf(j);
@@ -457,7 +426,6 @@ class NavigationProvider with ChangeNotifier {
         var finaloutputformat = DateFormat('dd/MM/yyyy');
         var date = finalinputformat.parse(overEndDate);
         overEndDate = finaloutputformat.format(date);
-        log("INDEX: $index");
         if (index == 0 && checkIndex == false) {
           overdueTasks.add({
             "id": i['id'], 
@@ -490,16 +458,12 @@ class NavigationProvider with ChangeNotifier {
       }
       notifyListeners();
     }else if (update.isEmpty && checkUpcoming == true){
-      //List<Map<String, Object?>> taskDetail = await db.updateUpcomingTasks();
-      log("ONTO UPDATING UPCOMING");
       await updateUpcomingTasks();
-      //getUpcomingTasks();
     }
   }
 
 
   Future getCompletedTasks() async {
-    log("Completed_Task called");
     List<Map<String, Object?>> results = await db.getCompletedTasks();
     String? upcEndTime = '';
     String comDate = '';
@@ -528,14 +492,12 @@ class NavigationProvider with ChangeNotifier {
   }
 
   void updateCompletedTasks(int id, String taskName, String completedDate, String completedTime, String completedPeriodOfHour, String created, String endDate, String endTime, String periodOfHour) {
-    log("UPDATING COMPLETED TASKS");
     String? comTime = '';
     String comDate = '';
     comTime = completedTime;
     comTime = comTime.substring(0, comTime.length - 3);
     int timeHour24 = int.parse(comTime.substring(0, comTime.length-3));
     comTime = "${timeHour24 == 0 ? 12 : timeHour24 > 12 ? (timeHour24-12) < 10 ? '0${timeHour24-12}' : timeHour24-12 : timeHour24 < 10 ? '0$timeHour24' : timeHour24}:${comTime.length == 5?comTime.substring(3) : comTime.substring(2)}";
-    log("END TIME $endTime");
     DateFormat inputformat = DateFormat('yyyy-MM-dd');
     DateFormat outputFormat = DateFormat('dd/MM/yyyy');
     comDate = outputFormat.format(inputformat.parse(completedDate));
@@ -551,7 +513,6 @@ class NavigationProvider with ChangeNotifier {
       "Period_Of_Hour":periodOfHour
     });
     notifyListeners();
-    log("UPDATED AND NOTIFIED");
   }
 
   Future deleteUpcTask() async {
@@ -568,7 +529,6 @@ class NavigationProvider with ChangeNotifier {
     await db.deleteOverdueTask(selectedTaskID);
     overdueTasks.removeAt(selectedIndex);
     if (overdueTasks.isNotEmpty) {
-    //updateUpcomingTask(overdueTasks[0]['Task_Name'] as String, overdueTasks[0]['Created'] as String, overdueTasks[0]['End_Date'] as String, overdueTasks[0]['End_Time'] as String, overdueTasks[0]['Period_Of_Hour'] as String, false);
     }
     changenoOverdueTasks(overdueTasks.length, notify: false);
     notifyListeners();
@@ -578,7 +538,6 @@ class NavigationProvider with ChangeNotifier {
     await db.deleteCompletedTask(selectedTaskID);
     completedTasks.removeAt(selectedIndex);
     if (completedTasks.isNotEmpty) {
-    //updateUpcomingTask(completedTasks[0]['Task_Name'] as String, completedTasks[0]['Created'] as String, completedTasks[0]['End_Date'] as String, completedTasks[0]['End_Time'] as String, completedTasks[0]['Period_Of_Hour'] as String, false);
     }
     changenoCompletedTasks(completedTasks.length, notify: false);
     notifyListeners();
@@ -602,7 +561,7 @@ class NavigationProvider with ChangeNotifier {
     }else{
       tddate = taskDetails['End_Date'] as String;
     }
-    log(tddate);
+
     int tableNumber = 0;
     DateTime tdDateTime = DateTime.parse("$tddate ${taskDetails["End_Time"] as String}");
     if (tdDateTime.isBefore(DateTime.now()) || tdDateTime.isAtSameMomentAs(DateTime.now()) ) {

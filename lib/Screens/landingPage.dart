@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
-import 'dart:developer';
 import 'package:provider/provider.dart';
 import 'package:to_do_list/Database/database.dart';
 import 'package:to_do_list/Providers/navProvider.dart';
@@ -59,28 +58,22 @@ LandingPage> with AutomaticKeepAliveClientMixin{
   bool get wantKeepAlive => widget.isPersistState;
 
   Future addTask(String taskName, String date, String time, String periodOfHour) async {
-    log(time);
     await db.createTask(taskName, date, time, periodOfHour);    
   }
   
   Future updateOverDueTasks() async {
     Provider.of<NavigationProvider>(context, listen: false).updateOverDueTasks(checkUpcoming: true);
-    //getStatistics();
     getUpcomingTask();
     getLastCompleted();
-    //Provider.of<NavigationProvider>(context, listen: false).getStatistics(); //!INCORRECT STATS FETCHED WHEN GIVEN TIME OF 12:00 AM
   }
 
   Future updateOverDueTasksinit() async {
-    //Provider.of<NavigationProvider>(context, listen: false).updateOverDueTasks();
-    //getStatistics();
     getUpcomingTask();
     getLastCompleted();
   }
 
   Future getUpcomingTask() async {
     List<Map<String, Object?>> result = await db.getUpcomingTask(limit: 1);
-    log("RESULT $result");
     if (result.isNotEmpty) {
     DateFormat inputFormat = DateFormat('yyyy-MM-dd');
     DateFormat outputFormat = DateFormat('dd/MM/yyyy');
@@ -92,8 +85,6 @@ LandingPage> with AutomaticKeepAliveClientMixin{
     var dueDate = inputFormat.parse(upcEndDate!);
     upcEndDate = outputFormat.format(dueDate);
     Provider.of<NavigationProvider>(context, listen: false).updateUpcomingTask(result[0]['Task_Name'] as String, result[0]['Created'] as String, upcEndDate!, upcEndTime!, result[0]["Period_Of_Hour"] as String, true);
-
-    //Provider.of<NavigationProvider>(context, listen: false).updateUpcomingTasks(result[0]['id'] as int, result[0]['Task_Name'] as String, result[0]['Created'] as String, result[0]['End_Date'] as String, upcEndTime as String, result[0]['Period_Of_Hour'] as String);
     }
   }
 
@@ -112,12 +103,6 @@ LandingPage> with AutomaticKeepAliveClientMixin{
       });
     }
     }
-
-  Future getTask(String id) async {
-    log("GEtting task");
-    List<Map<String, Object?>> details = await db.getTaskDetails();
-    log('$details');
-  }
 
   Future getStatistics() async {
     List statistics = await db.getStatistics();
@@ -158,7 +143,6 @@ LandingPage> with AutomaticKeepAliveClientMixin{
 
   @override
   void initState() {
-    log("OKKK");
     updateOverDueTasksinit();
     super.initState();
   }
@@ -243,7 +227,6 @@ LandingPage> with AutomaticKeepAliveClientMixin{
                             SizedBox(
                               height: height*0.07,
                               child: TextField(
-                                // key: _taskNameKey,
                                 controller: _taskNameTextController,
                                 decoration: InputDecoration( 
                                   labelText: "Task Name",
@@ -269,7 +252,6 @@ LandingPage> with AutomaticKeepAliveClientMixin{
                                 _selectDate(context, setState);
                               },
                               child: Container(
-                                //duration: Durations.extralong4,
                                 padding: EdgeInsets.symmetric(vertical: height*0.015, horizontal: width*0.04),
                                 decoration: BoxDecoration(
                                   border: Border.all(color: _validateDate? Colors.red : Colors.white60),
@@ -339,7 +321,6 @@ LandingPage> with AutomaticKeepAliveClientMixin{
                                     });
                                     Navigator.pop(context);
                                     }else{
-                                      log("HEHE");
                                       setState(()
                                     {
                                       _validateTask = _taskNameTextController.text == '' ? true : false;
@@ -411,7 +392,6 @@ LandingPage> with AutomaticKeepAliveClientMixin{
                             fontSize: height*0.025,
                             fontWeight: FontWeight.w500
                           ),
-                        //overflow: TextOverflow.ellipsis,
                         )
                         )
                       }else...{                     
@@ -494,7 +474,6 @@ LandingPage> with AutomaticKeepAliveClientMixin{
                               fontSize: height*0.025,
                               fontWeight: FontWeight.w500
                             ),
-                          //overflow: TextOverflow.ellipsis,
                           )
                           )
                         }else...{
